@@ -16,7 +16,7 @@ async def on_ready():
     """
     Function called when the bot starts up
     """
-    print(f'Logged in as {bot.user}')
+    log(f'Logged in as {bot.user}')
 
     # Start Jelo live pings
     check_and_notify.start()
@@ -49,7 +49,7 @@ async def on_member_join(member):
 
 @bot.command()
 async def WakeUp(ctx):
-    print("Someone tried to wake me up... but I'm already awake!")
+    log("Someone tried to wake me up... but I'm already awake!")
     await ctx.send("But I'm already awake!")
 
 @bot.command()
@@ -61,12 +61,16 @@ async def quote(ctx):
 
 @bot.command()
 async def GetStarliisAttention(ctx):
-    print("STARLII!!!")
+    log("STARLII!!!")
     await ctx.send("<@1141181390445101176>")
 
 @bot.command()
 async def awoofy(ctx):
     await ctx.send("Awoofy mentioned <:jb_yay:1246215956355878993>")
+
+async def log(message):
+    print(message)
+    await bot.get_channel(1246546976124965015).send(message)
 
 @tasks.loop(seconds=10)
 async def check_and_notify():
@@ -110,10 +114,10 @@ def get_twitch_live(channelName):
             else:
                 return True
         else:
-            print("Error: " + str(result.status_code), file=sys.stderr)
+            log("Error: " + str(result.status_code), file=sys.stderr)
             return False
     except Exception as e:
-        print("Error: " + str(e), file=sys.stderr)
+        log("Error: " + str(e), file=sys.stderr)
         return False
 
 # Gets info about the specified Twitch channel (returns JSON)
@@ -136,28 +140,28 @@ def get_stream_info(channelName):
         if game.ok:
             game = game.text
         else:
-            print("Error: " + str(game.status_code), file=sys.stderr)
+            log("Error: " + str(game.status_code), file=sys.stderr)
             game = "Error: " + str(game.status_code)
 
         title = requests.get("https://decapi.me/twitch/title/" + channelName)
         if title.ok:
             title = title.text
         else:
-            print("Error: " + str(title.status_code), file=sys.stderr)
+            log("Error: " + str(title.status_code), file=sys.stderr)
             title = "Error: " + str(title.status_code)
 
         viewers = requests.get("https://decapi.me/twitch/viewercount/" + channelName)
         if viewers.ok:
             viewers = viewers.text
         else:
-            print("Error: " + str(viewers.status_code), file=sys.stderr)
+            log("Error: " + str(viewers.status_code), file=sys.stderr)
             viewers = "Error: " + str(viewers.status_code)
             
         uptime = requests.get("https://decapi.me/twitch/uptime/" + channelName)
         if uptime.ok:
             uptime = uptime.text
         else:
-            print("Error: " + str(uptime.status_code), file=sys.stderr)
+            log("Error: " + str(uptime.status_code), file=sys.stderr)
             uptime = "Error: " + str(uptime.status_code)
 
         # Create a dictionary
@@ -174,7 +178,7 @@ def get_stream_info(channelName):
         return json_data
     
     except Exception as e:
-        print("Error: " + str(e), file=sys.stderr)
+        log("Error: " + str(e), file=sys.stderr)
         return "Error: " + str(e)
 
 bot.run(dotenv.get_key("token.env", "token"))
