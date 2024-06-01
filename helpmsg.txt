@@ -1,7 +1,7 @@
 # Welcome!
 
 This is Navolt's Testing Bot (yes that name is a placeholder).
-Command prefix is !
+Command prefix is ntb!
 ## Commands
 ### help
 Sends this message.
