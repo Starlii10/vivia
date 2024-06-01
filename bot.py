@@ -7,6 +7,20 @@ from datetime import datetime
 import dotenv
 import random
 
+import configparser
+config = configparser.ConfigParser()
+try:
+    config.read("config.ini")
+except:
+    try:
+        print("config.ini not found, creating new from default. If this is the first run please ignore this message")
+        config.read("config.ini.example")
+        with open('config.ini', 'w') as configfile:
+            config.write(configfile)
+    except:
+        print("config.ini.example not found or couldn't be read")
+        sys.exit(1)
+
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='ntb!', intents=intents)
@@ -22,7 +36,8 @@ async def on_ready():
     await log(f'Logged in as {bot.user}')
 
     # Start Jelo live pings
-    check_and_notify.start()
+    if config['General']['LivePingsEnabled'] == "True":
+        check_and_notify.start()
 
     # Send awake message
     awake_channel = bot.get_channel(1246216252276477962) # Awake channel
@@ -83,6 +98,24 @@ async def dmTest(ctx):
 async def help(ctx):
     await ctx.author.send(helpMsg)
     await ctx.send(f"Check your DMs {ctx.author.mention}")
+
+@bot.command()
+async def livePings(ctx):
+    # turn on/off live pings (persistent)
+    if config['General']['LivePingsEnabled'] == "True":
+        config['General']['LivePingsEnabled'] = "False"
+        with open('config.ini', 'w') as configfile:
+            config.write(configfile)
+        check_and_notify.cancel()
+        await log("Live pings are now off")
+        await ctx.send("Live pings are now off")
+    else:
+        config['General']['LivePingsEnabled'] = "True"
+        with open('config.ini', 'w') as configfile:
+            config.write(configfile)
+        check_and_notify.start()
+        await log("Live pings are now on")
+        await ctx.send("Live pings are now on")
 
 @tasks.loop(seconds=10)
 async def check_and_notify():
