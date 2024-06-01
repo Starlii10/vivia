@@ -52,7 +52,8 @@ async def WakeUp(ctx):
 async def quote(ctx):
     with open('quotes.json') as f:
         quotes = json.load(f)
-    await ctx.send(quotes['quotes'][random.randint(0, len(quotes['quotes']) - 1)])
+        quote = random.choice(quotes['quotes'])
+        await ctx.send(quote)
 
 @bot.command()
 async def GetStarliisAttention(ctx):
