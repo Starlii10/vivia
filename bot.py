@@ -72,6 +72,10 @@ async def log(message):
     print(message)
     await bot.get_channel(1246546976124965015).send(message)
 
+@bot.command()
+async def dmTest(ctx):
+    await ctx.author.send("this is a test of the emergency dm system")
+
 @tasks.loop(seconds=10)
 async def check_and_notify():
     """
