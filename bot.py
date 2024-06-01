@@ -5,6 +5,7 @@ import sys
 import json
 from datetime import datetime
 import dotenv
+import random
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -46,6 +47,12 @@ async def on_message(message):
 async def WakeUp(ctx):
     print("Someone tried to wake me up... but I'm already awake!")
     await ctx.send("But I'm already awake!")
+
+@bot.command()
+async def quote(ctx):
+    with open('quotes.json') as f:
+        quotes = json.load(f)
+    await ctx.send(quotes['quotes'][random.randint(0, len(quotes['quotes']) - 1)])
 
 @bot.command()
 async def GetStarliisAttention(ctx):
