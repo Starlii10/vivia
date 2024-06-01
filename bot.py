@@ -17,13 +17,14 @@ async def on_ready():
     Function called when the bot starts up
     """
     print(f'Logged in as {bot.user}')
-    # Start the check
+
+    # Start Jelo live pings
     check_and_notify.start()
 
     # Send awake message
     awake_channel = bot.get_channel(1246216252276477962) # Awake channel
     await awake_channel.send("I'm awake! <:jb_yay:1246215956355878993>\n\n" + datetime.now().strftime("%H:%M:%S" + " UTC"))
-    
+
     # say whatever here
     # await bot.get_channel(1243032295481282657).send("yes")
 
@@ -35,16 +36,16 @@ async def on_member_join(member):
     welcome_channel = bot.get_channel(1246532114266980433) # Welcome channel
     await welcome_channel.send(member.mention + ", welcome")
 
-@bot.event
-async def on_message(message):
-    """
-    Function called when a message is sent
-    """
-    if message.author == bot.user:
-        return
-    if "regina" in message.content:
-        await message.channel.send("\"BRO, STOP CALLING US YOU DONT EVEN WORK HERE?\"\n\nbut really RC is great")
-        await message.pin()
+# @bot.event
+# async def on_message(message):
+#     """
+#     Function called when a message is sent
+#     """
+#     if message.author == bot.user:
+#         return
+#     if "regina" in message.content:
+#         await message.channel.send("\"BRO, STOP CALLING US YOU DONT EVEN WORK HERE?\"\n\nbut really RC is great")
+#         await message.pin()
 
 @bot.command()
 async def WakeUp(ctx):
@@ -56,7 +57,6 @@ async def quote(ctx):
     with open('quotes.json') as f:
         quotes = json.load(f)
         quote = random.choice(quotes['quotes'])
-        print(quote)
         await ctx.send(quote)
 
 @bot.command()
