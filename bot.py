@@ -84,6 +84,7 @@ async def check_and_notify():
     
     if await get_twitch_live('jeloetta'): # Replace "jeloetta" with any Twitch channel name
         if not check_and_notify.has_sent_message:
+            await log("I'M DOING A DENUO!")
             channel = bot.get_channel(1243032295481282657)  # Replace with your channel ID
             await channel.send("Hey @everyone, [Jeloetta](https://twitch.tv/jeloetta) is streaming " + requests.get("https://decapi.me/twitch/game/jeloetta").text + "! They'd be delighted to hang out with you!")
             # We've sent the message, set the flag
