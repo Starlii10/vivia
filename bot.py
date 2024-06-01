@@ -11,6 +11,8 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+helpMsg = open("helpmsg.txt", "r").read()
+
 @bot.event
 async def on_ready():
     """
@@ -75,6 +77,11 @@ async def log(message):
 @bot.command()
 async def dmTest(ctx):
     await ctx.author.send("this is a test of the emergency dm system")
+
+@bot.command()
+async def help(ctx):
+    await ctx.author.send(helpMsg)
+    await ctx.send(f"Check your DMs {ctx.author.mention}")
 
 @tasks.loop(seconds=10)
 async def check_and_notify():
