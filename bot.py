@@ -23,7 +23,9 @@ async def on_ready():
     # Send awake message
     awake_channel = bot.get_channel(1246216252276477962) # Awake channel
     await awake_channel.send("I'm awake! <:jb_yay:1246215956355878993>\n\n" + datetime.now().strftime("%H:%M:%S" + " UTC"))
-    bot.get_channel(1243032295481282657).send("yes")
+    
+    # say whatever here
+    # await bot.get_channel(1243032295481282657).send("yes")
 
 @bot.event
 async def on_member_join(member):
