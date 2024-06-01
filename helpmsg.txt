@@ -14,8 +14,8 @@ Pings <@1141181390445101176>.
 ### awoofy
 awoofy
 ### dmTest
-Tests the Emergency DM System.
-## Misc Functions
-If Jeloetta ever goes live on Twitch, this bot will ping everyone in the server.
+Removed.
+### livePings
+Toggles pinging @everyone when Jeloetta goes live on Twitch.
 ## GitHub
 The bot is open source and can be found on [GitHub](https://github.com/starlii10/testing-discord-bot/).
