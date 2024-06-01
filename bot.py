@@ -12,17 +12,25 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
+    """
+    Function called when the bot starts up
+    """
     print(f'Logged in as {bot.user}')
     # Start the check
     check_and_notify.start()
 
     # Send awake message
-    channel = bot.get_channel(1246216252276477962) # Awake channel
-    await channel.send("I'm awake! <:jb_yay:1246215956355878993>\n\n" + datetime.now().strftime("%H:%M:%S" + " UTC"))
+    awake_channel = bot.get_channel(1246216252276477962) # Awake channel
+    await awake_channel.send("I'm awake! <:jb_yay:1246215956355878993>\n\n" + datetime.now().strftime("%H:%M:%S" + " UTC"))
 
 @bot.event
 async def on_member_join(member):
-    print(member.mention + ", welcome")
+    """
+    Function called when a member joins the server
+    """
+    welcome_channel = bot.get_channel(1246532114266980433) # Welcome channel
+    await welcome_channel.send(member.mention + ", welcome")
+
 
 @bot.command()
 async def WakeUp(ctx):
