@@ -40,7 +40,7 @@ async def on_message(message):
         return
     if "regina" in message.content:
         await message.channel.send("\"BRO, STOP CALLING US YOU DONT EVEN WORK HERE?\"\n\nbut really RC is great")
-        message.pin("Contains regina (the best thing ever)")
+        message.pin()
 
 @bot.command()
 async def WakeUp(ctx):
