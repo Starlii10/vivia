@@ -38,8 +38,8 @@ async def on_message(message):
     """
     if message.author == bot.user:
         return
-    if "regina" in message.content():
-        await message.channel.send("\"BRO, STOP CALLING US YOU DONT EVEN WORK HERE?\"")
+    if "regina" in message.content:
+        await message.channel.send("\"BRO, STOP CALLING US YOU DONT EVEN WORK HERE?\"\n\nbut really RC is great")
 
 @bot.command()
 async def WakeUp(ctx):
