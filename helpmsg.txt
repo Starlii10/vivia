@@ -2,31 +2,20 @@
 
 This is Navolt's Testing Bot (yes that name is a placeholder).
 Command prefix is !
-
 ## Commands
-
 ### help
 Sends this message.
-
 ### WakeUp
 Tells the bot to wake up.
-
 ### quote
 Sends a random quote.
-
 ### GetStarliisAttention
 Pings <@1141181390445101176>.
-
 ### awoofy
 awoofy
-
 ### dmTest
-Tests the Emergency DM System™.
-
+Tests the Emergency DM System.
 ## Misc Functions
-
-If [Jeloetta](https://twitch.tv/jeloetta) ever goes live, this bot will ping everyone in the server.
-
+If Jeloetta ever goes live on Twitch, this bot will ping everyone in the server.
 ## GitHub
-
 The bot is open source and can be found on [GitHub](https://github.com/starlii10/testing-discord-bot/).
