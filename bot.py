@@ -20,6 +20,8 @@ except:
     except:
         print("config.ini.example not found or couldn't be read")
         sys.exit(1)
+else:
+    print("config.ini found, loading it")
 
 intents = discord.Intents.default()
 intents.message_content = True
