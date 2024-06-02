@@ -17,5 +17,7 @@ awoofy
 Removed.
 ### livePings
 Toggles pinging @everyone when Jeloetta goes live on Twitch.
+### awakeMessage
+Toggles the awake message sent when the bot turns on.
 ## GitHub
 The bot is open source and can be found on [GitHub](https://github.com/starlii10/testing-discord-bot/).

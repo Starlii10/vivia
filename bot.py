@@ -42,8 +42,9 @@ async def on_ready():
         check_and_notify.start()
 
     # Send awake message
-    awake_channel = bot.get_channel(1246216252276477962) # Awake channel
-    await awake_channel.send("I'm awake! <:jb_yay:1246215956355878993>\n\n" + datetime.now().strftime("%H:%M:%S" + " UTC"))
+    if config['General']['AwakeMessageEnabled'] == "True":
+        awake_channel = bot.get_channel(1246216252276477962) # Awake channel
+        await awake_channel.send("I'm awake! <:jb_yay:1246215956355878993>\n\n" + datetime.now().strftime("%H:%M:%S" + " UTC"))
 
     # say whatever here
     # await bot.get_channel(1243032295481282657).send("yes")
@@ -114,6 +115,24 @@ async def livePings(ctx):
         check_and_notify.start()
         await log("Live pings are now on")
         await ctx.send("Live pings are now on")
+
+@bot.command()
+async def awakeMessage(ctx):
+    # turn on/off live pings (persistent)
+    if config['General']['AwakeMessageEnabled'] == "True":
+        config['General']['AwakeMessageEnabled'] = "False"
+        with open('config.ini', 'w') as configfile:
+            config.write(configfile)
+        check_and_notify.cancel()
+        await log("Awake message is now off")
+        await ctx.send("Awake message is now off")
+    else:
+        config['General']['AwakeMessageEnabled'] = "True"
+        with open('config.ini', 'w') as configfile:
+            config.write(configfile)
+        check_and_notify.start()
+        await log("Awake message is now on")
+        await ctx.send("Awake message is now on")
 
 @tasks.loop(seconds=10)
 async def check_and_notify():
