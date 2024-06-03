@@ -7,7 +7,6 @@ from datetime import datetime
 import dotenv
 import random
 from os import system
-
 import configparser
 
 system("title Navolt's Testing Bot")
@@ -71,11 +70,6 @@ async def on_member_join(member):
 #     if "regina" in message.content:
 #         await message.channel.send("\"BRO, STOP CALLING US YOU DONT EVEN WORK HERE?\"\n\nbut really RC is great")
 #         await message.pin()
-
-@bot.command()
-async def WakeUp(ctx):
-    await log("Someone tried to wake me up... but I'm already awake!")
-    await ctx.send("But I'm already awake!")
 
 @bot.command()
 async def quote(ctx):
@@ -168,7 +162,7 @@ async def get_twitch_live(channelName):
         channelName (str): The name of the Twitch channel.
 
     Returns:
-        bool: True if the channel is live, False otherwise or if an error occurs.
+        bool: True if the channel is live, False otherwise. Returns False if an error occurs.
 
     Notes:
         This function uses decapi.me to access the Twitch API.
@@ -207,29 +201,29 @@ async def get_stream_info(channelName):
         if game.ok:
             game = game.text
         else:
-            await log("Error: " + str(game.status_code), file=sys.stderr)
-            game = "Error: " + str(game.status_code)
+            await log("Couldn't get game: " + str(game.status_code), file=sys.stderr)
+            game = "Couldn't get game: " + str(game.status_code)
 
         title = requests.get("https://decapi.me/twitch/title/" + channelName)
         if title.ok:
             title = title.text
         else:
-            await log("Error: " + str(title.status_code), file=sys.stderr)
-            title = "Error: " + str(title.status_code)
+            await log("Couldn't get title: " + str(title.status_code), file=sys.stderr)
+            title = "Couldn't get title: " + str(title.status_code)
 
         viewers = requests.get("https://decapi.me/twitch/viewercount/" + channelName)
         if viewers.ok:
             viewers = viewers.text
         else:
-            await log("Error: " + str(viewers.status_code), file=sys.stderr)
-            viewers = "Error: " + str(viewers.status_code)
+            await log("Couldn't get viewers: " + str(viewers.status_code), file=sys.stderr)
+            viewers = "Couldn't get viewers: " + str(viewers.status_code)
             
         uptime = requests.get("https://decapi.me/twitch/uptime/" + channelName)
         if uptime.ok:
             uptime = uptime.text
         else:
-            await log("Error: " + str(uptime.status_code), file=sys.stderr)
-            uptime = "Error: " + str(uptime.status_code)
+            await log("Couldn't get uptime: " + str(uptime.status_code), file=sys.stderr)
+            uptime = "Couldn't get uptime: " + str(uptime.status_code)
 
         # Create a dictionary
         stream_info = {

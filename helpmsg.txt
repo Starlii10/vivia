@@ -11,10 +11,6 @@ Tells the bot to wake up.
 Sends a random quote.
 ### GetStarliisAttention
 Pings <@1141181390445101176>.
-### awoofy
-awoofy
-### dmTest
-Removed.
 ### livePings
 Toggles pinging @everyone when Jeloetta goes live on Twitch.
 ### awakeMessage
