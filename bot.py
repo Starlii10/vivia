@@ -6,8 +6,12 @@ import json
 from datetime import datetime
 import dotenv
 import random
+from os import system
 
 import configparser
+
+system("title Navolt's Testing Bot")
+
 config = configparser.ConfigParser()
 try:
     config.read("config.ini")
