@@ -44,7 +44,6 @@ intents.message_content = True
 bot = commands.Bot(command_prefix='ntb!', intents=intents)
 bot.remove_command("help")
 tree = bot.tree
-tree.sync()
 
 helpMsg = open("helpmsg.txt", "r").read()
 
@@ -271,4 +270,9 @@ async def get_stream_info(channelName):
         await log("Error: " + str(e), file=sys.stderr)
         return "Error: " + str(e)
 
+async def sync():
+    await tree.sync()
+
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
+if "sync" in sys.argv:
+    sync()
