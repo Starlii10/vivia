@@ -122,7 +122,7 @@ async def livePings(ctx):
 
 @bot.command()
 async def awakeMessage(ctx):
-    # turn on/off live pings (persistent)
+    # turn on/off awake message (persistent)
     if config['General']['AwakeMessageEnabled'] == "True":
         config['General']['AwakeMessageEnabled'] = "False"
         with open('config.ini', 'w') as configfile:
