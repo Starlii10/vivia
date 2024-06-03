@@ -2,6 +2,7 @@ import sys
 
 if "/?" in sys.argv:
     print("Usage: python bot.py")
+    print("To sync commands and run: python bot.py sync")
     sys.exit(0)
 
 import discord
