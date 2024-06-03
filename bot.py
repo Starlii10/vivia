@@ -1,6 +1,6 @@
 import sys
 
-if sys.argv[0] == "/?":
+if "/?" in sys.argv:
     print("Usage: python bot.py")
     sys.exit(0)
 
