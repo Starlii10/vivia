@@ -5,7 +5,8 @@ if "/?" in sys.argv:
     sys.exit(0)
 
 import discord
-from discord.ext import tasks, commands, app_commands
+from discord.ext import tasks, commands
+from discord import app_commands
 import requests
 import json
 from datetime import datetime
