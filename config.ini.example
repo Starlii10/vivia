@@ -1,3 +1,6 @@
 [General]
 LivePingsEnabled = True
 AwakeMessageEnabled = True
+
+[Logging]
+Filename = latest.log

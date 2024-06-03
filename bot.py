@@ -14,12 +14,8 @@ import random
 from os import system
 import configparser
 import logging
-
-handler = logging.FileHandler(filename='latest.log', encoding='utf-8', mode='w')
-
-system("title Navolt's Testing Bot")
-
 config = configparser.ConfigParser()
+
 try:
     config.read("config.ini")
 except:
@@ -33,6 +29,14 @@ except:
         sys.exit(1)
 else:
     print("config.ini found, loading it")
+
+
+handler = logging.FileHandler(filename=config['Logging']['Filename'], encoding='utf-8', mode='w')
+
+system("title Navolt's Testing Bot")
+
+
+
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -95,9 +99,20 @@ async def GetStarliisAttention(ctx):
 async def awoofy(ctx):
     await ctx.send("Awoofy mentioned <:jb_yay:1246215956355878993>")
 
-async def log(message):
+async def log(message, severity):
+    """
+    Outputs a message to the log.
+
+    Args:
+        message (str): The message to output.
+        severity (int): The severity of the message.
+
+    Notes:
+        This function will output to the console, log file, and to a Discord channel.
+    """
     print(message)
     await bot.get_channel(1246546976124965015).send(message)
+    logging.log(severity, message)
 
 @bot.command()
 async def help(ctx):
