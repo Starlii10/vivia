@@ -276,4 +276,5 @@ async def sync():
 
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
 if "sync" in sys.argv:
+    log("Syncing commands")
     sync()
