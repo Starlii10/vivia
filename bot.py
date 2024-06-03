@@ -1,13 +1,21 @@
+import sys
+
+if sys.argv[0] == "/?":
+    print("Usage: python bot.py")
+    sys.exit(0)
+
 import discord
 from discord.ext import tasks, commands
 import requests
-import sys
 import json
 from datetime import datetime
 import dotenv
 import random
 from os import system
 import configparser
+import logging
+
+handler = logging.FileHandler(filename='latest.log', encoding='utf-8', mode='w')
 
 system("title Navolt's Testing Bot")
 
@@ -242,4 +250,4 @@ async def get_stream_info(channelName):
         await log("Error: " + str(e), file=sys.stderr)
         return "Error: " + str(e)
 
-bot.run(dotenv.get_key("token.env", "token"))
+bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
