@@ -5,7 +5,7 @@ if "/?" in sys.argv:
     sys.exit(0)
 
 import discord
-from discord.ext import tasks, commands
+from discord.ext import tasks, commands, app_commands
 import requests
 import json
 from datetime import datetime
@@ -42,6 +42,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='ntb!', intents=intents)
 bot.remove_command("help")
+tree = app_commands.CommandTree(bot)
 
 helpMsg = open("helpmsg.txt", "r").read()
 
@@ -83,7 +84,10 @@ async def on_member_join(member):
 #         await message.channel.send("\"BRO, STOP CALLING US YOU DONT EVEN WORK HERE?\"\n\nbut really RC is great")
 #         await message.pin()
 
-@bot.command()
+@tree.command(
+    name="quote",
+    description="Say a random quote."
+)
 async def quote(ctx):
     with open('quotes.json') as f:
         quotes = json.load(f)
