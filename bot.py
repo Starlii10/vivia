@@ -43,7 +43,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='ntb!', intents=intents)
 bot.remove_command("help")
-tree = app_commands.CommandTree(bot)
+tree = bot.tree
 
 helpMsg = open("helpmsg.txt", "r").read()
 
@@ -89,11 +89,11 @@ async def on_member_join(member):
     name="quote",
     description="Say a random quote."
 )
-async def quote(ctx):
+async def quote(interaction):
     with open('quotes.json') as f:
         quotes = json.load(f)
         quote = random.choice(quotes['quotes'])
-        await ctx.send(quote)
+        await interaction.response.send(quote)
 
 @bot.command()
 async def GetStarliisAttention(ctx):
