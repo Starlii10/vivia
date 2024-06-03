@@ -44,6 +44,7 @@ intents.message_content = True
 bot = commands.Bot(command_prefix='ntb!', intents=intents)
 bot.remove_command("help")
 tree = bot.tree
+tree.sync()
 
 helpMsg = open("helpmsg.txt", "r").read()
 
