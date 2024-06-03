@@ -99,13 +99,13 @@ async def GetStarliisAttention(ctx):
 async def awoofy(ctx):
     await ctx.send("Awoofy mentioned <:jb_yay:1246215956355878993>")
 
-async def log(message, severity):
+async def log(message, severity=logging.INFO):
     """
     Outputs a message to the log.
 
     Args:
         message (str): The message to output.
-        severity (int): The severity of the message.
+        severity (int): The severity of the message (defaults to Info).
 
     Notes:
         This function will output to the console, log file, and to a Discord channel.
