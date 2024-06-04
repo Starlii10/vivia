@@ -116,7 +116,7 @@ async def log(message, severity=logging.INFO):
         This function will output to the console, log file, and to a Discord channel.
     """
     print(message)
-    await bot.get_channel(config['Channels']['LoggingChannel']).send(message)
+    await bot.get_channel(int(config['Channels']['LoggingChannel'])).send(message)
     logging.log(severity, message)
 
 @tree.command(
@@ -135,8 +135,9 @@ async def sync(ctx):
     Notes:
         Only the bot owner can use this command.
     """
-    if ctx.author.id == config['General']['Owner']:
+    if ctx.author.id == int(config['General']['Owner']):
         await bot.tree.sync()
+        await ctx.send('The command tree was synced, whatever that means.')
         await log("The command tree was synced, whatever that means.")
     else:
         await ctx.send('That\'s for the bot owner, not random users...')
