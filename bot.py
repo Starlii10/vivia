@@ -277,6 +277,14 @@ async def get_stream_info(channelName):
         await log("Error: " + str(e), file=sys.stderr)
         return "Error: " + str(e)
 
+@bot.command()
+async def sync(interaction):
+    if interaction.user.id == 1141181390445101176:
+        await bot.tree.sync()
+        print('Command tree synced.')
+    else:
+        await interaction.response.send_message('You do not have permission to use this command.', ephemeral=True)
+
 async def sync():
     await tree.sync()
 
