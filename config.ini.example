@@ -1,6 +1,7 @@
 [General]
 LivePingsEnabled = True
 AwakeMessageEnabled = True
+StatusMessage = Heya!
 
 [Logging]
 Filename = latest.log
