@@ -62,7 +62,8 @@ async def on_ready():
     """
     Function called when Vivia starts up.
     """
-    await log(f'Logged in as {bot.user}')
+
+    await log(f'I\'m awake! Discord says my username is {bot.user}.')
     
     # Change status
     await bot.change_presence(activity=discord.CustomActivity(name='v!help | ' + config['General']['StatusMessage']))
@@ -87,6 +88,7 @@ async def on_message(message):
     # Process commands
     await bot.process_commands(message)
 
+    # Make sure Vivia doesn't respond to herself
     if message.author == bot.user:
         return
 #    if "regina" in message.content:
@@ -97,6 +99,9 @@ async def on_message(message):
     description="Say a random (slightly chaotic) quote."
 )
 async def quote(interaction):
+    """
+    Sends a random (slightly chaotic) quote.
+    """
     with open('quotes.json') as f:
         quotes = json.load(f)
         quote = random.choice(quotes['quotes'])
@@ -114,7 +119,7 @@ async def log(message, severity=logging.INFO):
         This function will output to the console, log file, and to a Discord channel.
     """
     print(message)
-    await bot.get_channel(1246546976124965015).send(message)
+    await bot.get_channel(config['Channels']['LoggingChannel']).send(message)
     logging.log(severity, message)
 
 @tree.command(
@@ -127,11 +132,17 @@ async def help(interaction):
 
 @bot.command()
 async def sync(ctx):
-    if ctx.author.id == 1141181390445101176:
+    """
+    Syncs the command tree.
+
+    Notes:
+        Only the bot owner can use this command.
+    """
+    if ctx.author.id == config['General']['Owner']:
         await bot.tree.sync()
-        await log("Command tree synced")
+        await log("The command tree was synced, whatever that means.")
     else:
-        await ctx.send('You do not have permission to use this command.')
+        await ctx.send('That\'s for the bot owner, not random users...')
 
 async def has_bot_permissions(user):
     """

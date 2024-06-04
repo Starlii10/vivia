@@ -10,5 +10,8 @@ Sends this message you're reading right now!
 ### quote
 *Usage: `v!quote` or application menu command.*
 Sends a random (slightly chaotic) quote.
+### sync
+*Usage: `v!sync`*
+Syncs the command tree (which is just a nerdy way of saying it updates what commands are available in the application menu). 
 ## GitHub
 My code is open source and can be found on [GitHub](https://github.com/starlii10/vivia/)! If you want to, you can even run your own version of me!
