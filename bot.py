@@ -125,7 +125,7 @@ async def log(message, severity=logging.INFO):
 )
 async def help(interaction):
     await interaction.user.send(helpMsg)
-    await interaction.response.send_message(f"Do you need me, {interaction.user.display_name}? I just sent you a message with some helpful information.")
+    await interaction.response.send_message(f"Do you need me, {interaction.user.display_name}? I just sent you a message with some helpful information.", ephemeral=True)
 
 @bot.command()
 async def sync(ctx):
