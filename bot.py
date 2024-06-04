@@ -35,7 +35,13 @@ else:
     print("config.ini found, loading it")
 
 
-handler = logging.FileHandler(filename=config['Logging']['Filename'], encoding='utf-8', mode='w')
+handler = logging.FileHandler(
+    filename=config['Logging']['Filename'],
+    encoding='utf-8',
+    mode='w'
+)
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logging.basicConfig(level=logging.INFO)
 
 system("title Navolt's Testing Bot")
 
