@@ -78,16 +78,20 @@ async def on_member_join(member):
     welcome_channel = bot.get_channel(1246532114266980433) # Welcome channel
     await welcome_channel.send(member.mention + ", welcome")
 
-# @bot.event
-# async def on_message(message):
-#     """
-#     Function called when a message is sent
-#     """
-#     if message.author == bot.user:
-#         return
-#     if "regina" in message.content:
-#         await message.channel.send("\"BRO, STOP CALLING US YOU DONT EVEN WORK HERE?\"\n\nbut really RC is great")
-#         await message.pin()
+@bot.event
+async def on_message(message):
+    """
+    Function called when a message is sent
+    """
+
+    # Process commands
+    await bot.process_commands(message)
+
+    if message.author == bot.user:
+        return
+    if "regina" in message.content:
+        await message.channel.send("\"BRO, STOP CALLING US YOU DONT EVEN WORK HERE?\"\n\nbut really RC is great")
+        await message.pin()
 
 @tree.command(
     name="quote",
