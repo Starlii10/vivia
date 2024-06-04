@@ -1,4 +1,14 @@
-# this is a whole hecking lot of imports, and yes, every single one is used
+"""
+    This is the primary script for Vivia.
+
+    Vivia is licensed under the MIT License. For more information, see the LICENSE file.
+    TL:DR: you can use Vivia's code as long as you keep the original license intact.
+    Vivia is made open source in the hopes that you'll find her code useful.
+
+    If you'd like to contribute, please check out the GitHub repository at https://github.com/starlii10/vivia.
+
+    Have a great time using Vivia!
+"""
 
 import sys
 import discord
@@ -16,15 +26,15 @@ try:
     config.read("config.ini")
 except:
     try:
-        print("config.ini not found, creating new from default. If this is the first run please ignore this message")
+        print("I didn't find a configuration file. I'm creating one for ya!")
         config.read("config.ini.example")
         with open('config.ini', 'w') as configfile:
             config.write(configfile)
     except:
-        print("config.ini.example not found or couldn't be read")
+        print("I couldn't create a config file. Is something wrong with config.ini.example?")
         sys.exit(1)
 else:
-    print("config.ini found, loading it")
+    print("I found my configuration file. One moment...")
 
 
 handler = logging.FileHandler(
@@ -37,9 +47,11 @@ logging.basicConfig(level=logging.INFO)
 
 system("title Vivia - " + config['General']['StatusMessage'])
 
+print("Preparing to start up!")
+
 intents = discord.Intents.default()
 intents.message_content = True
-bot = commands.Bot(command_prefix='ntb!', intents=intents)
+bot = commands.Bot(command_prefix='v!', intents=intents)
 bot.remove_command("help")
 tree = bot.tree
 
@@ -48,20 +60,20 @@ helpMsg = open("helpmsg.txt", "r").read()
 @bot.event
 async def on_ready():
     """
-    Function called when the bot starts up
+    Function called when Vivia starts up.
     """
     await log(f'Logged in as {bot.user}')
     
     # Change status
-    await bot.change_presence(activity=discord.CustomActivity(name='ntb!help | ' + config['General']['StatusMessage']))
+    await bot.change_presence(activity=discord.CustomActivity(name='v!help | ' + config['General']['StatusMessage']))
 
     # say whatever here
-    # await bot.get_channel(1243032295481282657).send("yes")
+    await bot.get_channel(1247597054059085954).send("Heya all! I'd like to introduce myself.\nMy name is **Vivia!** It's a pleasure to meet you all.\n\nIf you need any help using my functions, just call me with `v!help` and I'll give more information!")
 
 @bot.event
 async def on_member_join(member):
     """
-    Function called when a member joins the server
+    Function called when a member joins the server.
     """
     welcome_channel = bot.get_channel(1246532114266980433) # Welcome channel
     await welcome_channel.send("Heya, " + member.mention + "! Welcome to the server!")
@@ -69,7 +81,7 @@ async def on_member_join(member):
 @bot.event
 async def on_message(message):
     """
-    Function called when a message is sent
+    Function called when a message is sent.
     """
 
     # Process commands
@@ -77,8 +89,8 @@ async def on_message(message):
 
     if message.author == bot.user:
         return
-    if "regina" in message.content:
-        await message.channel.send("\"BRO, STOP CALLING US YOU DONT EVEN WORK HERE?\"\n\nbut really RC is great")
+#    if "regina" in message.content:
+#        await message.channel.send("\"BRO, STOP CALLING US YOU DONT EVEN WORK HERE?\"\n\nbut really RC is great")
 
 @tree.command(
     name="quote",
@@ -109,9 +121,9 @@ async def log(message, severity=logging.INFO):
     name="help",
     description="Sends a help message, and virtual hugs!"
 )
-async def help(ctx):
-    await ctx.author.send(helpMsg)
-    await ctx.send(f"Check your DMs {ctx.author.mention}")
+async def help(interaction):
+    await interaction.user.send(helpMsg)
+    await interaction.response.send_message(f"Do you need me, {interaction.user.display_name}? I just sent you a message with some helpful information.")
 
 @bot.command()
 async def sync(ctx):

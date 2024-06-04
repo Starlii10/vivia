@@ -11,4 +11,4 @@ Sends this message you're reading right now!
 *Usage: `v!quote` or application menu command.*
 Sends a random (slightly chaotic) quote.
 ## GitHub
-My code is open source and can be found on [GitHub](https://github.com/starlii10/vivia/)!
+My code is open source and can be found on [GitHub](https://github.com/starlii10/vivia/)! If you want to, you can even run your own version of me!
