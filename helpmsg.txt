@@ -1,19 +1,14 @@
-# Welcome!
-
-This is Navolt's Testing Bot (yes that name is a placeholder).
-Command prefix is ntb!
+# Heya!
+My name's Vivia, and it's a pleasure to meet you!
+My command prefix is `v!`. Put that in front of any message to direct it to me. I'll make sure I notice!
+Alternatively, some of my functions can be activated through the application menu. I'll ALWAYS notice those!
 ## Commands
+These are some of the things that I am capable of doing for you. 
 ### help
-Sends this message.
-### WakeUp
-Tells the bot to wake up.
+*Usage: `v!help` or application menu command.*
+Sends this message you're reading right now!
 ### quote
-Sends a random quote.
-### GetStarliisAttention
-Pings <@1141181390445101176>.
-### livePings
-Toggles pinging @everyone when Jeloetta goes live on Twitch.
-### awakeMessage
-Toggles the awake message sent when the bot turns on.
+*Usage: `v!quote` or application menu command.*
+Sends a random (slightly chaotic) quote.
 ## GitHub
-The bot is open source and can be found on [GitHub](https://github.com/starlii10/testing-discord-bot/).
+My code is open source and can be found on [GitHub](https://github.com/starlii10/vivia/)!

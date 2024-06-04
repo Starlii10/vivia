@@ -3,7 +3,6 @@
 import sys
 import discord
 from discord.ext import tasks, commands
-import requests
 import json
 from datetime import datetime
 import dotenv
@@ -36,10 +35,7 @@ handler = logging.FileHandler(
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logging.basicConfig(level=logging.INFO)
 
-system("title Navolt's Testing Bot")
-
-
-
+system("title Vivia - " + config['General']['StatusMessage'])
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -55,15 +51,6 @@ async def on_ready():
     Function called when the bot starts up
     """
     await log(f'Logged in as {bot.user}')
-
-    # Start Jelo live pings
-    if config['General']['LivePingsEnabled'] == "True":
-        check_and_notify.start()
-
-    # Send awake message
-    if config['General']['AwakeMessageEnabled'] == "True":
-        awake_channel = bot.get_channel(1246216252276477962) # Awake channel
-        await awake_channel.send("I'm awake! <:jb_yay:1246215956355878993>\n\n" + datetime.now().strftime("%H:%M:%S" + " UTC"))
     
     # Change status
     await bot.change_presence(activity=discord.CustomActivity(name='ntb!help | ' + config['General']['StatusMessage']))
@@ -77,7 +64,7 @@ async def on_member_join(member):
     Function called when a member joins the server
     """
     welcome_channel = bot.get_channel(1246532114266980433) # Welcome channel
-    await welcome_channel.send(member.mention + ", welcome")
+    await welcome_channel.send("Heya, " + member.mention + "! Welcome to the server!")
 
 @bot.event
 async def on_message(message):
@@ -95,22 +82,13 @@ async def on_message(message):
 
 @tree.command(
     name="quote",
-    description="Say a random quote."
+    description="Say a random (slightly chaotic) quote."
 )
 async def quote(interaction):
     with open('quotes.json') as f:
         quotes = json.load(f)
         quote = random.choice(quotes['quotes'])
-        await interaction.response.send(quote)
-
-@bot.command()
-async def GetStarliisAttention(ctx):
-    await log("STARLII!!!")
-    await ctx.send("<@1141181390445101176>")
-
-@bot.command()
-async def awoofy(ctx):
-    await ctx.send("Awoofy mentioned <:jb_yay:1246215956355878993>")
+        await interaction.response.send_message(quote)
 
 async def log(message, severity=logging.INFO):
     """
@@ -127,162 +105,13 @@ async def log(message, severity=logging.INFO):
     await bot.get_channel(1246546976124965015).send(message)
     logging.log(severity, message)
 
-@bot.command()
+@tree.command(
+    name="help",
+    description="Sends a help message, and virtual hugs!"
+)
 async def help(ctx):
     await ctx.author.send(helpMsg)
     await ctx.send(f"Check your DMs {ctx.author.mention}")
-
-@bot.command()
-async def livePings(ctx):
-    # turn on/off live pings (persistent)
-    if await has_bot_permissions(ctx.author):
-        if config['General']['LivePingsEnabled'] == "True":
-            config['General']['LivePingsEnabled'] = "False"
-            with open('config.ini', 'w') as configfile:
-                config.write(configfile)
-            check_and_notify.cancel()
-            await log("Live pings are now off")
-            await ctx.send("Live pings are now off")
-        else:
-            config['General']['LivePingsEnabled'] = "True"
-            with open('config.ini', 'w') as configfile:
-                config.write(configfile)
-            check_and_notify.start()
-            await log("Live pings are now on")
-            await ctx.send("Live pings are now on")
-    else:
-        await ctx.send("You do not have permission to use this command.", ephemeral=True)
-
-@bot.command()
-async def awakeMessage(ctx):
-    # turn on/off awake message (persistent)
-    if await has_bot_permissions(ctx.author):
-        if config['General']['AwakeMessageEnabled'] == "True":
-            config['General']['AwakeMessageEnabled'] = "False"
-            with open('config.ini', 'w') as configfile:
-                config.write(configfile)
-            check_and_notify.cancel()
-            await log("Awake message is now off")
-            await ctx.send("Awake message is now off")
-        else:
-            config['General']['AwakeMessageEnabled'] = "True"
-            with open('config.ini', 'w') as configfile:
-                config.write(configfile)
-            check_and_notify.start()
-            await log("Awake message is now on")
-            await ctx.send("Awake message is now on")
-    else:
-        await ctx.send("You do not have permission to use this command.", ephemeral=True)
-
-@tasks.loop(seconds=10)
-async def check_and_notify():
-    """
-        Sends a message to a channel if the specified Twitch channel is live.
-    """
-
-    # todo: allow for multiple Twitch channels
-
-    check_and_notify.has_sent_message = getattr(check_and_notify, 'has_sent_message', False)
-    
-    if await get_twitch_live('jeloetta'): # Replace "jeloetta" with any Twitch channel name
-        if not check_and_notify.has_sent_message:
-            await log("I'M DOING A DENUO!")
-            channel = bot.get_channel(1243032295481282657)  # Replace with your channel ID
-            await channel.send("Hey @everyone, [Jeloetta](https://twitch.tv/jeloetta) is streaming " + requests.get("https://decapi.me/twitch/game/jeloetta").text + "! They'd be delighted to hang out with you!")
-            # We've sent the message, set the flag
-            check_and_notify.has_sent_message = True
-    else:
-        # Channel went offline, reset the flag
-        check_and_notify.has_sent_message = False
-
-# Gets the live status of the specified Twitch channel
-async def get_twitch_live(channelName):
-    """
-    Retrieves the live status of a Twitch channel.
-
-    Args:
-        channelName (str): The name of the Twitch channel.
-
-    Returns:
-        bool: True if the channel is live, False otherwise. Returns False if an error occurs.
-
-    Notes:
-        This function uses decapi.me to access the Twitch API.
-    """
-    try:
-        result = requests.get("https://decapi.me/twitch/uptime/" + channelName)
-        if(result.ok):
-            if ("offline" in result.text):
-                return False
-            else:
-                return True
-        else:
-            await log("Error: " + str(result.status_code), file=sys.stderr)
-            return False
-    except Exception as e:
-        await log("Error: " + str(e), file=sys.stderr)
-        return False
-
-# Gets info about the specified Twitch channel (returns JSON)
-async def get_stream_info(channelName):
-    """
-    Retrieves information about a Twitch stream.
-
-    Args:
-        channelName (str): The name of the Twitch channel.
-
-    Returns:
-        str: A JSON string containing the stream information. If an error occurs, 
-             the string will contain an error message.
-    """
-    try:
-        # Get the stream info
-        channel = channelName
-
-        game = requests.get("https://decapi.me/twitch/game/" + channelName)
-        if game.ok:
-            game = game.text
-        else:
-            await log("Couldn't get game: " + str(game.status_code), file=sys.stderr)
-            game = "Couldn't get game: " + str(game.status_code)
-
-        title = requests.get("https://decapi.me/twitch/title/" + channelName)
-        if title.ok:
-            title = title.text
-        else:
-            await log("Couldn't get title: " + str(title.status_code), file=sys.stderr)
-            title = "Couldn't get title: " + str(title.status_code)
-
-        viewers = requests.get("https://decapi.me/twitch/viewercount/" + channelName)
-        if viewers.ok:
-            viewers = viewers.text
-        else:
-            await log("Couldn't get viewers: " + str(viewers.status_code), file=sys.stderr)
-            viewers = "Couldn't get viewers: " + str(viewers.status_code)
-            
-        uptime = requests.get("https://decapi.me/twitch/uptime/" + channelName)
-        if uptime.ok:
-            uptime = uptime.text
-        else:
-            await log("Couldn't get uptime: " + str(uptime.status_code), file=sys.stderr)
-            uptime = "Couldn't get uptime: " + str(uptime.status_code)
-
-        # Create a dictionary
-        stream_info = {
-            "channel": channel,
-            "game": game,
-            "title": title,
-            "viewers": viewers,
-            "uptime": uptime
-        }
-
-        # Convert the dictionary to JSON
-        json_data = json.dumps(stream_info)
-        return json_data
-    
-    except Exception as e:
-        await log("Error: " + str(e), file=sys.stderr)
-        return "Error: " + str(e)
 
 @bot.command()
 async def sync(ctx):
@@ -290,7 +119,7 @@ async def sync(ctx):
         await bot.tree.sync()
         await log("Command tree synced")
     else:
-        await ctx.send('You do not have permission to use this command.', ephemeral=True)
+        await ctx.send('You do not have permission to use this command.')
 
 async def has_bot_permissions(user):
     """
