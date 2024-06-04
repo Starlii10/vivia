@@ -1,10 +1,4 @@
 import sys
-
-if sys.argv[1] == "/?":
-    print("Usage: python bot.py")
-    print("To sync commands and run: python bot.py sync")
-    sys.exit(0)
-
 import discord
 from discord.ext import tasks, commands
 from discord import app_commands
@@ -281,7 +275,7 @@ async def get_stream_info(channelName):
 async def sync(ctx):
     if ctx.author.id == 1141181390445101176:
         await bot.tree.sync()
-        await ctx.send('Command tree synced.')
+        await log("Command tree synced")
     else:
         await ctx.send('You do not have permission to use this command.', ephemeral=True)
 
