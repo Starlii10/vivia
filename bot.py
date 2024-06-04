@@ -68,9 +68,6 @@ async def on_ready():
     # Change status
     await bot.change_presence(activity=discord.CustomActivity(name='v!help | ' + config['General']['StatusMessage']))
 
-    # say whatever here
-    await bot.get_channel(1247597054059085954).send("Heya all! I'd like to introduce myself.\nMy name is **Vivia!** It's a pleasure to meet you all.\n\nIf you need any help using my functions, just call me with `v!help` and I'll give more information!")
-
 @bot.event
 async def on_member_join(member):
     """
