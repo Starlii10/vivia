@@ -135,38 +135,44 @@ async def help(ctx):
 @bot.command()
 async def livePings(ctx):
     # turn on/off live pings (persistent)
-    if config['General']['LivePingsEnabled'] == "True":
-        config['General']['LivePingsEnabled'] = "False"
-        with open('config.ini', 'w') as configfile:
-            config.write(configfile)
-        check_and_notify.cancel()
-        await log("Live pings are now off")
-        await ctx.send("Live pings are now off")
+    if has_bot_permissions(ctx.author):
+        if config['General']['LivePingsEnabled'] == "True":
+            config['General']['LivePingsEnabled'] = "False"
+            with open('config.ini', 'w') as configfile:
+                config.write(configfile)
+            check_and_notify.cancel()
+            await log("Live pings are now off")
+            await ctx.send("Live pings are now off")
+        else:
+            config['General']['LivePingsEnabled'] = "True"
+            with open('config.ini', 'w') as configfile:
+                config.write(configfile)
+            check_and_notify.start()
+            await log("Live pings are now on")
+            await ctx.send("Live pings are now on")
     else:
-        config['General']['LivePingsEnabled'] = "True"
-        with open('config.ini', 'w') as configfile:
-            config.write(configfile)
-        check_and_notify.start()
-        await log("Live pings are now on")
-        await ctx.send("Live pings are now on")
+        await ctx.send("You do not have permission to use this command.", ephemeral=True)
 
 @bot.command()
 async def awakeMessage(ctx):
     # turn on/off awake message (persistent)
-    if config['General']['AwakeMessageEnabled'] == "True":
-        config['General']['AwakeMessageEnabled'] = "False"
-        with open('config.ini', 'w') as configfile:
-            config.write(configfile)
-        check_and_notify.cancel()
-        await log("Awake message is now off")
-        await ctx.send("Awake message is now off")
+    if has_bot_permissions(ctx.author):
+        if config['General']['AwakeMessageEnabled'] == "True":
+            config['General']['AwakeMessageEnabled'] = "False"
+            with open('config.ini', 'w') as configfile:
+                config.write(configfile)
+            check_and_notify.cancel()
+            await log("Awake message is now off")
+            await ctx.send("Awake message is now off")
+        else:
+            config['General']['AwakeMessageEnabled'] = "True"
+            with open('config.ini', 'w') as configfile:
+                config.write(configfile)
+            check_and_notify.start()
+            await log("Awake message is now on")
+            await ctx.send("Awake message is now on")
     else:
-        config['General']['AwakeMessageEnabled'] = "True"
-        with open('config.ini', 'w') as configfile:
-            config.write(configfile)
-        check_and_notify.start()
-        await log("Awake message is now on")
-        await ctx.send("Awake message is now on")
+        await ctx.send("You do not have permission to use this command.", ephemeral=True)
 
 @tasks.loop(seconds=10)
 async def check_and_notify():
@@ -287,6 +293,15 @@ async def sync(ctx):
         await ctx.send('You do not have permission to use this command.', ephemeral=True)
 
 def has_bot_permissions(user):
+    """
+    Checks if the specified user has bot permissions.
+
+    Args:
+        user (discord.User): The user to check.
+
+    Returns:
+        bool: True if the user has bot permissions, False otherwise.
+    """
     with open('permissions.json') as f:
         users = json.load(f)
     return user.id in users
