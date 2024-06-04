@@ -1,6 +1,6 @@
-# testing-discord-bot
+# Vivia
 
-A totally sane person messes with discord.py
+A friendly companion for your Discord server.
 
 ## How to Run
 
