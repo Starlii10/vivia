@@ -63,6 +63,9 @@ async def on_ready():
     if config['General']['AwakeMessageEnabled'] == "True":
         awake_channel = bot.get_channel(1246216252276477962) # Awake channel
         await awake_channel.send("I'm awake! <:jb_yay:1246215956355878993>\n\n" + datetime.now().strftime("%H:%M:%S" + " UTC"))
+    
+    # Change status
+    await bot.change_presence(activity=discord.CustomActivity(name='Heya!' ,emoji='👋'))
 
     # say whatever here
     # await bot.get_channel(1243032295481282657).send("yes")
