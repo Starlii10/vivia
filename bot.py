@@ -65,7 +65,7 @@ async def on_ready():
         await awake_channel.send("I'm awake! <:jb_yay:1246215956355878993>\n\n" + datetime.now().strftime("%H:%M:%S" + " UTC"))
     
     # Change status
-    await bot.change_presence(activity=discord.CustomActivity(name='Heya!' ,emoji='👋'))
+    await bot.change_presence(activity=discord.CustomActivity(name='Heya!' ,emoji='<:jb_yay:1246215956355878993>'))
 
     # say whatever here
     # await bot.get_channel(1243032295481282657).send("yes")
