@@ -135,7 +135,7 @@ async def help(ctx):
 @bot.command()
 async def livePings(ctx):
     # turn on/off live pings (persistent)
-    if has_bot_permissions(ctx.author):
+    if await has_bot_permissions(ctx.author):
         if config['General']['LivePingsEnabled'] == "True":
             config['General']['LivePingsEnabled'] = "False"
             with open('config.ini', 'w') as configfile:
@@ -156,7 +156,7 @@ async def livePings(ctx):
 @bot.command()
 async def awakeMessage(ctx):
     # turn on/off awake message (persistent)
-    if has_bot_permissions(ctx.author):
+    if await has_bot_permissions(ctx.author):
         if config['General']['AwakeMessageEnabled'] == "True":
             config['General']['AwakeMessageEnabled'] = "False"
             with open('config.ini', 'w') as configfile:
@@ -292,7 +292,7 @@ async def sync(ctx):
     else:
         await ctx.send('You do not have permission to use this command.', ephemeral=True)
 
-def has_bot_permissions(user):
+async def has_bot_permissions(user):
     """
     Checks if the specified user has bot permissions.
 
@@ -304,6 +304,6 @@ def has_bot_permissions(user):
     """
     with open('permissions.json') as f:
         users = json.load(f)
-    return user.id in users
+    return user.id in users['permissions']
 
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
