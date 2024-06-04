@@ -278,18 +278,11 @@ async def get_stream_info(channelName):
         return "Error: " + str(e)
 
 @bot.command()
-async def sync(interaction):
-    if interaction.user.id == 1141181390445101176:
+async def sync(ctx):
+    if ctx.author.id == 1141181390445101176:
         await bot.tree.sync()
-        print('Command tree synced.')
+        await ctx.send('Command tree synced.')
     else:
-        await interaction.response.send_message('You do not have permission to use this command.', ephemeral=True)
-
-async def sync():
-    await tree.sync()
+        await ctx.send('You do not have permission to use this command.', ephemeral=True)
 
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
-
-if sys.argv[1] == "sync":
-    log("Syncing commands")
-    sync()
