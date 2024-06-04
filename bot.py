@@ -1,8 +1,6 @@
 import sys
 
-print(sys.argv)
-
-if "/?" in sys.argv:
+if sys.argv[1] == "/?":
     print("Usage: python bot.py")
     print("To sync commands and run: python bot.py sync")
     sys.exit(0)
@@ -284,6 +282,6 @@ async def sync():
 
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
 
-if "sync" in sys.argv:
+if sys.argv[1] == "sync":
     log("Syncing commands")
     sync()
