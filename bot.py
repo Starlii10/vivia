@@ -1,7 +1,8 @@
+# this is a whole hecking lot of imports, and yes, every single one is used
+
 import sys
 import discord
 from discord.ext import tasks, commands
-from discord import app_commands
 import requests
 import json
 from datetime import datetime
@@ -284,5 +285,10 @@ async def sync(ctx):
         await log("Command tree synced")
     else:
         await ctx.send('You do not have permission to use this command.', ephemeral=True)
+
+def has_bot_permissions(user):
+    with open('permissions.json') as f:
+        users = json.load(f)
+    return user.id in users
 
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
