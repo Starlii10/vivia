@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
     This is the primary script for Vivia.
 
