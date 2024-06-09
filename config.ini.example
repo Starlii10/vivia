@@ -2,6 +2,7 @@
 LivePingsEnabled = True
 AwakeMessageEnabled = True
 StatusMessage = Heya!
+Prefix = v!
 
 [Logging]
 Filename = latest.log

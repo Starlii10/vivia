@@ -53,7 +53,7 @@ print("Preparing to start up!")
 
 intents = discord.Intents.default()
 intents.message_content = True
-bot = commands.Bot(command_prefix='v!', intents=intents)
+bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
 bot.remove_command("help")
 tree = bot.tree
 
@@ -68,7 +68,7 @@ async def on_ready():
     await log(f'I\'m awake! Discord says my username is {bot.user}.')
     
     # Change status
-    await bot.change_presence(activity=discord.CustomActivity(name='v!help | ' + config['General']['StatusMessage']))
+    await bot.change_presence(activity=discord.CustomActivity(name=f'{config["General"]["Prefix"]}help | ' + config['General']['StatusMessage']))
 
 @bot.event
 async def on_member_join(member):

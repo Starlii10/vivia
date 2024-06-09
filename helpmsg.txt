@@ -1,9 +1,9 @@
 # Heya!
 My name's Vivia, and it's a pleasure to meet you!
-My command prefix is `v!`. Put that in front of any message to direct it to me. I'll make sure I notice!
+My command prefix is usually `v!`. Put that in front of any message to direct it to me. I'll make sure I notice!
 Alternatively, some of my functions can be activated through the application menu. I'll ALWAYS notice those!
 ## Commands
-These are some of the things that I am capable of doing for you. 
+These are some of the things that I am capable of doing for you. Just ask!
 ### help
 *Usage: `v!help` or application menu command.*
 Sends this message you're reading right now!
