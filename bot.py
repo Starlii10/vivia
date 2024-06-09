@@ -182,7 +182,6 @@ async def say(interaction, message: str):
 @tree.command(
     name="addquote",
     description="Adds a quote to the list."
-    
 )
 async def addquote(interaction, quote: str, author: str, date: str):
     """
