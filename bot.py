@@ -184,25 +184,26 @@ async def say(interaction, message: str):
     description="Adds a quote to the list."
     
 )
-async def addquote(interaction, quote: str, author: str):
+async def addquote(interaction, quote: str, author: str, date: str):
     """
     Adds a quote to the list.
 
     ## Args:
         - quote (str): The quote to add.
         - author (str): The author of the quote.
+        - date (str): The date of the quote.
     ## Notes:
         - Only users with bot permissions can use this command.
-        - The quote will be formatted as `"quote" - author`.
+        - The quote will be formatted as `"quote" - author, date`.
     """
     if has_bot_permissions(interaction.user):
         with open('quotes.json') as f:
             quotes = json.load(f)
-            quotes['quotes'].append(f'"{quote}" - {author}')
+            quotes['quotes'].append(f'"{quote}" - {author}, {date}')
         with open('quotes.json', 'w') as f:
             json.dump(quotes, f)
-        await interaction.response.send_message(f'"{quote}" - {author} was added to the list.')
-        await log(f"{interaction.user} added {quote} - {author} to the list")
+        await interaction.response.send_message(f'"{quote}" - {author}, {date} was added to the list.')
+        await log(f"{interaction.user} added {quote} - {author}, {date} to the list")
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
