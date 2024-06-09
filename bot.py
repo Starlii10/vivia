@@ -179,5 +179,32 @@ async def say(interaction, message: str):
     else:
         await interaction.response.send_message("That's for the bot owner, not random users...", ephemeral=True)
 
+@tree.command(
+    name="addquote",
+    description="Adds a quote to the list."
+    
+)
+async def addquote(interaction, quote: str, author: str):
+    """
+    Adds a quote to the list.
+
+    ## Args:
+        - quote (str): The quote to add.
+        - author (str): The author of the quote.
+    ## Notes:
+        - Only users with bot permissions can use this command.
+        - The quote will be formatted as `"quote" - author`.
+    """
+    if has_bot_permissions(interaction.user):
+        with open('quotes.json') as f:
+            quotes = json.load(f)
+            quotes['quotes'].append(f'"{quote}" - {author}')
+        with open('quotes.json', 'w') as f:
+            json.dump(quotes, f)
+        await interaction.response.send_message(f'"{quote}" - {author} was added to the list.')
+        await log(f"{interaction.user} added {quote} - {author} to the list")
+    else:
+        await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
+
 # Run
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
