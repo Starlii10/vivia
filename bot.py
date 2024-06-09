@@ -110,12 +110,12 @@ async def log(message, severity=logging.INFO):
     """
     Outputs a message to the log.
 
-    Args:
-        message (str): The message to output.
-        severity (int): The severity of the message (defaults to Info).
+    ## Args:
+        - message (str): The message to output.
+        - severity (int): The severity of the message (defaults to Info).
 
-    Notes:
-        This function will output to the console, log file, and to a Discord channel.
+    ## Notes:
+        - This function will output to the console, log file, and to a Discord channel.
     """
     print(message)
     await bot.get_channel(int(config['Channels']['LoggingChannel'])).send(message)
@@ -130,12 +130,16 @@ async def help(interaction):
     await interaction.response.send_message(f"Do you need me, {interaction.user.display_name}? I just sent you a message with some helpful information.", ephemeral=True)
 
 @bot.command()
+@tree.command(
+    name="sync",
+    description="Syncs the command tree.",
+)
 async def sync(ctx):
     """
     Syncs the command tree.
 
-    Notes:
-        Only the bot owner can use this command.
+    ## Notes:
+        Only users with bot permissions can use this command.
     """
     if ctx.author.id == int(config['General']['Owner']):
         await bot.tree.sync()
@@ -148,15 +152,37 @@ async def has_bot_permissions(user):
     """
     Checks if the specified user has bot permissions.
 
-    Args:
-        user (discord.User): The user to check.
+    ## Args:
+        - user (discord.User): The user to check.
 
-    Returns:
-        bool: True if the user has bot permissions, False otherwise.
+    ## Returns:
+        - bool: True if the user has bot permissions, False otherwise.
+    ## Notes:
+        - This always returns true for the bot owner specified in config.ini.
     """
     with open('permissions.json') as f:
         users = json.load(f)
-    return user.id in users['permissions']
+    return user.id in users['permissions'] or user.id == int(config['General']['Owner'])
+
+@tree.command(
+    name="say",
+    description="Makes Vivia say something."
+)
+@bot.command
+async def say(interaction, message: str):
+    """
+    Makes Vivia say something.
+
+    ## Args:
+        - message (str): The message to say.
+    ## Notes:
+        - Only the bot owner can use this command.
+    """
+    if interaction.user.id == int(config['General']['Owner']):
+        await interaction.response.send_message(message)
+        await log(f"{interaction.user} said {message} as Vivia")
+    else:
+        await interaction.response.send_message("That's for the bot owner, not random users...", ephemeral=True)
 
 # Run
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
