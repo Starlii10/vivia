@@ -130,10 +130,6 @@ async def help(interaction):
     await interaction.response.send_message(f"Do you need me, {interaction.user.display_name}? I just sent you a message with some helpful information.", ephemeral=True)
 
 @bot.command()
-@tree.command(
-    name="sync",
-    description="Syncs the command tree.",
-)
 async def sync(ctx):
     """
     Syncs the command tree.
@@ -168,7 +164,6 @@ async def has_bot_permissions(user):
     name="say",
     description="Makes Vivia say something."
 )
-@bot.command
 async def say(interaction, message: str):
     """
     Makes Vivia say something.
