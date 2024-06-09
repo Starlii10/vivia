@@ -22,8 +22,9 @@ import random
 from os import system
 import configparser
 import logging
-config = configparser.ConfigParser()
 
+# Config loading
+config = configparser.ConfigParser()
 try:
     config.read("config.ini")
 except:
@@ -36,9 +37,9 @@ except:
         print("I couldn't create a config file. Is something wrong with config.ini.example?")
         sys.exit(1)
 else:
-    print("I found my configuration file. One moment...")
+    print("I found my configuration file!")
 
-
+# Set up logging
 handler = logging.FileHandler(
     filename=config['Logging']['Filename'],
     encoding='utf-8',
@@ -48,15 +49,14 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logging.basicConfig(level=logging.INFO)
 
 system("title Vivia - " + config['General']['StatusMessage'])
-
 print("Preparing to start up!")
 
+# Get ready to run the bot
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
 bot.remove_command("help")
 tree = bot.tree
-
 helpMsg = open("helpmsg.txt", "r").read()
 
 @bot.event
@@ -158,4 +158,5 @@ async def has_bot_permissions(user):
         users = json.load(f)
     return user.id in users['permissions']
 
+# Run
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
