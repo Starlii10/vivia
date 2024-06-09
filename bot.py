@@ -175,7 +175,7 @@ async def say(interaction, message: str):
     """
     if interaction.user.id == int(config['General']['Owner']):
         await interaction.response.send_message(message)
-        await log(f"{interaction.user} said {message} as Vivia")
+        await log(f"{interaction.user} said \"{message}\" as Vivia")
     else:
         await interaction.response.send_message("That's for the bot owner, not random users...", ephemeral=True)
 
@@ -202,7 +202,7 @@ async def addquote(interaction, quote: str, author: str, date: str):
         with open('quotes.json', 'w') as f:
             json.dump(quotes, f)
         await interaction.response.send_message(f'"{quote}" - {author}, {date} was added to the list.')
-        await log(f"{interaction.user} added {quote} - {author}, {date} to the list")
+        await log(f"{interaction.user} added \"{quote} - {author}, {date}\" to the list")
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
