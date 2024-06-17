@@ -40,13 +40,17 @@ else:
     print("I found my configuration file!")
 
 # Set up logging
-handler = logging.FileHandler(
-    filename=config['Logging']['Filename'],
-    encoding='utf-8',
-    mode='w'
-)
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logging.basicConfig(level=logging.INFO)
+try:
+    handler = logging.FileHandler(
+        filename=config['Logging']['Filename'],
+        encoding='utf-8',
+        mode='w'
+    )
+    handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+    logging.basicConfig(level=logging.INFO)
+except:
+    print("Something's wrong with the logging file. I'm going to ignore it.")
+    handler = logging.StreamHandler(sys.stdout)
 
 system("title Vivia - " + config['General']['StatusMessage'])
 print("Preparing to start up!")
@@ -102,9 +106,27 @@ async def quote(interaction):
     Sends a random (slightly chaotic) quote.
     """
     with open('quotes.json') as f:
-        quotes = json.load(f)
-        quote = random.choice(quotes['quotes'])
-        await interaction.response.send_message(quote)
+        with open('custom-quotes.json') as g:
+            default_quotes = json.load(f)
+            custom_quotes = json.load(g)
+            quotes = default_quotes['quotes'] + custom_quotes['quotes']
+            quote = random.choice(quotes)
+            await interaction.response.send_message(quote)
+
+@tree.command(
+    name="listquotes",
+    description="List all quotes."
+)
+async def listquotes(interaction):
+    """
+    Sends a list of all quotes.
+    """
+    with open('quotes.json') as f:
+        with open('custom-quotes.json') as g:
+            default_quotes = json.load(f)
+            custom_quotes = json.load(g)
+            quotes = default_quotes['quotes'] + custom_quotes['quotes']
+            await interaction.response.send_message(quotes)
 
 async def log(message, severity=logging.INFO):
     """
@@ -194,12 +216,13 @@ async def addquote(interaction, quote: str, author: str, date: str):
     ## Notes:
         - Only users with bot permissions can use this command.
         - The quote will be formatted as `"quote" - author, date`.
+        - This adds the quote to the custom quote list.
     """
     if has_bot_permissions(interaction.user):
-        with open('quotes.json') as f:
+        with open('custom-quotes.json') as f:
             quotes = json.load(f)
             quotes['quotes'].append(f'"{quote}" - {author}, {date}')
-        with open('quotes.json', 'w') as f:
+        with open('custom-quotes.json', 'w') as f:
             json.dump(quotes, f)
         await interaction.response.send_message(f'"{quote}" - {author}, {date} was added to the list.')
         await log(f"{interaction.user} added \"{quote} - {author}, {date}\" to the list")

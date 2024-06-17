@@ -14,5 +14,7 @@ Note that this doesn't appear in the application menu. You'll have to use `v!syn
 Make me say anything you want! But only for the bot owner.
 ### addquote
 Adds a quote that I can say with the quote command!
+### listquotes
+Lists every single quote I can say. Yes, every single one.
 ## GitHub
 My code is open source and can be found on [GitHub](https://github.com/starlii10/vivia/)! If you want to, you can even run your own version of me!
