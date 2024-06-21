@@ -62,6 +62,7 @@ bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
 bot.remove_command("help")
 tree = bot.tree
 helpMsg = open("helpmsg.txt", "r").read()
+channelmakerHelpMsg = open("channelmakerhelpmsg.txt", "r").read()
 
 @bot.event
 async def on_ready():
@@ -258,7 +259,12 @@ async def removequote(interaction, quote: str):
     name="channelmaker",
     description="Makes a bunch of channels from JSON."
 )
-async def channelmaker(interaction, channel_config: str):
+@commands.choices(options = [
+    commands.Choice(name="text",value="Makes text channels."),
+    commands.Choice(name="voice",value="Makes voice channels."),
+    commands.Choice(name="forum",value="Makes forum channels."),
+])
+async def channelmaker(interaction, channel_config: str, type: str="text"):
     """
     Makes a bunch of channels from JSON.
 
@@ -269,11 +275,20 @@ async def channelmaker(interaction, channel_config: str):
         try:
             channels = json.loads(channel_config) # Channels is a list of categories, each category is a list of channels
             for category in channels['categories']:
-                # Create the category
-                target = await interaction.guild.create_category(category, reason=f"Created by /channelmaker - run by {interaction.user}")
+                if not category in interaction.guild.categories.name:
+                    # Create the category
+                    target = await interaction.guild.create_category(category, reason=f"Created by /channelmaker - run by {interaction.user}")
+                else:
+                    target = interaction.guild.categories.get(category)
                 for channel in channels['categories'][category]:
                     # Create the channel
-                    await interaction.guild.create_text_channel(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
+                    match type:
+                        case "text":
+                            await interaction.guild.create_text_channel(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
+                        case "voice":
+                            await interaction.guild.create_voice_channel(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
+                        case "forum":
+                            await interaction.guild.create_forum(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
                     await log(f"{interaction.user} created {channel} in {category}")
             await interaction.response.send_message("All done!")
         except Exception as e:
@@ -282,5 +297,15 @@ async def channelmaker(interaction, channel_config: str):
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
+@tree.command(
+    name="channelmaker help",
+    description="Sends a help message for the channelmaker tool."
+)
+async def channelmaker(interaction):
+    """
+    Sends a help message for the channelmaker tool.
+    """
+    await interaction.user.send(channelmakerHelpMsg)
+    await interaction.response.send_message(f"Do you need me, {interaction.user.display_name}? I just sent you a message with some helpful information.", ephemeral=True)
 # Run
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)

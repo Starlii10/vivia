@@ -26,7 +26,7 @@ Lists every single quote I can say. Yes, every single one.
 
 ## Tools
 ### channelmaker
-Make a whole bunch of channels using JSON!
+Make a whole bunch of channels using JSON! Use /channelmaker help for extra guidance.
 
 ## GitHub
 My code is open source and can be found on [GitHub](https://github.com/starlii10/vivia/)! If you want to, you can even run your own version of me!
