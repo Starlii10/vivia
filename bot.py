@@ -14,7 +14,7 @@
 
 import sys
 import discord
-from discord.ext import tasks, commands
+from discord.ext import tasks, commands, app_commands
 import json
 from datetime import datetime
 import dotenv
@@ -57,7 +57,7 @@ print("Preparing to start up!")
 
 # Get ready to run the bot
 intents = discord.Intents.default()
-intents.message_content = True
+intents.message_content = True # will need to verify at 100 servers to get this working, but for now it's fine
 bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
 bot.remove_command("help")
 tree = bot.tree
@@ -259,10 +259,10 @@ async def removequote(interaction, quote: str):
     name="channelmaker",
     description="Makes a bunch of channels from JSON."
 )
-@bot.commands.choices(options = [
-    bot.commands.Choice(name="text",value="Makes text channels."),
-    bot.commands.Choice(name="voice",value="Makes voice channels."),
-    bot.commands.Choice(name="forum",value="Makes forum channels."),
+@app_commands.choices(options = [
+    app_commands.Choice(name="text",value="Makes text channels."),
+    app_commands.Choice(name="voice",value="Makes voice channels."),
+    app_commands.Choice(name="forum",value="Makes forum channels."),
 ])
 async def channelmaker(interaction, channel_config: str, type: str="text"):
     """
