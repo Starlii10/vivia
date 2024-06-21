@@ -263,9 +263,9 @@ channelMakerCmds = app_commands.Group(name="channelmaker", description="Makes ch
     description="Makes a bunch of channels from JSON."
 )
 @app_commands.choices(type=[
-    app_commands.Choice(name="text",value="Makes text channels."),
-    app_commands.Choice(name="voice",value="Makes voice channels."),
-    app_commands.Choice(name="forum",value="Makes forum channels."),
+    app_commands.Choice(name="text",value="text"),
+    app_commands.Choice(name="voice",value="voice"),
+    app_commands.Choice(name="forum",value="forum"),
 ])
 async def channelmaker(interaction, channel_config: str, type: str="text"):
     """
@@ -278,13 +278,14 @@ async def channelmaker(interaction, channel_config: str, type: str="text"):
         try:
             channels = json.loads(channel_config) # Channels is a list of categories, each category is a list of channels
             for category in channels['categories']:
-                if not category in interaction.guild.categories.name:
+                if not category in interaction.guild.categories:
                     # Create the category
                     target = await interaction.guild.create_category(category, reason=f"Created by /channelmaker - run by {interaction.user}")
                 else:
                     target = interaction.guild.categories.get(category)
                 for channel in channels['categories'][category]:
                     # Create the channel
+                    await log(type)
                     match type:
                         case "text":
                             await interaction.guild.create_text_channel(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
