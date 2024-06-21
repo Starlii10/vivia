@@ -229,5 +229,53 @@ async def addquote(interaction, quote: str, author: str, date: str):
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
+@tree.command(
+    name="removequote",
+    description="Removes a quote from the list."
+)
+async def removequote(interaction, quote: str):
+    """
+    Removes a quote from the list.
+
+    ## Args:
+        - quote (str): The quote to remove.
+    ## Notes:
+        - Only users with bot permissions can use this command.
+        - This removes the quote from the custom quote list.
+    """
+    if has_bot_permissions(interaction.user):
+        with open('custom-quotes.json') as f:
+            quotes = json.load(f)
+            quotes['quotes'].remove(quote)
+        with open('custom-quotes.json', 'w') as f:
+            json.dump(quotes, f)
+        await interaction.response.send_message(f'"{quote}" was removed from the list.')
+        await log(f"{interaction.user} removed \"{quote}\" from the list")
+    else:
+        await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
+
+@tree.command(
+    name="channelmaker",
+    description="Makes a bunch of channels from JSON."
+)
+async def channelmaker(interaction, config: str):
+    """
+    Makes a bunch of channels from JSON.
+
+    ## Notes:
+        - Only users with bot permissions can use this command.
+    """
+    if has_bot_permissions(interaction.user):
+        try:
+            channels = json.load(config)
+            for channel in channels['channels']:
+                await interaction.guild.create_text_channel(channel, reason=f"Created by /channelmaker - run by {interaction.user}")
+                await log(f"{interaction.user} created {channel}")
+                await interaction.response.send_message(f"Made {channel} ({channels['channels'].index(channel) + 1}/{len(channels['channels'])}).")
+        except Exception as e:
+            await interaction.response.send_message("Couldn't make the channels: " + str(e), ephemeral=True)
+    else:
+        await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
+
 # Run
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
