@@ -259,10 +259,10 @@ async def removequote(interaction, quote: str):
     name="channelmaker",
     description="Makes a bunch of channels from JSON."
 )
-@commands.choices(options = [
-    commands.Choice(name="text",value="Makes text channels."),
-    commands.Choice(name="voice",value="Makes voice channels."),
-    commands.Choice(name="forum",value="Makes forum channels."),
+@bot.commands.choices(options = [
+    bot.commands.Choice(name="text",value="Makes text channels."),
+    bot.commands.Choice(name="voice",value="Makes voice channels."),
+    bot.commands.Choice(name="forum",value="Makes forum channels."),
 ])
 async def channelmaker(interaction, channel_config: str, type: str="text"):
     """
