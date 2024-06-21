@@ -166,7 +166,7 @@ async def sync(ctx):
     else:
         await ctx.send('That\'s for the bot owner, not random users...')
 
-async def has_bot_permissions(user):
+def has_bot_permissions(user):
     """
     Checks if the specified user has bot permissions.
 
@@ -258,7 +258,7 @@ async def removequote(interaction, quote: str):
     name="channelmaker",
     description="Makes a bunch of channels from JSON."
 )
-async def channelmaker(interaction, config: str):
+async def channelmaker(interaction, channel_config: str):
     """
     Makes a bunch of channels from JSON.
 
@@ -267,14 +267,18 @@ async def channelmaker(interaction, config: str):
     """
     if has_bot_permissions(interaction.user):
         try:
-            channels = json.load(config)
-            for category in channels['channels']:
-                for channel in channels['channels'][category]:
-                    await interaction.guild.create_text_channel(channel, category=category, reason=f"Created by /channelmaker - run by {interaction.user}")
+            channels = json.loads(channel_config) # Channels is a list of categories, each category is a list of channels
+            for category in channels['categories']:
+                # Create the category
+                target = await interaction.guild.create_category(category, reason=f"Created by /channelmaker - run by {interaction.user}")
+                for channel in channels['categories'][category]:
+                    # Create the channel
+                    await interaction.guild.create_text_channel(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
                     await log(f"{interaction.user} created {channel} in {category}")
-                    await interaction.response.send_message(f"Made {channel} ({channels['channels'].index(channel) + 1}/{len(channels['channels'])}).")
+            await interaction.response.send_message("All done!")
         except Exception as e:
             await interaction.response.send_message("Couldn't make the channels: " + str(e), ephemeral=True)
+            await log(e)
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
