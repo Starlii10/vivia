@@ -14,7 +14,8 @@
 
 import sys
 import discord
-from discord.ext import tasks, commands, app_commands
+from discord import app_commands
+from discord.ext import tasks, commands
 import json
 from datetime import datetime
 import dotenv
