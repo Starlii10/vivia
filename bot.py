@@ -256,11 +256,13 @@ async def removequote(interaction, quote: str):
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
+channelMakerCmds = app_commands.Group(name="channelmaker", description="Makes channels from JSON.")
+
 @tree.command(
     name="channelmaker",
     description="Makes a bunch of channels from JSON."
 )
-@app_commands.choices(options = [
+@app_commands.choices(type=[
     app_commands.Choice(name="text",value="Makes text channels."),
     app_commands.Choice(name="voice",value="Makes voice channels."),
     app_commands.Choice(name="forum",value="Makes forum channels."),
@@ -298,8 +300,8 @@ async def channelmaker(interaction, channel_config: str, type: str="text"):
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
-@tree.command(
-    name="channelmaker help",
+@channelMakerCmds.command(
+    name="help",
     description="Sends a help message for the channelmaker tool."
 )
 async def channelmaker(interaction):
