@@ -268,10 +268,11 @@ async def channelmaker(interaction, config: str):
     if has_bot_permissions(interaction.user):
         try:
             channels = json.load(config)
-            for channel in channels['channels']:
-                await interaction.guild.create_text_channel(channel, reason=f"Created by /channelmaker - run by {interaction.user}")
-                await log(f"{interaction.user} created {channel}")
-                await interaction.response.send_message(f"Made {channel} ({channels['channels'].index(channel) + 1}/{len(channels['channels'])}).")
+            for category in channels['channels']:
+                for channel in channels['channels'][category]:
+                    await interaction.guild.create_text_channel(channel, category=category, reason=f"Created by /channelmaker - run by {interaction.user}")
+                    await log(f"{interaction.user} created {channel} in {category}")
+                    await interaction.response.send_message(f"Made {channel} ({channels['channels'].index(channel) + 1}/{len(channels['channels'])}).")
         except Exception as e:
             await interaction.response.send_message("Couldn't make the channels: " + str(e), ephemeral=True)
     else:
