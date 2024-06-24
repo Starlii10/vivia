@@ -273,8 +273,11 @@ async def channelmaker(interaction, channel_config: str, type: str="text"):
 
     ## Notes:
         - Only users with bot permissions can use this command.
+        - The channelmaker JSON configuration looks like this: {"categories":{"test":["test"]}}
+        - For more info, read the channelmakerhelpmsg.txt file or run /help channelmaker.
     """
     if has_bot_permissions(interaction.user):
+        await interaction.response.send_message("Making channels! (This may take a moment.)")
         try:
             channels = json.loads(channel_config) # Channels is a list of categories, each category is a list of channels
             for category in channels['categories']:
@@ -294,9 +297,8 @@ async def channelmaker(interaction, channel_config: str, type: str="text"):
                         case "forum":
                             await interaction.guild.create_forum(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
                     await log(f"{interaction.user} created {channel} in {category}")
-            await interaction.response.send_message("All done!")
         except Exception as e:
-            await interaction.response.send_message("Couldn't make the channels: " + str(e), ephemeral=True)
+            await interaction.followup.send(f"Couldn't make the channels: {str(e)}")
             await log(e)
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
