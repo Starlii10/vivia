@@ -17,7 +17,6 @@ import discord
 from discord import app_commands
 from discord.ext import tasks, commands
 import json
-from datetime import datetime
 import dotenv
 import random
 from os import system
@@ -185,25 +184,6 @@ def has_bot_permissions(user):
     return user.id in users['permissions'] or user.id == int(config['General']['Owner'])
 
 @tree.command(
-    name="say",
-    description="Makes Vivia say something."
-)
-async def say(interaction, message: str):
-    """
-    Makes Vivia say something.
-
-    ## Args:
-        - message (str): The message to say.
-    ## Notes:
-        - Only the bot owner can use this command.
-    """
-    if interaction.user.id == int(config['General']['Owner']):
-        await interaction.response.send_message(message)
-        await log(f"{interaction.user} said \"{message}\" as Vivia")
-    else:
-        await interaction.response.send_message("That's for the bot owner, not random users...", ephemeral=True)
-
-@tree.command(
     name="addquote",
     description="Adds a quote to the list."
 )
@@ -313,5 +293,55 @@ async def channelmaker(interaction):
     """
     await interaction.user.send(channelmakerHelpMsg)
     await interaction.response.send_message(f"Do you need me, {interaction.user.display_name}? I just sent you a message with some helpful information.", ephemeral=True)
+
+@tree.command(
+    name="namegenerator",
+    description="Generator for names."
+)
+@app_commands.choices(type=[
+    app_commands.Choice(name="first",value="first"),
+    app_commands.Choice(name="middle",value="middle"),
+    app_commands.Choice(name="last",value="last"),
+    app_commands.Choice(name="full",value="full"),
+])
+@app_commands.choices(gender=[
+    app_commands.Choice(name="male",value="male"),
+    app_commands.Choice(name="female",value="female"),
+    app_commands.Choice(name="none",value="none"),
+])
+async def namegenerator(interaction, type: str="first", gender: str="none"):
+    """
+    Generator for names.
+    """
+    name = generate_name(type, gender)
+    await interaction.response.send_message(name)
+    await log(f"{interaction.user} generated {name}")
+
+def generate_name(type, gender):
+    with open('names.json') as f:
+        names = json.load(f)
+        all_names = names['first']['male'] + names['first']['female']
+        match type:
+            case "first":
+                match gender:
+                    case "male":
+                        return names['first']['male'][random.randint(0, len(names['first']['male']) - 1)]
+                    case "female":
+                        return names['first']['female'][random.randint(0, len(names['first']['female']) - 1)]
+                    case _:
+                        return all_names[random.randint(0, len(all_names) - 1)]
+            case "middle":
+                return names['middle'][random.randint(0, len(names['middle']) - 1)]
+            case "last":
+                return names['last'][random.randint(0, len(names['last']) - 1)]
+            case "full":
+                match gender:
+                    case "male":
+                        return names['first']['male'][random.randint(0, len(names['first']['male']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
+                    case "female":
+                        return names['first']['female'][random.randint(0, len(names['first']['female']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
+                    case _:
+                        return all_names[random.randint(0, len(all_names) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
+
 # Run
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
