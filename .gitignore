@@ -3,4 +3,5 @@
 *.log
 testing
 .vscode
+.venv
 custom-quotes.json
