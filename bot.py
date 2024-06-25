@@ -12,6 +12,7 @@
     Have a great time using Vivia!
 """
 
+import datetime
 import sys
 import discord
 from discord import app_commands
@@ -22,6 +23,7 @@ import random
 from os import system
 import configparser
 import logging
+import extras.viviatools as viviaTools
 
 # Config loading
 config = configparser.ConfigParser()
@@ -42,7 +44,7 @@ else:
 # Set up logging
 try:
     handler = logging.FileHandler(
-        filename=config['Logging']['Filename'],
+        filename="data/logs/" + datetime.datetime.now().strftime("%Y-%m-%d") + ".log",
         encoding='utf-8',
         mode='w'
     )
@@ -57,12 +59,12 @@ print("Preparing to start up!")
 
 # Get ready to run the bot
 intents = discord.Intents.default()
-intents.message_content = True # will need to verify at 100 servers to get this working, but for now it's fine
+intents.message_content = True # will need to verify at 100 servers
 bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
 bot.remove_command("help")
 tree = bot.tree
-helpMsg = open("helpmsg.txt", "r").read()
-channelmakerHelpMsg = open("channelmakerhelpmsg.txt", "r").read()
+helpMsg = open("data/help/helpmsg.txt", "r").read()
+channelmakerHelpMsg = open("data/help/channelmakerhelpmsg.txt", "r").read()
 
 @bot.event
 async def on_ready():
@@ -95,19 +97,17 @@ async def on_message(message):
     # Make sure Vivia doesn't respond to herself
     if message.author == bot.user:
         return
-#    if "regina" in message.content:
-#        await message.channel.send("\"BRO, STOP CALLING US YOU DONT EVEN WORK HERE?\"\n\nbut really RC is great")
 
 @tree.command(
     name="quote",
     description="Say a random (slightly chaotic) quote."
 )
-async def quote(interaction):
+async def quote(interaction: discord.Interaction):
     """
     Sends a random (slightly chaotic) quote.
     """
     with open('quotes.json') as f:
-        with open('custom-quotes.json') as g:
+        with open(f'files/servers/{interaction.guild.id}/custom-quotes.json') as g:
             default_quotes = json.load(f)
             custom_quotes = json.load(g)
             quotes = default_quotes['quotes'] + custom_quotes['quotes']
@@ -118,12 +118,12 @@ async def quote(interaction):
     name="listquotes",
     description="List all quotes."
 )
-async def listquotes(interaction):
+async def listquotes(interaction: discord.Interaction):
     """
     Sends a list of all quotes.
     """
     with open('quotes.json') as f:
-        with open('custom-quotes.json') as g:
+        with open(f'files/servers/{interaction.guild.id}/custom-quotes.json') as g:
             default_quotes = json.load(f)
             custom_quotes = json.load(g)
             quotes = default_quotes['quotes'] + custom_quotes['quotes']
@@ -148,7 +148,7 @@ async def log(message, severity=logging.INFO):
     name="help",
     description="Sends a help message, and virtual hugs!"
 )
-async def help(interaction):
+async def help(interaction: discord.Interaction):
     await interaction.user.send(helpMsg)
     await interaction.response.send_message(f"Do you need me, {interaction.user.display_name}? I just sent you a message with some helpful information.", ephemeral=True)
 
@@ -158,7 +158,8 @@ async def sync(ctx):
     Syncs the command tree.
 
     ## Notes:
-        Only users with bot permissions can use this command.
+        - Only the owner can use this command.
+        - This command does not appear in the command list. Use "v!sync" to run it.
     """
     if ctx.author.id == int(config['General']['Owner']):
         await bot.tree.sync()
@@ -187,7 +188,7 @@ def has_bot_permissions(user):
     name="addquote",
     description="Adds a quote to the list."
 )
-async def addquote(interaction, quote: str, author: str, date: str):
+async def addquote(interaction: discord.Interaction, quote: str, author: str, date: str):
     """
     Adds a quote to the list.
 
@@ -201,13 +202,13 @@ async def addquote(interaction, quote: str, author: str, date: str):
         - This adds the quote to the custom quote list.
     """
     if has_bot_permissions(interaction.user):
-        with open('custom-quotes.json') as f:
+        with open(f'files/servers/{interaction.guild.id}/custom-quotes.json') as f:
             quotes = json.load(f)
             quotes['quotes'].append(f'"{quote}" - {author}, {date}')
-        with open('custom-quotes.json', 'w') as f:
+        with open(f'files/servers/{interaction.guild.id}/custom-quotes.json', 'w') as f:
             json.dump(quotes, f)
         await interaction.response.send_message(f'"{quote}" - {author}, {date} was added to the list.')
-        await log(f"{interaction.user} added \"{quote} - {author}, {date}\" to the list")
+        await log(f"{interaction.user} added \"{quote} - {author}, {date}\" to the custom quote list for server {interaction.guild.name} ({interaction.guild.id})")
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
@@ -215,7 +216,7 @@ async def addquote(interaction, quote: str, author: str, date: str):
     name="removequote",
     description="Removes a quote from the list."
 )
-async def removequote(interaction, quote: str):
+async def removequote(interaction: discord.Interaction, quote: str):
     """
     Removes a quote from the list.
 
@@ -226,9 +227,13 @@ async def removequote(interaction, quote: str):
         - This removes the quote from the custom quote list.
     """
     if has_bot_permissions(interaction.user):
-        with open('custom-quotes.json') as f:
+        with open(f'files/servers/{str(interaction.guild.id)}/custom-quotes.json') as f:
             quotes = json.load(f)
-            quotes['quotes'].remove(quote)
+            if quote in quotes['quotes']:
+                quotes['quotes'].remove(quote)
+            else:
+                await interaction.response.send_message("That quote isn't in the list.", ephemeral=True)
+                return
         with open('custom-quotes.json', 'w') as f:
             json.dump(quotes, f)
         await interaction.response.send_message(f'"{quote}" was removed from the list.')
@@ -247,7 +252,7 @@ channelMakerCmds = app_commands.Group(name="channelmaker", description="Makes ch
     app_commands.Choice(name="voice",value="voice"),
     app_commands.Choice(name="forum",value="forum"),
 ])
-async def channelmaker(interaction, channel_config: str, type: str="text"):
+async def channelmaker(interaction: discord.Interaction, channel_config: str, type: str="text"):
     """
     Makes a bunch of channels from JSON.
 
@@ -276,7 +281,6 @@ async def channelmaker(interaction, channel_config: str, type: str="text"):
                             await interaction.guild.create_voice_channel(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
                         case "forum":
                             await interaction.guild.create_forum(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
-                    await log(f"{interaction.user} created {channel} in {category}")
         except Exception as e:
             await interaction.followup.send(f"Couldn't make the channels: {str(e)}")
             await log(e)
@@ -287,7 +291,7 @@ async def channelmaker(interaction, channel_config: str, type: str="text"):
     name="help",
     description="Sends a help message for the channelmaker tool."
 )
-async def channelmaker(interaction):
+async def channelmaker(interaction: discord.Interaction):
     """
     Sends a help message for the channelmaker tool.
     """
@@ -309,39 +313,12 @@ async def channelmaker(interaction):
     app_commands.Choice(name="female",value="female"),
     app_commands.Choice(name="none",value="none"),
 ])
-async def namegenerator(interaction, type: str="first", gender: str="none"):
+async def namegenerator(interaction: discord.Interaction, type: str="first", gender: str="none"):
     """
     Generator for names.
     """
-    name = generate_name(type, gender)
+    name = viviaTools.generate_name(type, gender)
     await interaction.response.send_message(name)
-    await log(f"{interaction.user} generated {name}")
-
-def generate_name(type, gender):
-    with open('names.json') as f:
-        names = json.load(f)
-        all_names = names['first']['male'] + names['first']['female']
-        match type:
-            case "first":
-                match gender:
-                    case "male":
-                        return names['first']['male'][random.randint(0, len(names['first']['male']) - 1)]
-                    case "female":
-                        return names['first']['female'][random.randint(0, len(names['first']['female']) - 1)]
-                    case _:
-                        return all_names[random.randint(0, len(all_names) - 1)]
-            case "middle":
-                return names['middle'][random.randint(0, len(names['middle']) - 1)]
-            case "last":
-                return names['last'][random.randint(0, len(names['last']) - 1)]
-            case "full":
-                match gender:
-                    case "male":
-                        return names['first']['male'][random.randint(0, len(names['first']['male']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
-                    case "female":
-                        return names['first']['female'][random.randint(0, len(names['first']['female']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
-                    case _:
-                        return all_names[random.randint(0, len(all_names) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
 
 # Run
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)

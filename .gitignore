@@ -1,7 +1,16 @@
+# env files have sensitive credentials (*cough cough* bot token)
 *.env
+
+# configuration/logs
 *.ini
 *.log
+
+# testing directory
 testing
+
+# idk what these directories are so let's ignore them
 .vscode
 .venv
-custom-quotes.json
+
+# per-server data
+data/servers
