@@ -112,7 +112,7 @@ async def quote(interaction: discord.Interaction):
     Sends a random (slightly chaotic) quote.
     """
     with open('quotes.json') as f:
-        with open(f'files/servers/{interaction.guild.id}/custom-quotes.json') as g:
+        with open(f'data/servers/{interaction.guild.id}/custom-quotes.json') as g:
             default_quotes = json.load(f)
             custom_quotes = json.load(g)
             quotes = default_quotes['quotes'] + custom_quotes['quotes']
@@ -128,7 +128,7 @@ async def listquotes(interaction: discord.Interaction):
     Sends a list of all quotes.
     """
     with open('quotes.json') as f:
-        with open(f'files/servers/{interaction.guild.id}/custom-quotes.json') as g:
+        with open(f'data/servers/{interaction.guild.id}/custom-quotes.json') as g:
             default_quotes = json.load(f)
             custom_quotes = json.load(g)
             quotes = default_quotes['quotes'] + custom_quotes['quotes']
@@ -185,7 +185,7 @@ def has_bot_permissions(user):
     ## Notes:
         - This always returns true for the bot owner specified in config.ini.
     """
-    with open('permissions.json') as f:
+    with open('data/permissions.json') as f:
         users = json.load(f)
     return user.id in users['permissions'] or user.id == int(config['General']['Owner'])
 
@@ -207,10 +207,10 @@ async def addquote(interaction: discord.Interaction, quote: str, author: str, da
         - This adds the quote to the custom quote list.
     """
     if has_bot_permissions(interaction.user):
-        with open(f'files/servers/{interaction.guild.id}/custom-quotes.json') as f:
+        with open(f'data/servers/{interaction.guild.id}/custom-quotes.json') as f:
             quotes = json.load(f)
             quotes['quotes'].append(f'"{quote}" - {author}, {date}')
-        with open(f'files/servers/{interaction.guild.id}/custom-quotes.json', 'w') as f:
+        with open(f'data/servers/{interaction.guild.id}/custom-quotes.json', 'w') as f:
             json.dump(quotes, f)
         await interaction.response.send_message(f'"{quote}" - {author}, {date} was added to the list.')
         await log(f"{interaction.user} added \"{quote} - {author}, {date}\" to the custom quote list for server {interaction.guild.name} ({interaction.guild.id})")
@@ -232,7 +232,7 @@ async def removequote(interaction: discord.Interaction, quote: str):
         - This removes the quote from the custom quote list.
     """
     if has_bot_permissions(interaction.user):
-        with open(f'files/servers/{str(interaction.guild.id)}/custom-quotes.json') as f:
+        with open(f'data/servers/{str(interaction.guild.id)}/custom-quotes.json') as f:
             quotes = json.load(f)
             if quote in quotes['quotes']:
                 quotes['quotes'].remove(quote)
