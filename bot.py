@@ -20,6 +20,7 @@ from discord.ext import tasks, commands
 import json
 import dotenv
 import random
+import os
 from os import system
 import configparser
 import logging
@@ -97,9 +98,10 @@ async def on_message(message):
     # Check if this server is new
     try:
         open(f'files/servers/{message.guild.id}/custom-quotes.json')
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+        log(e)
         # Initialize server data
-        sys.mkdir(f'files/servers/{message.guild.id}')
+        os.mkdir(f'files/servers/{message.guild.id}')
         with open(f'files/servers/{message.guild.id}/custom-quotes.json', 'w') as f:
             json.dump({'quotes': []}, f)
 
