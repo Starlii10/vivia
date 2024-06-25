@@ -63,8 +63,8 @@ intents.message_content = True # will need to verify at 100 servers
 bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
 bot.remove_command("help")
 tree = bot.tree
-helpMsg = open("data/help/helpmsg.txt", "r").read()
-channelmakerHelpMsg = open("data/help/channelmakerhelpmsg.txt", "r").read()
+helpMsg = open("data/help/general.txt", "r").read()
+channelmakerHelpMsg = open("data/help/channelmaker.txt", "r").read()
 
 @bot.event
 async def on_ready():
