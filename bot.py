@@ -71,8 +71,6 @@ async def on_ready():
     """
     Function called when Vivia starts up.
     """
-
-    await log(f'I\'m awake! Discord says my username is {bot.user}.')
     
     # Change status
     await bot.change_presence(activity=discord.CustomActivity(name=f'{config["General"]["Prefix"]}help | ' + config['General']['StatusMessage']))
