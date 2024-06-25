@@ -80,8 +80,6 @@ async def on_member_join(member):
     """
     Function called when a member joins the server.
     """
-    welcome_channel = bot.get_channel(1246532114266980433) # Welcome channel
-    await welcome_channel.send("Heya, " + member.mention + "! Welcome to the server!")
 
 @bot.event
 async def on_message(message):
@@ -95,6 +93,16 @@ async def on_message(message):
     # Make sure Vivia doesn't respond to herself
     if message.author == bot.user:
         return
+    
+    # Check if this server is new
+    try:
+        open(f'files/servers/{message.guild.id}/custom-quotes.json')
+    except FileNotFoundError:
+        # Initialize server data
+        sys.mkdir(f'files/servers/{message.guild.id}')
+        with open(f'files/servers/{message.guild.id}/custom-quotes.json', 'w') as f:
+            json.dump({'quotes': []}, f)
+
 
 @tree.command(
     name="quote",
