@@ -97,8 +97,8 @@ async def on_message(message):
     
     # Check if this server is new
     try:
-        os.mkdir(f'files/servers/{message.guild.id}')
-        with open(f'files/servers/{message.guild.id}/custom-quotes.json', 'w') as f:
+        os.mkdir(f'data/servers/{message.guild.id}')
+        with open(f'data/servers/{message.guild.id}/custom-quotes.json', 'w') as f:
             json.dump({'quotes': []}, f)
     except FileExistsError:
         pass
