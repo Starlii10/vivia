@@ -111,7 +111,7 @@ async def quote(interaction: discord.Interaction):
     """
     Sends a random (slightly chaotic) quote.
     """
-    with open('quotes.json') as f:
+    with open('data/quotes.json') as f:
         with open(f'data/servers/{interaction.guild.id}/custom-quotes.json') as g:
             default_quotes = json.load(f)
             custom_quotes = json.load(g)
@@ -127,7 +127,7 @@ async def listquotes(interaction: discord.Interaction):
     """
     Sends a list of all quotes.
     """
-    with open('quotes.json') as f:
+    with open('data/quotes.json') as f:
         with open(f'data/servers/{interaction.guild.id}/custom-quotes.json') as g:
             default_quotes = json.load(f)
             custom_quotes = json.load(g)
