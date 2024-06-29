@@ -55,7 +55,12 @@ except:
     print("Something's wrong with the logging file. I'm going to ignore it.")
     handler = logging.StreamHandler(sys.stdout)
 
-system("title Vivia - " + config['General']['StatusMessage'])
+if sys.platform == 'win32':
+    # Windows title
+    system("title Vivia - " + config['General']['StatusMessage'])
+else:
+    # Linux title (if this doesn't work please open an issue because I suck at Linux)
+    system("echo -ne '\033]0;Vivia - " + config['General']['StatusMessage'] + "\007'")
 print("Preparing to start up!")
 
 # Get ready to run the bot
