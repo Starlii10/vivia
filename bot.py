@@ -158,8 +158,18 @@ async def log(message, severity=logging.INFO):
     name="help",
     description="Sends a help message, and virtual hugs!"
 )
-async def help(interaction: discord.Interaction):
-    await interaction.user.send(helpMsg)
+@app_commands.choices(message=[
+    app_commands.Choice(name="general", value="general"),
+    app_commands.Choice(name="channelmaker", value="channelmaker"),
+])
+async def help(interaction: discord.Interaction, message: str="general"):
+    match message:
+        case "general":
+            await interaction.user.send(helpMsg)
+        case "channelmaker":
+            await interaction.user.send(channelmakerHelpMsg)
+        case _:
+            await interaction.user.send(helpMsg)
     await interaction.response.send_message(f"Do you need me, {interaction.user.display_name}? I just sent you a message with some helpful information.", ephemeral=True)
 
 @bot.command()
@@ -214,7 +224,9 @@ async def addquote(interaction: discord.Interaction, quote: str, author: str, da
     if has_bot_permissions(interaction.user):
         with open(f'data/servers/{interaction.guild.id}/custom-quotes.json') as f:
             quotes = json.load(f)
+            # Add the quote
             quotes['quotes'].append(f'"{quote}" - {author}, {date}')
+        # Write the updated list
         with open(f'data/servers/{interaction.guild.id}/custom-quotes.json', 'w') as f:
             json.dump(quotes, f)
         await interaction.response.send_message(f'"{quote}" - {author}, {date} was added to the list.')
@@ -242,7 +254,7 @@ async def removequote(interaction: discord.Interaction, quote: str):
             if quote in quotes['quotes']:
                 quotes['quotes'].remove(quote)
             else:
-                await interaction.response.send_message("That quote isn't in the list.", ephemeral=True)
+                await interaction.response.send_message("That quote isn't in the list, though...", ephemeral=True)
                 return
         with open('custom-quotes.json', 'w') as f:
             json.dump(quotes, f)
@@ -250,8 +262,6 @@ async def removequote(interaction: discord.Interaction, quote: str):
         await log(f"{interaction.user} removed \"{quote}\" from the list")
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
-
-channelMakerCmds = app_commands.Group(name="channelmaker", description="Makes channels from JSON.")
 
 @tree.command(
     name="channelmaker",
@@ -274,7 +284,11 @@ async def channelmaker(interaction: discord.Interaction, channel_config: str, ty
     if has_bot_permissions(interaction.user):
         await interaction.response.send_message("Making channels! (This may take a moment.)")
         try:
-            channels = json.loads(channel_config) # Channels is a list of categories, each category is a list of channels
+            try:
+                channels = json.loads(channel_config) # Channels is a list of categories, each category is a list of channels
+            except Exception:
+                await interaction.followup.send(f"What kind of JSON was that? I couldn't parse it, that's for sure.\n\nIf you need help with making JSON, run /help channelmaker.")
+                return
             for category in channels['categories']:
                 if not category in interaction.guild.categories:
                     # Create the category
@@ -292,21 +306,10 @@ async def channelmaker(interaction: discord.Interaction, channel_config: str, ty
                         case "forum":
                             await interaction.guild.create_forum(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
         except Exception as e:
-            await interaction.followup.send(f"Couldn't make the channels: {str(e)}")
+            await interaction.followup.send(f"I couldn't make the channels. Something about {str(e)}.")
             await log(e)
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
-
-@channelMakerCmds.command(
-    name="help",
-    description="Sends a help message for the channelmaker tool."
-)
-async def channelmaker(interaction: discord.Interaction):
-    """
-    Sends a help message for the channelmaker tool.
-    """
-    await interaction.user.send(channelmakerHelpMsg)
-    await interaction.response.send_message(f"Do you need me, {interaction.user.display_name}? I just sent you a message with some helpful information.", ephemeral=True)
 
 @tree.command(
     name="namegenerator",
