@@ -67,8 +67,10 @@ print("Preparing to start up!")
 intents = discord.Intents.default()
 intents.message_content = True # will need to verify at 100 servers
 bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
-bot.remove_command("help")
+bot.remove_command("help") # because we hate the default help command
 tree = bot.tree
+
+# Help messages
 helpMsg = open("data/help/general.txt", "r").read()
 channelmakerHelpMsg = open("data/help/channelmaker.txt", "r").read()
 
