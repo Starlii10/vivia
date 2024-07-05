@@ -47,5 +47,8 @@ COPY . .
 # Expose the port that the application listens on.
 EXPOSE 8000
 
+# Expose 3128 for pip to run
+EXPOSE 3128
+
 # Run the application.
 CMD python bot.py
