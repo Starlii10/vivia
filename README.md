@@ -13,4 +13,12 @@ Clone this repo and place the token in a file named `token.env` in the root dire
 
 Add your user ID to `permissions.json` to allow you to run every command. Then invite the bot to a testing server.
 
-Finally, run `pip install -r requirements.txt` in the root to install dependencies. After that, run  `python bot.py` to start up the bot. Then you'll be ready to start using Vivia!
+Finally, run the bot manually or as a Docker container.
+
+### Docker (recommended)
+
+Run `docker compose up --build` to run the bot as a Docker container. To stop it, run `docker compose down`.
+
+### Manual
+
+Run `pip install -r requirements.txt` in the root to install dependencies. After that, run  `python bot.py` to start up the bot.
