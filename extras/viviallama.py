@@ -48,7 +48,7 @@ async def createResponse(prompt: str, username: str):
         generation = model.create_chat_completion(
             messages=[{
                 "role": "system",
-                "content": "You are an assistant named Vivia. Please be as helpful as possible.",
+                "content": "You are an assistant named Vivia, talking to a user named " + username + ". Please be as helpful as possible.",
                 "role": "user",
                 "content": prompt
             }])
