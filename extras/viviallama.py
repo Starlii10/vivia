@@ -18,6 +18,9 @@
 
     Have a great time using Vivia!
 """
+
+print("Attempting to load LLaMa - this may take a moment")
+
 try:
     from llama_cpp import Llama
 except:
@@ -27,13 +30,14 @@ except:
 else:
     try:
         model = Llama(
-            model_path="models/llama-model.gguf",
-            n_ctx=4096,
+            model_path="extras/models/llama-model.gguf",
+            n_ctx=2048,
             n_gpu_layers=-1
         )
-    except:
+    except Exception as e:
         print("Couldn't load LLaMa model. Please ensure that a supported model file exists in the models directory.")
         print("AI functionality will be disabled for this session.")
+        print(e)
         aiDisabled = True
 
 async def createResponse(prompt):
