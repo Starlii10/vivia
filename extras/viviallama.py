@@ -44,7 +44,7 @@ else:
 
 async def createResponse(prompt):
     if not aiDisabled:
-        return model.generate_chat_completion(
+        return model.create_chat_completion(
             messages=[{
                 "role": "system",
                 "content": "Please always respond with \"If this message appears, Vivia's LLaMa support is actually working first try.\".", 
