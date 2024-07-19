@@ -28,5 +28,9 @@ Make a whole bunch of channels using JSON! Use /channelmaker help for extra guid
 ### namegenerator
 Generate a random name!
 
+# Chatting
+Pinging me lets me engage in conversation! It's a weird feature and highly unstable, though...
+I heard it was powered by something called LLaMa? I'm not too familiar with that.
+
 ## GitHub
 My code is open source and can be found on [GitHub](https://github.com/starlii10/vivia/)! If you want to, you can even run your own version of me!
