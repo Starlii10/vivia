@@ -25,6 +25,7 @@ from os import system
 import configparser
 import logging
 import extras.viviatools as viviaTools
+import extras.viviallama as Llama
 
 # Config loading
 config = configparser.ConfigParser()
@@ -90,7 +91,7 @@ async def on_member_join(member):
     """
 
 @bot.event
-async def on_message(message):
+async def on_message(message: discord.Message):
     """
     Function called when a message is sent.
     """
@@ -109,6 +110,13 @@ async def on_message(message):
             json.dump({'quotes': []}, f)
     except FileExistsError:
         pass
+
+    # Invoke LLaMa if pinged
+    if message.mentions and message.mentions[0] == bot.user:
+        # TODO: make this an option
+        async with message.channel.typing():
+            response = await Llama.createResponse(message.content)
+        await message.channel.send(response)
 
 @tree.command(
     name="quote",
