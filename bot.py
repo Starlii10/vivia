@@ -115,7 +115,7 @@ async def on_message(message: discord.Message):
     if message.mentions and message.mentions[0] == bot.user:
         # TODO: make this an option
         async with message.channel.typing():
-            response = await Llama.createResponse(message.content)
+            response = await Llama.createResponse(message.content, message.author.name)
         await message.channel.send(response)
 
 @tree.command(

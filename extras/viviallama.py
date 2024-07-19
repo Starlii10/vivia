@@ -42,7 +42,7 @@ else:
         print(e)
         aiDisabled = True
 
-async def createResponse(prompt):
+async def createResponse(prompt: str, username: str):
     if not aiDisabled:
         print("Response generation requested - generating...")
         generation = model.create_chat_completion(
