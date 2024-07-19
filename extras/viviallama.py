@@ -21,6 +21,8 @@
 
 print("Attempting to load LLaMa - this may take a moment")
 
+aiDisabled = False
+
 try:
     from llama_cpp import Llama
 except:
