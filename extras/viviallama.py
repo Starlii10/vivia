@@ -14,22 +14,27 @@
 
     This uses a LLaMa model in models/llama-model.gguf, which can be changed by the user.
     Vivia does not provide a default model. Please ensure that a supported model file exists in the models directory.
-    Usage of the model is governed by the model's respective license.
+    Usage of the model is governed by the model's respective license.   
 
     Have a great time using Vivia!
 """
-
-from llama_cpp import Llama
 try:
-    model = Llama(
-        model_path="models/llama-model.gguf",
-        n_ctx=4096,
-        n_gpu_layers=-1
-    )
+    from llama_cpp import Llama
 except:
-    print("Couldn't load LLaMa model. Please ensure that a supported model file exists in the models directory.")
+    print("Couldn't load llama-cpp-python. Make sure it's installed.")
     print("AI functionality will be disabled for this session.")
     aiDisabled = True
+else:
+    try:
+        model = Llama(
+            model_path="models/llama-model.gguf",
+            n_ctx=4096,
+            n_gpu_layers=-1
+        )
+    except:
+        print("Couldn't load LLaMa model. Please ensure that a supported model file exists in the models directory.")
+        print("AI functionality will be disabled for this session.")
+        aiDisabled = True
 
 async def createResponse(prompt):
     if not aiDisabled:
@@ -40,3 +45,5 @@ async def createResponse(prompt):
                 "role": "user",
                 "content": prompt
             }])
+    else:
+        print("AI functionality is disabled due to problems with LLaMa. Ignoring generation request.")

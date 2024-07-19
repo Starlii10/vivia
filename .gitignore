@@ -17,3 +17,7 @@ data/servers
 
 # python things
 __pycache__/
+
+# LLaMa models
+models
+*.gguf
