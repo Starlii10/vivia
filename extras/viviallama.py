@@ -20,18 +20,23 @@
 """
 
 from llama_cpp import Llama
-
-model = Llama(
-    model_path="models/llama-model.gguf",
-    n_ctx=4096,
-    n_gpu_layers=-1
-)
+try:
+    model = Llama(
+        model_path="models/llama-model.gguf",
+        n_ctx=4096,
+        n_gpu_layers=-1
+    )
+except:
+    print("Couldn't load LLaMa model. Please ensure that a supported model file exists in the models directory.")
+    print("AI functionality will be disabled for this session.")
+    aiDisabled = True
 
 async def createResponse(prompt):
-    return model.generate_chat_completion(
-        messages=[{
-            "role": "system",
-            "content": "Please always respond with \"If this message appears, Vivia's LLaMa support is actually working first try.\".", 
-            "role": "user",
-            "content": prompt
-        }])
+    if not aiDisabled:
+        return model.generate_chat_completion(
+            messages=[{
+                "role": "system",
+                "content": "Please always respond with \"If this message appears, Vivia's LLaMa support is actually working first try.\".", 
+                "role": "user",
+                "content": prompt
+            }])
