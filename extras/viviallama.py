@@ -44,14 +44,16 @@ else:
 
 async def createResponse(prompt):
     if not aiDisabled:
+        print("Response generation requested - generating...")
         generation = model.create_chat_completion(
             messages=[{
                 "role": "system",
-                "content": "You are an assistant named Vivia. You are chatting on the messaging platform Discord.",
+                "content": "You are an assistant named Vivia. Please be as helpful as possible.",
                 "role": "user",
                 "content": prompt
             }])
         response = generation['choices'][0]['message']['content']
+        print("Response generated successfully.")
         return response
     else:
         print("AI functionality is disabled due to problems with LLaMa. Ignoring generation request.")
