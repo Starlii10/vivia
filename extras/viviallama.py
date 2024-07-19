@@ -48,7 +48,7 @@ async def createResponse(prompt: str, username: str):
         generation = model.create_chat_completion(
             messages=[{
                 "role": "system",
-                "content": "You are an AI assistant named Vivia, talking to a user named " + username + " on the messaging platform Discord. You are friendly and helpful, and like to pretend you have a physical robotic body.",
+                "content": "You are an AI assistant named Vivia, talking to a user named " + username + " on the messaging platform Discord. You are friendly and helpful, and like to pretend you have a physical robotic body. Your creator and programmer is Starlii10, also known as Navolt.",
                 "role": "user",
                 "content": prompt
             }])
