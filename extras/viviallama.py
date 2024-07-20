@@ -19,9 +19,15 @@
     Have a great time using Vivia!
 """
 
+import json
+import os
+
 print("Attempting to load LLaMa - this may take a moment")
 
 aiDisabled = False
+# Delete tempchats folder if it exists
+if os.path.exists("data/tempchats"):
+    os.system("rm -rf data/tempchats")
 
 try:
     from llama_cpp import Llama
@@ -33,7 +39,7 @@ else:
     try:
         model = Llama(
             model_path="extras/models/llama-model.gguf",
-            n_ctx=2048,
+            n_ctx=0,
             n_gpu_layers=-1
         )
     except Exception as e:
@@ -42,18 +48,29 @@ else:
         print(e)
         aiDisabled = True
 
-async def createResponse(prompt: str, username: str):
+async def createResponse(prompt: str, username: str, internal_name: str):
     if not aiDisabled:
         print("Response generation requested - generating...")
-        generation = model.create_chat_completion(
-            messages=[{
-                "role": "system",
-                "content": "You are an AI assistant named Vivia, talking to a user named " + username + " on the messaging platform Discord. You are friendly and helpful, and like to pretend you have a physical robotic body. Your creator and programmer is Starlii10, also known as Navolt.",
-                "role": "user",
-                "content": prompt
-            }])
+
+        # Read messages from memory file
+        if not os.path.exists(f"data/tempchats/{internal_name}/messages.txt"):
+            os.makedirs(f"data/tempchats/{internal_name}")
+            with open(f"data/tempchats/{internal_name}/messages.txt", "w") as file:
+                json.dump([], file)
+        with open(f"data/tempchats/{internal_name}/messages.txt", "r") as file:
+            additional_messages = json.load(file)
+        
+        # Combine the additional messages with the system prompt and user prompt
+        generation = model.create_chat_completion(messages=additional_messages + [
+            {"role": "system", "content": open("data/system-prompt.txt", "r").read().replace("{username}", username)},
+        ] + [{"role": "user", "content": prompt}])
         response = generation['choices'][0]['message']['content']
         print("Response generated successfully.")
+
+        # Write messages to memory file
+        with open(f"data/tempchats/{internal_name}/messages.txt", "w") as file:
+            json.dump(additional_messages + [{"role": "user", "content": prompt}] + [{"role": "assistant", "content": f"{response}"}], file)
         return response
     else:
-        print("AI functionality is disabled due to problems with LLaMa. Ignoring generation request.")
+        print("AI functionality is disabled for this session due to problems with LLaMa. Ignoring generation request.")
+        return("Something's wrong with my programming, so I can't respond. Sorry.")

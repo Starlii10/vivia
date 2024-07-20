@@ -12,13 +12,17 @@
     Have a great time using Vivia!
 """
 
+import asyncio
 import datetime
+import queue
+import shutil
 import sys
 import discord
 from discord import app_commands
 from discord.ext import tasks, commands
 import json
 import dotenv
+import threading
 import random
 import os
 from os import system
@@ -113,10 +117,8 @@ async def on_message(message: discord.Message):
 
     # Invoke LLaMa if pinged
     if message.mentions and message.mentions[0] == bot.user:
-        # TODO: make this an option
         async with message.channel.typing():
-            response = await Llama.createResponse(message.content, message.author.name)
-        await message.channel.send(response)
+            await message.reply(await Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "), message.author.display_name, message.author.name))
 
 @tree.command(
     name="quote",
@@ -342,6 +344,21 @@ async def namegenerator(interaction: discord.Interaction, type: str="first", gen
     """
     name = viviaTools.generate_name(type, gender)
     await interaction.response.send_message(name)
+
+@tree.command(
+    name="clearhistory",
+    description="Clears your recent chat history with me."
+)
+async def clearhistory(interaction: discord.Interaction):
+    """
+    Clears your recent chat history with me.
+    """
+    if os.path.exists(f"data/tempchats/{str(interaction.user.name)}"):
+        shutil.rmtree(f"data/tempchats/{str(interaction.user.name)}")
+        await interaction.response.send_message("Cleared your chat history with me!", ephemeral=True)
+        await log(f"{interaction.user} cleared their chat history")
+    else:
+        await interaction.response.send_message("You haven't chatted with me yet, so there's nothing to clear!", ephemeral=True)
 
 # Run
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)

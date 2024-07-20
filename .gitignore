@@ -1,9 +1,10 @@
 # env files have sensitive credentials (*cough cough* bot token)
 *.env
 
-# configuration/logs
+# configuration, logs, and other temp files
 *.ini
 *.log
+tempchats
 
 # testing directory
 testing
