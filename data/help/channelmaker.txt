@@ -2,9 +2,18 @@
 The channelmaker tool is a helpful tool to create a bunch of channels from JSON.
 
 # How to Use
-A channelmaker JSON configuration looks like this: `{"categories":{"test":["test"]}}`
+A channelmaker JSON configuration looks like this:
+```json
+{
+    "categories": {
+        "category1": [
+            "channel1"
+        ]
+    }
+}
+```
 - "categories" is where you put in your categories. You can define as many categories as you want!
-- In the example above, we have one category called "test" and a channel inside called "test". Categories are just lists of channel names, which will get created when the JSON is used in channelmaker!
+- In the example above, we have one category called "test" and a channel inside called "test". Categories are just lists of channel names, which will get created when the JSON is used in channelmaker.
 
 You can also define the type of channels you want to create with the type argument.
 - "text" makes text channels.

@@ -4,7 +4,7 @@ A friendly companion for your Discord server.
 
 ## Add to Server
 
-https://discord.com/oauth2/authorize?client_id=1243029835790422116
+<https://discord.com/oauth2/authorize?client_id=1243029835790422116>
 
 ## How to Run
 
@@ -22,6 +22,7 @@ Finally, run the bot manually or as a Docker container.
 ### Docker (recommended)
 
 Run `docker compose up --build` to run the bot as a Docker container. To stop it, run `docker compose down`.
+**Note that AI functionality will be disabled when using Docker. It will be added in a future update!**
 
 ### Manual
 

@@ -14,7 +14,7 @@
 
     This uses a LLaMa model in models/llama-model.gguf, which can be changed by the user.
     Vivia does not provide a default model. Please ensure that a supported model file exists in the models directory.
-    Usage of the model is governed by the model's respective license.   
+    Usage of a model is governed by that model's respective license.   
 
     Have a great time using Vivia!
 """

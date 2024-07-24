@@ -12,17 +12,14 @@
     Have a great time using Vivia!
 """
 
-import asyncio
 import datetime
-import queue
 import shutil
 import sys
 import discord
 from discord import app_commands
-from discord.ext import tasks, commands
+from discord.ext import commands
 import json
 import dotenv
-import threading
 import random
 import os
 from os import system
@@ -65,7 +62,7 @@ if sys.platform == 'win32':
     system("title Vivia - " + config['General']['StatusMessage'])
 else:
     # Linux title (if this doesn't work please open an issue because I suck at Linux)
-    system("echo -ne '\033]0;Vivia - " + config['General']['StatusMessage'] + "\007'")
+    system("echo -ne '\033]0;Vivia - " + config['General']['StatusMessage'] + "\007'") # This is NOT unreachable despite VSCode complaining (god I hate VSCode so much)
 print("Preparing to start up!")
 
 # Get ready to run the bot
@@ -78,6 +75,7 @@ tree = bot.tree
 # Help messages
 helpMsg = open("data/help/general.txt", "r").read()
 channelmakerHelpMsg = open("data/help/channelmaker.txt", "r").read()
+setupHelpMsg = open("data/help/setup.txt", "r").read()
 
 @bot.event
 async def on_ready():
@@ -95,6 +93,20 @@ async def on_member_join(member):
     """
 
 @bot.event
+async def on_guild_join(guild: discord.Guild):
+    """
+    Function called when the bot joins a server.
+    """
+
+    await log(f"Bot joined {guild.name} ({guild.id})")
+    with open(f'data/servers/{guild.id}/custom-quotes.json', 'w') as f:
+        json.dump({'quotes': []}, f)
+    with open(f'data/servers/{guild.id}/config.json', 'w') as f, open(f'data/config.json.example', 'r') as g:
+        json.dump(g, f)
+    await guild.create_role(name="Vivia Admin", reason="Vivia setup: Users with this role have privileges when running Vivia's commands in this server.")
+    
+
+@bot.event
 async def on_message(message: discord.Message):
     """
     Function called when a message is sent.
@@ -106,19 +118,12 @@ async def on_message(message: discord.Message):
     # Make sure Vivia doesn't respond to herself
     if message.author == bot.user:
         return
-    
-    # Check if this server is new
-    try:
-        os.mkdir(f'data/servers/{message.guild.id}')
-        with open(f'data/servers/{message.guild.id}/custom-quotes.json', 'w') as f:
-            json.dump({'quotes': []}, f)
-    except FileExistsError:
-        pass
 
     # Invoke LLaMa if pinged
-    if message.mentions and message.mentions[0] == bot.user:
-        async with message.channel.typing():
-            await message.reply(await Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "), message.author.display_name, message.author.name))
+    if serverConfig(message.guild)['aiEnabled']:
+        if message.mentions and message.mentions[0] == bot.user:
+            async with message.channel.typing():
+                await message.reply(await Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "), message.author.display_name, message.author.name))
 
 @tree.command(
     name="quote",
@@ -173,6 +178,7 @@ async def log(message, severity=logging.INFO):
 @app_commands.choices(message=[
     app_commands.Choice(name="general", value="general"),
     app_commands.Choice(name="channelmaker", value="channelmaker"),
+    app_commands.Choice(name="setup", value="setup"),
 ])
 async def help(interaction: discord.Interaction, message: str="general"):
     match message:
@@ -180,6 +186,8 @@ async def help(interaction: discord.Interaction, message: str="general"):
             await interaction.user.send(helpMsg)
         case "channelmaker":
             await interaction.user.send(channelmakerHelpMsg)
+        case "setup":
+            await interaction.user.send(setupHelpMsg)
         case _:
             await interaction.user.send(helpMsg)
     await interaction.response.send_message(f"Do you need me, {interaction.user.display_name}? I just sent you a message with some helpful information.", ephemeral=True)
@@ -200,21 +208,22 @@ async def sync(ctx):
     else:
         await ctx.send('That\'s for the bot owner, not random users...')
 
-def has_bot_permissions(user):
+def has_bot_permissions(user: discord.Member, server: discord.Guild):
     """
     Checks if the specified user has bot permissions.
 
     ## Args:
         - user (discord.User): The user to check.
+        - server (discord.Guild): The server to check in.
 
     ## Returns:
         - bool: True if the user has bot permissions, False otherwise.
     ## Notes:
-        - This always returns true for the bot owner specified in config.ini.
+        - This always returns true for the server owner.
+        - This also returns true if the user has administrator permissions.
     """
-    with open('data/permissions.json') as f:
-        users = json.load(f)
-    return user.id in users['permissions'] or user.id == int(config['General']['Owner'])
+    adminRole = discord.utils.find(lambda a: a.name == "Vivia Admin", server.roles)
+    return user.id == server.owner or user.guild_permissions.administrator or user in adminRole.members
 
 @tree.command(
     name="addquote",
@@ -231,9 +240,9 @@ async def addquote(interaction: discord.Interaction, quote: str, author: str, da
     ## Notes:
         - Only users with bot permissions can use this command.
         - The quote will be formatted as `"quote" - author, date`.
-        - This adds the quote to the custom quote list.
+        - This adds the quote to the custom quote list for the server the command was used in.
     """
-    if has_bot_permissions(interaction.user):
+    if has_bot_permissions(interaction.user, interaction.guild):
         with open(f'data/servers/{interaction.guild.id}/custom-quotes.json') as f:
             quotes = json.load(f)
             # Add the quote
@@ -260,7 +269,7 @@ async def removequote(interaction: discord.Interaction, quote: str):
         - Only users with bot permissions can use this command.
         - This removes the quote from the custom quote list.
     """
-    if has_bot_permissions(interaction.user):
+    if has_bot_permissions(interaction.user, interaction.guild):
         with open(f'data/servers/{str(interaction.guild.id)}/custom-quotes.json') as f:
             quotes = json.load(f)
             if quote in quotes['quotes']:
@@ -288,18 +297,21 @@ async def channelmaker(interaction: discord.Interaction, channel_config: str, ty
     """
     Makes a bunch of channels from JSON.
 
+    ## Args:
+        - channel_config (str): The JSON string containing the channel configuration.
+        - type (str): The type of channel to make. Defaults to "text".
     ## Notes:
         - Only users with bot permissions can use this command.
         - The channelmaker JSON configuration looks like this: {"categories":{"test":["test"]}}
-        - For more info, read the channelmakerhelpmsg.txt file or run /help channelmaker.
+        - For more info, read the channelmakerhelpmsg.txt file or run /help channelmaker when the bot is running.
     """
-    if has_bot_permissions(interaction.user):
+    if has_bot_permissions(interaction.user, interaction.guild):
         await interaction.response.send_message("Making channels! (This may take a moment.)")
         try:
             try:
                 channels = json.loads(channel_config) # Channels is a list of categories, each category is a list of channels
             except Exception:
-                await interaction.followup.send(f"What kind of JSON was that? I couldn't parse it, that's for sure.\n\nIf you need help with making JSON, run /help channelmaker.")
+                await interaction.followup.send(f"I couldn't parse that JSON.\n\nIf you need help with making JSON, run /help channelmaker.")
                 return
             for category in channels['categories']:
                 if not category in interaction.guild.categories:
@@ -319,7 +331,7 @@ async def channelmaker(interaction: discord.Interaction, channel_config: str, ty
                             await interaction.guild.create_forum(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
         except Exception as e:
             await interaction.followup.send(f"I couldn't make the channels. Something about {str(e)}.")
-            await log(e)
+            await log("Error while making channels: " + str(e) + "(initiated by " + str(interaction.user.name) + ")")
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
@@ -359,6 +371,32 @@ async def clearhistory(interaction: discord.Interaction):
         await log(f"{interaction.user} cleared their chat history")
     else:
         await interaction.response.send_message("You haven't chatted with me yet, so there's nothing to clear!", ephemeral=True)
+    
+@tree.command(
+    name="disableai",
+    description="Disables Vivia's AI functionality for this server."
+)
+async def disableai(interaction: discord.Interaction):
+    """
+    Disables Vivia's AI functionality for this server.
+
+    ## Notes:
+        - Only users with bot permissions can use this command.
+    """
+    if has_bot_permissions(interaction.user, interaction.guild):
+        with open(f"data/{str(interaction.guild.id)}/config.json", "r") as f:
+            config = json.load(f)
+        config['ai'] = False
+        with open(f"data/{str(interaction.guild.id)}/config.json", "w") as f:
+            json.dump(config, f)
+        await interaction.response.send_message("AI has been disabled for this server.", ephemeral=True)
+        await log(f"{interaction.user} ({interaction.user.id}) disabled AI for {interaction.guild.name} ({interaction.guild.id})")
+    else:
+        await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
+
+def serverConfig(serverID: int):
+    with open(f"data/{serverID}/config.json", "r") as f:
+        return json.load(f)
 
 # Run
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
