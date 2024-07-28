@@ -14,7 +14,7 @@
 
     This uses a LLaMa model in models/llama-model.gguf, which can be changed by the user.
     Vivia does not provide a default model. Please ensure that a supported model file exists in the models directory.
-    Usage of the model is governed by the model's respective license.   
+    Usage of a model is governed by that model's respective license.   
 
     Have a great time using Vivia!
 """
@@ -70,6 +70,7 @@ async def createResponse(prompt: str, username: str, internal_name: str):
         # Write messages to memory file
         with open(f"data/tempchats/{internal_name}/messages.txt", "w") as file:
             json.dump(additional_messages + [{"role": "user", "content": prompt}] + [{"role": "assistant", "content": f"{response}"}], file)
+        
         return response
     else:
         print("AI functionality is disabled for this session due to problems with LLaMa. Ignoring generation request.")
