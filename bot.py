@@ -204,10 +204,26 @@ async def sync(ctx):
         - Only the owner can use this command.
         - This command does not appear in the command list. Use "v!sync" to run it.
     """
-    if ctx.author.id == int(config['General']['Owner']):
+    if ctx.author.id == 1141181390445101176:
         await bot.tree.sync()
         await ctx.send('The command tree was synced, whatever that means.')
         await log("The command tree was synced, whatever that means.")
+    else:
+        await ctx.send('That\'s for the bot owner, not random users...')
+
+@bot.command()
+async def fixconfig(ctx):
+    if ctx.author.id == 1141181390445101176:
+        for guild in bot.guilds:
+            # Regenerate configuration if guild config is missing
+            if not os.path.exists(f'data/{guild.id}/config.json'):
+                with open(f'data/{guild.id}/config.json', 'w') as f:
+                    json.dump({}, f)
+            # Regenerate quotes if guild quotes is missing
+            if not os.path.exists(f'data/{guild.id}/quotes.json'):
+                with open(f'data/{guild.id}/quotes.json', 'w') as f:
+                    json.dump({'quotes': []}, f)
+        await ctx.send('Fixed all missing config and quotes files.')
     else:
         await ctx.send('That\'s for the bot owner, not random users...')
 
