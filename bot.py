@@ -215,6 +215,9 @@ async def sync(ctx):
 async def fixconfig(ctx):
     if ctx.author.id == 1141181390445101176:
         for guild in bot.guilds:
+            # Regenerate server data path if it doesn't exist
+            if not os.path.exists(f'data/{guild.id}'):
+                os.mkdir(f'data/{guild.id}')
             # Regenerate configuration if guild config is missing
             if not os.path.exists(f'data/{guild.id}/config.json'):
                 with open(f'data/{guild.id}/config.json', 'x') as f:
