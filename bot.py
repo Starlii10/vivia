@@ -217,11 +217,11 @@ async def fixconfig(ctx):
         for guild in bot.guilds:
             # Regenerate configuration if guild config is missing
             if not os.path.exists(f'data/{guild.id}/config.json'):
-                with open(f'data/{guild.id}/config.json', 'w') as f:
+                with open(f'data/{guild.id}/config.json', 'x') as f:
                     json.dump({}, f)
             # Regenerate quotes if guild quotes is missing
             if not os.path.exists(f'data/{guild.id}/quotes.json'):
-                with open(f'data/{guild.id}/quotes.json', 'w') as f:
+                with open(f'data/{guild.id}/quotes.json', 'x') as f:
                     json.dump({'quotes': []}, f)
         await ctx.send('Fixed all missing config and quotes files.')
     else:
