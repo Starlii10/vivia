@@ -1,3 +1,4 @@
 {
-    "aiEnabled": true
+    "aiEnabled": true,
+    "verboseErrors": false
 }

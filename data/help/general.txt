@@ -2,32 +2,8 @@
 My name's Vivia, and it's a pleasure to meet you!
 Most of my functions can be activated through the application menu. It's your gateway into interacting with me!
 
-# Commands
-These are some of the things that I am capable of doing for you. Just ask!
-
-## Basics
-### help
-Sends this message you're reading right now! (Among other helpful things, of course.)
-
-## Quotes
-### quote
-Sends a random (slightly chaotic) quote.
-### addquote
-Adds a quote that I can say with the quote command!
-### removequote
-Gets rid of quotes added with /addquote.
-### listquotes
-Lists every single quote I can say. Yes, every single one.
-
-## Tools
-### channelmaker
-Make a whole bunch of channels using JSON! Use /channelmaker help for extra guidance.
-### namegenerator
-Generate a random name!
-
-# Chatting
-Pinging me lets me engage in conversation! It's a weird feature and highly unstable, though...
-I heard it was powered by something called LLaMa? I'm not too familiar with that.
+## Wiki
+Most information can be found on the wiki, hosted on [GitHub](https://github.com/Starlii10/vivia/wiki). It includes every command and option you'll need!
 
 ## GitHub
-My code is open source and can be found on [GitHub](https://github.com/starlii10/vivia/)! If you want to, you can even run your own version of me!
+My code is open source and can be found on [GitHub](https://github.com/Starlii10/vivia/)! If you want to, you can even run your own version of me!

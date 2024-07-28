@@ -104,7 +104,9 @@ async def on_guild_join(guild: discord.Guild):
     with open(f'data/servers/{guild.id}/config.json', 'w') as f, open(f'data/config.json.example', 'r') as g:
         json.dump(g, f)
     await guild.create_role(name="Vivia Admin", reason="Vivia setup: Users with this role have privileges when running Vivia's commands in this server.")
-    
+    for member in guild.members:
+        if member.guild_permissions.administrator:
+            await member.add_roles(discord.utils.find(lambda r: r.name == "Vivia Admin", guild.roles), reason="Vivia setup: This user has administrative permissions and was automatically assigned to the Vivia Admin role.")
 
 @bot.event
 async def on_message(message: discord.Message):
@@ -335,7 +337,9 @@ async def channelmaker(interaction: discord.Interaction, channel_config: str, ty
                         case "forum":
                             await interaction.guild.create_forum(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
         except Exception as e:
-            await interaction.followup.send(f"I couldn't make the channels. Something about {str(e)}.")
+            await interaction.followup.send(f"Something went wrong. Maybe try again?")
+            if serverConfig(interaction.guild)['verboseErrors']:
+                await interaction.followup.send(str(e) + "\n-# To disable these messages, run /config verboseErrors false")
             await log("Error while making channels: " + str(e) + "(initiated by " + str(interaction.user.name) + ")")
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
@@ -383,6 +387,7 @@ async def clearhistory(interaction: discord.Interaction):
 )
 @app_commands.choices(option=[
     app_commands.Choice(name="aienabled",value="AI Enabled"),
+    app_commands.Choice(name="verboseErrors",value="Verbose Errors"),
 ])
 async def config(interaction: discord.Interaction, option: str, value: bool):
     """
@@ -395,13 +400,26 @@ async def config(interaction: discord.Interaction, option: str, value: bool):
         match(option):
             case "aienabled":
                 try:
-                    serverConfig['aiEnabled'] = value
+                    changed = serverConfig(interaction.guild)
+                    changed['aiEnabled'] = value
                     with open(f"data/{interaction.guild.id}/config.json", "w") as f:
-                        json.dump(serverConfig, f)
+                        json.dump(changed, f)
                     await interaction.response.send_message("Done!", ephemeral=True)
                 except Exception as e:
                     await interaction.response.send_message(f"Something went wrong. Maybe try again?", ephemeral=True)
                     await log("Error while changing config for " + str(interaction.guild.id) + ": " + str(e) + "(initiated by " + str(interaction.user.name) + ")")
+            case "verboseErrors":
+                try:
+                    changed = serverConfig(interaction.guild)
+                    changed['verboseErrors'] = value
+                    with open(f"data/{interaction.guild.id}/config.json", "w") as f:
+                        json.dump(changed, f)
+                    await interaction.response.send_message("Done!", ephemeral=True)
+                except Exception as e:
+                    await interaction.response.send_message(f"Something went wrong. Maybe try again?", ephemeral=True)
+                    await log("Error while changing config for " + str(interaction.guild.id) + ": " + str(e) + "(initiated by " + str(interaction.user.name) + ")")
+            case _:
+                await interaction.response.send_message("That option doesn't seem to exist...", ephemeral=True)
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
