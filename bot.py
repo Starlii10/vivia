@@ -382,14 +382,14 @@ async def clearhistory(interaction: discord.Interaction):
         await interaction.response.send_message("You haven't chatted with me yet, so there's nothing to clear!", ephemeral=True)
     
 @tree.command(
-    name="config",
+    name="setting",
     description="Manages Vivia's configuration."
 )
 @app_commands.choices(option=[
     app_commands.Choice(name="aienabled",value="AI Enabled"),
     app_commands.Choice(name="verboseErrors",value="Verbose Errors"),
 ])
-async def config(interaction: discord.Interaction, option: str, value: bool):
+async def setting(interaction: discord.Interaction, option: str, value: bool):
     """
     Manages Vivia's configuration.
 
