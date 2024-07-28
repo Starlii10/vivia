@@ -16,7 +16,7 @@ import datetime
 import shutil
 import sys
 import discord
-from discord import app_commands
+from discord import Embed, app_commands
 from discord.ext import commands
 import json
 import dotenv
@@ -378,24 +378,30 @@ async def clearhistory(interaction: discord.Interaction):
         await interaction.response.send_message("You haven't chatted with me yet, so there's nothing to clear!", ephemeral=True)
     
 @tree.command(
-    name="disableai",
-    description="Disables Vivia's AI functionality for this server."
+    name="config",
+    description="Manages Vivia's configuration."
 )
-async def disableai(interaction: discord.Interaction):
+@app_commands.choices(option=[
+    app_commands.Choice(name="aienabled",value="AI Enabled"),
+])
+async def config(interaction: discord.Interaction, option: str, value: bool):
     """
-    Disables Vivia's AI functionality for this server.
+    Manages Vivia's configuration.
 
     ## Notes:
         - Only users with bot permissions can use this command.
     """
     if has_bot_permissions(interaction.user, interaction.guild):
-        with open(f"data/{str(interaction.guild.id)}/config.json", "r") as f:
-            config = json.load(f)
-        config['ai'] = False
-        with open(f"data/{str(interaction.guild.id)}/config.json", "w") as f:
-            json.dump(config, f)
-        await interaction.response.send_message("AI has been disabled for this server.", ephemeral=True)
-        await log(f"{interaction.user} ({interaction.user.id}) disabled AI for {interaction.guild.name} ({interaction.guild.id})")
+        match(option):
+            case "aienabled":
+                try:
+                    serverConfig['aiEnabled'] = value
+                    with open(f"data/{interaction.guild.id}/config.json", "w") as f:
+                        json.dump(serverConfig, f)
+                    await interaction.response.send_message("Done!", ephemeral=True)
+                except Exception as e:
+                    await interaction.response.send_message(f"Something went wrong. Maybe try again?", ephemeral=True)
+                    await log("Error while changing config for " + str(interaction.guild.id) + ": " + str(e) + "(initiated by " + str(interaction.user.name) + ")")
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
