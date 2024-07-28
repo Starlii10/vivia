@@ -122,7 +122,7 @@ async def on_message(message: discord.Message):
         return
 
     # Invoke LLaMa if pinged
-    if serverConfig(message.guild)['aiEnabled']:
+    if serverConfig(message.guild.id)['aiEnabled']:
         if message.mentions and message.mentions[0] == bot.user:
             async with message.channel.typing():
                 # TODO: how do i make this non blocking ?? codeium save me
@@ -338,7 +338,7 @@ async def channelmaker(interaction: discord.Interaction, channel_config: str, ty
                             await interaction.guild.create_forum(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
         except Exception as e:
             await interaction.followup.send(f"Something went wrong. Maybe try again?")
-            if serverConfig(interaction.guild)['verboseErrors']:
+            if serverConfig(interaction.guild.id)['verboseErrors']:
                 await interaction.followup.send(str(e) + "\n-# To disable these messages, run /config verboseErrors false")
             await log("Error while making channels: " + str(e) + "(initiated by " + str(interaction.user.name) + ")")
     else:
@@ -400,7 +400,7 @@ async def config(interaction: discord.Interaction, option: str, value: bool):
         match(option):
             case "aienabled":
                 try:
-                    changed = serverConfig(interaction.guild)
+                    changed = serverConfig(interaction.guild.id)
                     changed['aiEnabled'] = value
                     with open(f"data/{interaction.guild.id}/config.json", "w") as f:
                         json.dump(changed, f)
@@ -410,7 +410,7 @@ async def config(interaction: discord.Interaction, option: str, value: bool):
                     await log("Error while changing config for " + str(interaction.guild.id) + ": " + str(e) + "(initiated by " + str(interaction.user.name) + ")")
             case "verboseErrors":
                 try:
-                    changed = serverConfig(interaction.guild)
+                    changed = serverConfig(interaction.guild.id)
                     changed['verboseErrors'] = value
                     with open(f"data/{interaction.guild.id}/config.json", "w") as f:
                         json.dump(changed, f)
