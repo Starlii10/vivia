@@ -123,6 +123,7 @@ async def on_message(message: discord.Message):
     if serverConfig(message.guild)['aiEnabled']:
         if message.mentions and message.mentions[0] == bot.user:
             async with message.channel.typing():
+                # TODO: how do i make this non blocking ?? codeium save me
                 await message.reply(await Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "), message.author.display_name, message.author.name))
 
 @tree.command(
@@ -220,9 +221,13 @@ def has_bot_permissions(user: discord.Member, server: discord.Guild):
         - bool: True if the user has bot permissions, False otherwise.
     ## Notes:
         - This always returns true for the server owner.
-        - This also returns true if the user has administrator permissions.
+        - This also returns true if the user has a role with administrator permissions.
     """
-    adminRole = discord.utils.find(lambda a: a.name == "Vivia Admin", server.roles)
+    try:
+        adminRole = discord.utils.find(lambda a: a.name == "Vivia Admin", server.roles)
+    except AttributeError:
+        # TODO: log this issue
+        return False
     return user.id == server.owner or user.guild_permissions.administrator or user in adminRole.members
 
 @tree.command(

@@ -1,11 +1,11 @@
 [General]
 # The status message for the bot. This will be displayed in the bot's status and in the terminal running the bot.
 StatusMessage = A locally-run Vivia instance!
-# The ID for the bot's "owner" (the person who created/is running the bot). This gives them full control over the bot.
-owner = 0
 # The command prefix for the bot.
 Prefix = v!
 
 [Channels]
 # The ID for the channel where logs are sent. Must be a text channel in a server that the bot is in, and the bot must be able to send messages in it.
+# Since logs may contain sensitive information, this should be a private channel.
+# Leave this as 0 to disable logging to a channel.
 loggingchannel = 0

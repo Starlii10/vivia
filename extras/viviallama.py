@@ -70,6 +70,7 @@ async def createResponse(prompt: str, username: str, internal_name: str):
         # Write messages to memory file
         with open(f"data/tempchats/{internal_name}/messages.txt", "w") as file:
             json.dump(additional_messages + [{"role": "user", "content": prompt}] + [{"role": "assistant", "content": f"{response}"}], file)
+        
         return response
     else:
         print("AI functionality is disabled for this session due to problems with LLaMa. Ignoring generation request.")
