@@ -13,6 +13,7 @@
 """
 
 import datetime
+from doctest import Example
 import shutil
 import sys
 import discord
@@ -220,8 +221,8 @@ async def fixconfig(ctx):
                 os.mkdir(f'data/{guild.id}')
             # Regenerate configuration if guild config is missing
             if not os.path.exists(f'data/{guild.id}/config.json'):
-                with open(f'data/{guild.id}/config.json', 'x') as f:
-                    json.dump({}, f)
+                with open(f'data/{guild.id}/config.json', 'x') as f, open(f'data/config.json.example', 'r') as g:
+                    json.dump(g, f)
             # Regenerate quotes if guild quotes is missing
             if not os.path.exists(f'data/{guild.id}/quotes.json'):
                 with open(f'data/{guild.id}/quotes.json', 'x') as f:
