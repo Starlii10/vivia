@@ -429,7 +429,7 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
                 try:
                     changed = serverConfig(interaction.guild.id)
                     changed['aiEnabled'] = value
-                    with open(f"data/{interaction.guild.id}/config.json", "w") as f:
+                    with open(f"data/servers/{interaction.guild.id}/config.json", "w") as f:
                         json.dump(changed, f)
                     await interaction.response.send_message("Done!", ephemeral=True)
                 except Exception as e:
@@ -439,7 +439,7 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
                 try:
                     changed = serverConfig(interaction.guild.id)
                     changed['verboseErrors'] = value
-                    with open(f"data/{interaction.guild.id}/config.json", "w") as f:
+                    with open(f"data/servers/{interaction.guild.id}/config.json", "w") as f:
                         json.dump(changed, f)
                     await interaction.response.send_message("Done!", ephemeral=True)
                 except Exception as e:
@@ -451,7 +451,7 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
 def serverConfig(serverID: int):
-    with open(f"data/{serverID}/config.json", "r") as f:
+    with open(f"data/servers/{serverID}/config.json", "r") as f:
         return json.load(f)
 
 # Run
