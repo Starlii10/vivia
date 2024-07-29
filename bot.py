@@ -223,7 +223,7 @@ async def fixconfig(ctx):
             # Regenerate configuration if guild config is missing
             if not os.path.exists(f'data/{guild.id}/config.json'):
                 with open(f'data/servers/{guild.id}/config.json', 'x') as f, open(f'data/config.json.example', 'r') as g:
-                    json.dump(g, f)
+                    json.dump(obj=g, fp=f)
             await log(f'Config file for {guild.name} ({guild.id}) was regenerated.')
             # Regenerate quotes if guild quotes is missing
             if not os.path.exists(f'data/servers/{guild.id}/quotes.json'):
