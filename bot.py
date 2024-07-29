@@ -221,15 +221,19 @@ async def fixconfig(ctx):
                 os.mkdir(f'data/servers/{guild.id}')
             await log(f'Data path for {guild.name} ({guild.id}) was regenerated.')
             # Regenerate configuration if guild config is missing
-            if not os.path.exists(f'data/{guild.id}/config.json'):
+            try:
                 with open(f'data/servers/{guild.id}/config.json', 'x') as f, open(f'data/config.json.example', 'r') as g:
                     json.dump(obj=json.load(g), fp=f)
-            await log(f'Config file for {guild.name} ({guild.id}) was regenerated.')
+                await log(f'Config file for {guild.name} ({guild.id}) was regenerated.')
+            except FileExistsError:
+                pass
             # Regenerate quotes if guild quotes is missing
-            if not os.path.exists(f'data/servers/{guild.id}/quotes.json'):
+            try:
                 with open(f'data/servers/{guild.id}/quotes.json', 'x') as f:
                     json.dump({'quotes': []}, f)
-            await log(f'Custom quote file for {guild.name} ({guild.id}) was regenerated.')
+                await log(f'Custom quote file for {guild.name} ({guild.id}) was regenerated.')
+            except FileExistsError:
+                pass
         await ctx.send('Fixed all missing config and quotes files. Check log channel for more info.')
     else:
         await ctx.send('That\'s for the bot owner, not random users...')
