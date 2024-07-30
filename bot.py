@@ -413,8 +413,8 @@ async def clearhistory(interaction: discord.Interaction):
     description="Manages Vivia's configuration."
 )
 @app_commands.choices(option=[
-    app_commands.Choice(name="aienabled",value="AI Enabled"),
-    app_commands.Choice(name="verboseErrors",value="Verbose Errors"),
+    app_commands.Choice(name="AI Enabled",value="aienabled"),
+    app_commands.Choice(name="Verbose Errors",value="verboseErrors"),
 ])
 async def setting(interaction: discord.Interaction, option: str, value: bool):
     """
