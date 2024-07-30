@@ -12,6 +12,7 @@
     Have a great time using Vivia!
 """
 
+import asyncio
 import datetime
 from doctest import Example
 import shutil
@@ -126,8 +127,14 @@ async def on_message(message: discord.Message):
     if serverConfig(message.guild.id)['aiEnabled']:
         if message.mentions and message.mentions[0] == bot.user:
             async with message.channel.typing():
-                # TODO: how do i make this non blocking ?? codeium save me
-                await message.reply(await Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "), message.author.display_name, message.author.name))
+                await llamaReply(message)
+
+async def llamaReply(message: discord.Message):
+    """
+    Gets a reply using LLaMa.
+    """
+    task = asyncio.create_task(Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "), message.author.display_name, message.author.name))
+    await message.reply(await task)
 
 @tree.command(
     name="quote",
