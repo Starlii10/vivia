@@ -49,7 +49,6 @@ else:
     except Exception as e:
         print(f"Couldn't load LLaMa model. Please ensure that a supported model file exists in the models directory.\n\n{e}", file=sys.stderr)
         print("AI functionality will be disabled for this session.", file=sys.stderr)
-        print(e)
         aiDisabled = True
 
 async def createResponse(prompt: str, username: str, internal_name: str):
