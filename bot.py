@@ -46,6 +46,9 @@ except:
 else:
     print("I found my configuration file!")
 
+# Load commonly used config values
+logChannel = int(config['General']['LoggingChannel'])
+
 # Set up logging
 try:
     handler = logging.FileHandler(
@@ -79,6 +82,52 @@ helpMsg = open("data/help/general.txt", "r").read()
 channelmakerHelpMsg = open("data/help/channelmaker.txt", "r").read()
 setupHelpMsg = open("data/help/setup.txt", "r").read()
 
+# Functions
+# I should separate this into ViviaTools but who cares
+def has_bot_permissions(user: discord.Member, server: discord.Guild):
+    """
+    Checks if the specified user has bot permissions.
+
+    ## Args:
+        - user (discord.User): The user to check.
+        - server (discord.Guild): The server to check in.
+
+    ## Returns:
+        - bool: True if the user has bot permissions, False otherwise.
+    ## Notes:
+        - This always returns true for the server owner.
+        - This also returns true if the user has a role with administrator permissions.
+    """
+    try:
+        adminRole = discord.utils.find(lambda a: a.name == "Vivia Admin", server.roles)
+    except AttributeError:
+        # TODO: log this issue so it can be fixed by the server admins
+        return False
+    return user.id == server.owner or user.guild_permissions.administrator or user in adminRole.members
+
+def serverConfig(serverID: int):
+    with open(f"data/servers/{serverID}/config.json", "r") as f:
+        return json.load(f)
+
+async def log(message, severity=logging.INFO):
+    """
+    Outputs a message to the log.
+
+    ## Args:
+        - message (str): The message to output.
+        - severity (int): The severity of the message (defaults to Info).
+
+    ## Notes:
+        - This function will output to the console, log file, and to a Discord channel.
+    """
+    print(message)
+    try:
+        await bot.get_channel(logChannel).send(message)
+    except:
+        pass # we don't care if the channel doesn't exist
+    logging.log(severity, message)
+
+# Events
 @bot.event
 async def on_ready():
     """
@@ -123,7 +172,7 @@ async def on_message(message: discord.Message):
     if message.author == bot.user:
         return
 
-    # Invoke LLaMa if pinged
+    # Invoke LLaMa if pinged (this also works for replies)
     if serverConfig(message.guild.id)['aiEnabled']:
         if message.mentions and message.mentions[0] == bot.user:
             async with message.channel.typing():
@@ -136,6 +185,7 @@ async def llamaReply(message: discord.Message):
     task = asyncio.create_task(Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "), message.author.display_name, message.author.name))
     await message.reply(await task)
 
+# Commands
 @tree.command(
     name="quote",
     description="Say a random (slightly chaotic) quote."
@@ -167,20 +217,6 @@ async def listquotes(interaction: discord.Interaction):
             quotes = default_quotes['quotes'] + custom_quotes['quotes']
             await interaction.response.send_message(quotes)
 
-async def log(message, severity=logging.INFO):
-    """
-    Outputs a message to the log.
-
-    ## Args:
-        - message (str): The message to output.
-        - severity (int): The severity of the message (defaults to Info).
-
-    ## Notes:
-        - This function will output to the console, log file, and to a Discord channel.
-    """
-    print(message)
-    await bot.get_channel(int(config['Channels']['LoggingChannel'])).send(message)
-    logging.log(severity, message)
 
 @tree.command(
     name="help",
@@ -209,7 +245,7 @@ async def sync(ctx):
     Syncs the command tree.
 
     ## Notes:
-        - Only the owner can use this command.
+        - Only Starlii can use this command. If you run this locally, make sure to replace 1141181390445101176 with your Discord user ID.
         - This command does not appear in the command list. Use "v!sync" to run it.
     """
     if ctx.author.id == 1141181390445101176:
@@ -221,50 +257,40 @@ async def sync(ctx):
 
 @bot.command()
 async def fixconfig(ctx):
+    """
+    Regenerates configuration and custom quotes files for servers where they are missing.
+
+    ## Notes:
+        - Only Starlii can use this command. If you run this locally, make sure to replace 1141181390445101176 with your Discord user ID.
+        - This command does not appear in the command list. Use "v!fixconfig" to run it.
+    """
     if ctx.author.id == 1141181390445101176:
         for guild in bot.guilds:
             # Regenerate server data path if it doesn't exist
             if not os.path.exists(f'data/servers/{guild.id}'):
                 os.mkdir(f'data/servers/{guild.id}')
             await log(f'Data path for {guild.name} ({guild.id}) was regenerated.')
+
             # Regenerate configuration if guild config is missing
             try:
                 with open(f'data/servers/{guild.id}/config.json', 'x') as f, open(f'data/config.json.example', 'r') as g:
                     json.dump(obj=json.load(g), fp=f)
                 await log(f'Config file for {guild.name} ({guild.id}) was regenerated.')
             except FileExistsError:
-                pass
+                pass # Most likely there was nothing wrong with it
+
             # Regenerate quotes if guild quotes is missing
             try:
                 with open(f'data/servers/{guild.id}/quotes.json', 'x') as f:
                     json.dump({'quotes': []}, f)
                 await log(f'Custom quote file for {guild.name} ({guild.id}) was regenerated.')
             except FileExistsError:
-                pass
+                pass # Most likely there was nothing wrong with it
+
         await ctx.send('Fixed all missing config and quotes files. Check log channel for more info.')
     else:
         await ctx.send('That\'s for the bot owner, not random users...')
 
-def has_bot_permissions(user: discord.Member, server: discord.Guild):
-    """
-    Checks if the specified user has bot permissions.
-
-    ## Args:
-        - user (discord.User): The user to check.
-        - server (discord.Guild): The server to check in.
-
-    ## Returns:
-        - bool: True if the user has bot permissions, False otherwise.
-    ## Notes:
-        - This always returns true for the server owner.
-        - This also returns true if the user has a role with administrator permissions.
-    """
-    try:
-        adminRole = discord.utils.find(lambda a: a.name == "Vivia Admin", server.roles)
-    except AttributeError:
-        # TODO: log this issue
-        return False
-    return user.id == server.owner or user.guild_permissions.administrator or user in adminRole.members
 
 @tree.command(
     name="addquote",
@@ -406,7 +432,7 @@ async def namegenerator(interaction: discord.Interaction, type: str="first", gen
 )
 async def clearhistory(interaction: discord.Interaction):
     """
-    Clears your recent chat history with me.
+    Clears a user's recent chat history with Vivia.
     """
     if os.path.exists(f"data/tempchats/{str(interaction.user.name)}"):
         shutil.rmtree(f"data/tempchats/{str(interaction.user.name)}")
@@ -456,10 +482,6 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
                 await interaction.response.send_message("That option doesn't seem to exist...", ephemeral=True)
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
-
-def serverConfig(serverID: int):
-    with open(f"data/servers/{serverID}/config.json", "r") as f:
-        return json.load(f)
 
 # Run
 bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
