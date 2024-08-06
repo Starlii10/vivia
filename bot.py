@@ -47,7 +47,7 @@ else:
     print("I found my configuration file!")
 
 # Load commonly used config values
-logChannel = int(config['General']['LoggingChannel'])
+logChannel = int(config['Channels']['LoggingChannel'])
 
 # Set up logging
 try:
