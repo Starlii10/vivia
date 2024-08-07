@@ -14,12 +14,8 @@
 
 import asyncio
 import datetime
-from doctest import Example
 import shutil
 import sys
-import discord
-from discord import Embed, app_commands
-from discord.ext import commands
 import json
 import dotenv
 import random
@@ -27,6 +23,13 @@ import os
 from os import system
 import configparser
 import logging
+
+# Discord
+import discord
+from discord import Embed, app_commands
+from discord.ext import tasks, commands
+
+# Vivia's extra scripts
 import extras.viviatools as viviaTools
 import extras.viviallama as Llama
 
@@ -114,7 +117,7 @@ async def log(message, severity=logging.INFO):
     Outputs a message to the log.
 
     ## Args:
-        - message (str): The message to output.
+        - message (`print()`able): The message to output.
         - severity (int): The severity of the message (defaults to Info).
 
     ## Notes:
@@ -134,8 +137,19 @@ async def on_ready():
     Function called when Vivia starts up.
     """
     
-    # Change status
-    await bot.change_presence(activity=discord.CustomActivity(name=f'{config["General"]["Prefix"]}help | ' + config['General']['StatusMessage']))
+    await log("Vivia is online!")
+    
+    # Statuses
+    statusChanges.start()
+
+@tasks.loop(hours=1)
+async def statusChanges():
+    """
+    Changes the bot's status every hour.
+    """
+    with open("data/statuses.json", "r") as f:
+        statuses = json.load(f)
+    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=random.choice(statuses["statuses"])))
 
 @bot.event
 async def on_member_join(member):
@@ -195,7 +209,7 @@ async def quote(interaction: discord.Interaction):
     Sends a random (slightly chaotic) quote.
     """
     with open('data/quotes.json') as f:
-        with open(f'data/servers/{interaction.guild.id}/custom-quotes.json') as g:
+        with open(f'data/servers/{interaction.guild.id}/quotes.json') as g:
             default_quotes = json.load(f)
             custom_quotes = json.load(g)
             quotes = default_quotes['quotes'] + custom_quotes['quotes']
@@ -211,7 +225,7 @@ async def listquotes(interaction: discord.Interaction):
     Sends a list of all quotes.
     """
     with open('data/quotes.json') as f:
-        with open(f'data/servers/{interaction.guild.id}/custom-quotes.json') as g:
+        with open(f'data/servers/{interaction.guild.id}/quotes.json') as g:
             default_quotes = json.load(f)
             custom_quotes = json.load(g)
             quotes = default_quotes['quotes'] + custom_quotes['quotes']
@@ -245,7 +259,7 @@ async def sync(ctx):
     Syncs the command tree.
 
     ## Notes:
-        - Only Starlii can use this command. If you run this locally, make sure to replace 1141181390445101176 with your Discord user ID.
+        - Only Starlii can use this command. If you run Vivia locally, make sure to replace 1141181390445101176 with your Discord user ID.
         - This command does not appear in the command list. Use "v!sync" to run it.
     """
     if ctx.author.id == 1141181390445101176:
@@ -261,7 +275,7 @@ async def fixconfig(ctx):
     Regenerates configuration and custom quotes files for servers where they are missing.
 
     ## Notes:
-        - Only Starlii can use this command. If you run this locally, make sure to replace 1141181390445101176 with your Discord user ID.
+        - Only Starlii can use this command. If you run Vivia locally, make sure to replace 1141181390445101176 with your Discord user ID.
         - This command does not appear in the command list. Use "v!fixconfig" to run it.
     """
     if ctx.author.id == 1141181390445101176:
@@ -446,7 +460,7 @@ async def clearhistory(interaction: discord.Interaction):
     description="Manages Vivia's configuration."
 )
 @app_commands.choices(option=[
-    app_commands.Choice(name="AI Enabled",value="aienabled"),
+    app_commands.Choice(name="AI Enabled",value="aiEnabled"),
     app_commands.Choice(name="Verbose Errors",value="verboseErrors"),
 ])
 async def setting(interaction: discord.Interaction, option: str, value: bool):
@@ -456,9 +470,10 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
     ## Notes:
         - Only users with bot permissions can use this command.
     """
+    await log(option)
     if has_bot_permissions(interaction.user, interaction.guild):
         match(option):
-            case "aienabled":
+            case "aiEnabled":
                 try:
                     changed = serverConfig(interaction.guild.id)
                     changed['aiEnabled'] = value
