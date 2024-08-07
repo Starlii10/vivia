@@ -140,6 +140,9 @@ async def on_ready():
     await log("Vivia is online!")
     
     # Statuses
+    with open("data/statuses.json", "r") as f:
+        statuses = json.load(f)
+    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=random.choice(statuses["statuses"])))
     statusChanges.start()
 
 @tasks.loop(hours=1)
