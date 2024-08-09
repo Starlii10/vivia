@@ -28,7 +28,6 @@ import logging
 import discord
 from discord import Embed, app_commands
 from discord.ext import tasks, commands
-from grpc import server
 
 # Vivia's extra scripts
 import extras.viviatools as viviaTools
