@@ -167,7 +167,7 @@ async def on_guild_join(guild: discord.Guild):
     """
 
     await log(f"Bot joined {guild.name} ({guild.id})")
-    with open(f'data/servers/{guild.id}/custom-quotes.json', 'w') as f:
+    with open(f'data/servers/{guild.id}/quotes.json', 'w') as f:
         json.dump({'quotes': []}, f)
     with open(f'data/servers/{guild.id}/config.json', 'w') as f, open(f'data/config.json.example', 'r') as g:
         json.dump(g, f)
@@ -327,12 +327,12 @@ async def addquote(interaction: discord.Interaction, quote: str, author: str, da
         - This adds the quote to the custom quote list for the server the command was used in.
     """
     if has_bot_permissions(interaction.user, interaction.guild):
-        with open(f'data/servers/{interaction.guild.id}/custom-quotes.json') as f:
+        with open(f'data/servers/{interaction.guild.id}/quotes.json') as f:
             quotes = json.load(f)
             # Add the quote
             quotes['quotes'].append(f'"{quote}" - {author}, {date}')
         # Write the updated list
-        with open(f'data/servers/{interaction.guild.id}/custom-quotes.json', 'w') as f:
+        with open(f'data/servers/{interaction.guild.id}/quotes.json', 'w') as f:
             json.dump(quotes, f)
         await interaction.response.send_message(f'"{quote}" - {author}, {date} was added to the list.')
         await log(f"{interaction.user} added \"{quote} - {author}, {date}\" to the custom quote list for server {interaction.guild.name} ({interaction.guild.id})")
@@ -354,14 +354,14 @@ async def removequote(interaction: discord.Interaction, quote: str):
         - This removes the quote from the custom quote list.
     """
     if has_bot_permissions(interaction.user, interaction.guild):
-        with open(f'data/servers/{str(interaction.guild.id)}/custom-quotes.json') as f:
+        with open(f'data/servers/{str(interaction.guild.id)}/quotes.json') as f:
             quotes = json.load(f)
             if quote in quotes['quotes']:
                 quotes['quotes'].remove(quote)
             else:
                 await interaction.response.send_message("That quote isn't in the list, though...", ephemeral=True)
                 return
-        with open('custom-quotes.json', 'w') as f:
+        with open('quotes.json', 'w') as f:
             json.dump(quotes, f)
         await interaction.response.send_message(f'"{quote}" was removed from the list.')
         await log(f"{interaction.user} removed \"{quote}\" from the list")
