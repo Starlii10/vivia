@@ -28,6 +28,7 @@ import logging
 import discord
 from discord import Embed, app_commands
 from discord.ext import tasks, commands
+from grpc import server
 
 # Vivia's extra scripts
 import extras.viviatools as viviaTools
@@ -190,6 +191,7 @@ async def on_message(message: discord.Message):
         return
 
     # Invoke LLaMa if pinged (this also works for replies)
+    print(serverConfig(message.guild.id)['aiEnabled'])
     if serverConfig(message.guild.id)['aiEnabled']:
         if message.mentions and message.mentions[0] == bot.user:
             async with message.channel.typing():
