@@ -190,9 +190,9 @@ async def on_message(message: discord.Message):
         return
 
     # Invoke LLaMa if pinged (this also works for replies)
-    print(serverConfig(message.guild.id)['aiEnabled'])
     if serverConfig(message.guild.id)['aiEnabled']:
-        if message.mentions and message.mentions[0] == bot.user:
+        # we need to check both for direct mentions of Vivia and for mentions of the Vivia role to prevent confusion
+        if (message.mentions and (message.mentions[0] == bot.user or message.role_mentions[0] == discord.utils.get(message.guild.roles, name="Vivia"))):
             async with message.channel.typing():
                 await llamaReply(message)
 
