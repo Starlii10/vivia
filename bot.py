@@ -46,8 +46,6 @@ except:
     except:
         print("I couldn't create a config file. Is something wrong with config.ini.example?")
         sys.exit(1)
-else:
-    print("I found my configuration file!")
 
 # Load commonly used config values
 logChannel = int(config['Channels']['LoggingChannel'])
