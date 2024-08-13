@@ -36,8 +36,8 @@ if os.path.exists("data/tempchats"):
 try:
     from llama_cpp import Llama
 except:
-    print("Couldn't load llama-cpp-python. Make sure it's installed.", file=sys.stderr)
-    print("AI functionality will be disabled for this session.", file=sys.stderr)
+    print("Couldn't load llama-cpp-python. This is not a fatal error, however Vivia will not be able to generate responses unless it is installed.", file=sys.stderr)
+    print("Please install it according to their installation guide. See https://github.com/abetlen/llama-cpp-python/blob/main/README.md#installation.", file=sys.stderr)
     aiDisabled = True
 else:
     try:
@@ -48,7 +48,7 @@ else:
         )
     except Exception as e:
         print(f"Couldn't load LLaMa model. Please ensure that a supported model file exists in the models directory.\n\n{e}", file=sys.stderr)
-        print("AI functionality will be disabled for this session.", file=sys.stderr)
+        print("This is not a fatal error, however Vivia will not be able to generate responses unless it is installed.", file=sys.stderr)
         aiDisabled = True
 
 async def createResponse(prompt: str, username: str, internal_name: str):

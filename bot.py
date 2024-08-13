@@ -263,10 +263,10 @@ async def sync(ctx):
     Syncs the command tree.
 
     ## Notes:
-        - Only Starlii can use this command. If you run Vivia locally, make sure to replace 1141181390445101176 with your Discord user ID.
+        - Only the bot owner can use this command. If you run Vivia locally, make sure to replace it with your Discord user ID in config.ini.
         - This command does not appear in the command list. Use "v!sync" to run it.
     """
-    if ctx.author.id == 1141181390445101176:
+    if ctx.author.id == config["General"]["Owner"]:
         await bot.tree.sync()
         await ctx.send('The command tree was synced, whatever that means.')
         await log("The command tree was synced, whatever that means.")
@@ -279,10 +279,10 @@ async def fixconfig(ctx):
     Regenerates configuration and custom quotes files for servers where they are missing.
 
     ## Notes:
-        - Only Starlii can use this command. If you run Vivia locally, make sure to replace 1141181390445101176 with your Discord user ID.
+        - Only the bot owner can use this command. If you run Vivia locally, make sure to replace it with your Discord user ID in config.ini.
         - This command does not appear in the command list. Use "v!fixconfig" to run it.
     """
-    if ctx.author.id == 1141181390445101176:
+    if ctx.author.id == config["General"]["Owner"]:
         for guild in bot.guilds:
             # Regenerate server data path if it doesn't exist
             if not os.path.exists(f'data/servers/{guild.id}'):

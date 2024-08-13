@@ -47,7 +47,7 @@ COPY . .
 # Expose the port that the application listens on.
 EXPOSE 8000
 
-# Expose pip ports for it to run
+# Expose pip ports for it to download dependencies (added by Starlii manually, Docker why are you like this)
 EXPOSE 3128
 EXPOSE 443
 
