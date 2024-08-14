@@ -77,5 +77,5 @@ async def createResponse(prompt: str, username: str, internal_name: str):
         return response
     else:
         # Return an error message if LLaMa failed to load
-        print(f"AI functionality is disabled for this session due to problems with LLaMa.\nIgnoring generation request by {internal_name} ({username})", file=sys.stderr)
+        print(f"Ignoring generation request by {internal_name} ({username}) due to previous errors while loading LLaMa", file=sys.stderr)
         return("Something's wrong with my programming, so I can't respond. Sorry.")

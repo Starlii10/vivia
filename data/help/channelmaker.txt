@@ -13,9 +13,9 @@ A channelmaker JSON configuration looks like this:
 }
 ```
 - "categories" is where you put in your categories. You can define as many categories as you want!
-- In the example above, we have one category called "test" and a channel inside called "test". Categories are just lists of channel names, which will get created when the JSON is used in channelmaker.
+- In the example above, we have one category called "category1" and a channel inside called "channel1".
 
-You can also define the type of channels you want to create with the type argument.
+You can also define the type of channels you want to create with the `type` argument.
 - "text" makes text channels.
 - "voice" makes voice channels.
-- "forum" makes forum channels (note that this will fail if the server doesn't support it).
+- "forum" makes forum channels, but only in servers where it's supported.

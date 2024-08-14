@@ -63,12 +63,14 @@ except:
     print("Something's wrong with the logging file. I'm going to ignore it.")
     handler = logging.StreamHandler(sys.stdout)
 
+# Terminal title. VSCode will scream at you that one of these is unreachable, ignore it
 if sys.platform == 'win32':
     # Windows title
     system("title Vivia - " + config['General']['StatusMessage'])
 else:
-    # Linux title (if this doesn't work please open an issue because I suck at Linux)
-    system("echo -ne '\033]0;Vivia - " + config['General']['StatusMessage'] + "\007'") # This is NOT unreachable despite VSCode complaining (god I hate VSCode so much)
+    # Linux title (if this doesn't work on your distro please open an issue because I suck at Linux)
+    system("echo -ne '\033]0;Vivia - " + config['General']['StatusMessage'] + "\007'")
+
 print("Preparing to start up!")
 
 # Get ready to run the bot
@@ -110,7 +112,7 @@ def serverConfig(serverID: int):
     with open(f"data/servers/{serverID}/config.json", "r") as f:
         return json.load(f)
 
-async def log(message, severity=logging.INFO):
+async def log(message, sendToLogChannel=True, severity=logging.INFO):
     """
     Outputs a message to the log.
 
@@ -123,7 +125,8 @@ async def log(message, severity=logging.INFO):
     """
     print(message)
     try:
-        await bot.get_channel(logChannel).send(message)
+        if sendToLogChannel:
+            await bot.get_channel(logChannel).send(message)
     except:
         pass # we don't care if the channel doesn't exist
     logging.log(severity, message)
@@ -135,7 +138,7 @@ async def on_ready():
     Function called when Vivia starts up.
     """
     
-    await log("Vivia is online!")
+    await log("Vivia is online!", sendToLogChannel=False)
     
     # Statuses
     with open("data/statuses.json", "r") as f:
@@ -180,12 +183,12 @@ async def on_message(message: discord.Message):
     Function called when a message is sent.
     """
 
-    # Process commands
-    await bot.process_commands(message)
-
     # Make sure Vivia doesn't respond to herself
     if message.author == bot.user:
         return
+
+    # Process commands
+    await bot.process_commands(message)
 
     # Invoke LLaMa if pinged (this also works for replies)
     if serverConfig(message.guild.id)['aiEnabled']:
@@ -210,14 +213,20 @@ async def quote(interaction: discord.Interaction):
     """
     Sends a random (slightly chaotic) quote.
     """
-    with open('data/quotes.json') as f:
-        with open(f'data/servers/{interaction.guild.id}/quotes.json') as g:
-            default_quotes = json.load(f)
-            custom_quotes = json.load(g)
-            quotes = default_quotes['quotes'] + custom_quotes['quotes']
-            quote = random.choice(quotes)
-            await interaction.response.send_message(quote)
-
+    try:
+        with open('data/quotes.json') as f:
+            with open(f'data/servers/{interaction.guild.id}/quotes.json') as g:
+                default_quotes = json.load(f)
+                custom_quotes = json.load(g)
+                quotes = default_quotes['quotes'] + custom_quotes['quotes']
+                quote = random.choice(quotes)
+                await interaction.response.send_message(quote)
+    except Exception as e:
+        await interaction.response.send_message("Something went wrong. Maybe try again?")
+        if serverConfig(interaction.guild.id)['verboseErrors']:
+            await interaction.followup.send(e + "\n-# To disable these messages, run /config verboseErrors false")
+        await log(f"Couldn't send a quote for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}", severity=logging.ERROR)
+    
 @tree.command(
     name="listquotes",
     description="List all quotes."
@@ -226,12 +235,18 @@ async def listquotes(interaction: discord.Interaction):
     """
     Sends a list of all quotes.
     """
-    with open('data/quotes.json') as f:
-        with open(f'data/servers/{interaction.guild.id}/quotes.json') as g:
-            default_quotes = json.load(f)
-            custom_quotes = json.load(g)
-            quotes = default_quotes['quotes'] + custom_quotes['quotes']
-            await interaction.response.send_message(quotes)
+    try:
+        with open('data/quotes.json') as f:
+            with open(f'data/servers/{interaction.guild.id}/quotes.json') as g:
+                default_quotes = json.load(f)
+                custom_quotes = json.load(g)
+                quotes = default_quotes['quotes'] + custom_quotes['quotes']
+                await interaction.response.send_message(quotes)
+    except Exception as e:
+        await interaction.response.send_message("Something went wrong. Maybe try again?")
+        if serverConfig(interaction.guild.id)['verboseErrors']:
+            await interaction.followup.send(e + "\n-# To disable these messages, run /config verboseErrors false")
+        await log(f"Couldn't list quotes for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}", severity=logging.ERROR)
 
 
 @tree.command(
@@ -261,7 +276,7 @@ async def sync(ctx):
     Syncs the command tree.
 
     ## Notes:
-        - Only the bot owner can use this command. If you run Vivia locally, make sure to replace it with your Discord user ID in config.ini.
+        - Only the bot owner can use this command. If you run Vivia locally, make sure to add your Discord user ID in config.ini.
         - This command does not appear in the command list. Use "v!sync" to run it.
     """
     if ctx.author.id == config["General"]["Owner"]:
@@ -277,7 +292,7 @@ async def fixconfig(ctx):
     Regenerates configuration and custom quotes files for servers where they are missing.
 
     ## Notes:
-        - Only the bot owner can use this command. If you run Vivia locally, make sure to replace it with your Discord user ID in config.ini.
+        - Only the bot owner can use this command. If you run Vivia locally, make sure to add your Discord user ID in config.ini.
         - This command does not appear in the command list. Use "v!fixconfig" to run it.
     """
     if ctx.author.id == config["General"]["Owner"]:
@@ -326,13 +341,20 @@ async def addquote(interaction: discord.Interaction, quote: str, author: str, da
         - This adds the quote to the custom quote list for the server the command was used in.
     """
     if has_bot_permissions(interaction.user, interaction.guild):
-        with open(f'data/servers/{interaction.guild.id}/quotes.json') as f:
-            quotes = json.load(f)
-            # Add the quote
-            quotes['quotes'].append(f'"{quote}" - {author}, {date}')
-        # Write the updated list
-        with open(f'data/servers/{interaction.guild.id}/quotes.json', 'w') as f:
-            json.dump(quotes, f)
+        try:
+            with open(f'data/servers/{interaction.guild.id}/quotes.json') as f:
+                quotes = json.load(f)
+                # Add the quote
+                quotes['quotes'].append(f'"{quote}" - {author}, {date}')
+            # Write the updated list
+            with open(f'data/servers/{interaction.guild.id}/quotes.json', 'w') as f:
+                json.dump(quotes, f)
+        except Exception as e:
+            await interaction.response.send_message(f'Something went wrong. Maybe try again?', ephemeral=True)
+            if config["General"]["VerboseErrors"]:
+                await interaction.followup.send(e + "\n-# To disable these messages, run /config verboseErrors false")
+            await log(f'Failed to add "{quote} - {author}, {date}" to the custom quote list for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}', severity=logging.ERROR)
+            return
         await interaction.response.send_message(f'"{quote}" - {author}, {date} was added to the list.')
         await log(f"{interaction.user} added \"{quote} - {author}, {date}\" to the custom quote list for server {interaction.guild.name} ({interaction.guild.id})")
     else:
@@ -353,15 +375,22 @@ async def removequote(interaction: discord.Interaction, quote: str):
         - This removes the quote from the custom quote list.
     """
     if has_bot_permissions(interaction.user, interaction.guild):
-        with open(f'data/servers/{str(interaction.guild.id)}/quotes.json') as f:
-            quotes = json.load(f)
-            if quote in quotes['quotes']:
-                quotes['quotes'].remove(quote)
-            else:
-                await interaction.response.send_message("That quote isn't in the list, though...", ephemeral=True)
-                return
-        with open('quotes.json', 'w') as f:
-            json.dump(quotes, f)
+        try:
+            with open(f'data/servers/{str(interaction.guild.id)}/quotes.json') as f:
+                quotes = json.load(f)
+                if quote in quotes['quotes']:
+                    quotes['quotes'].remove(quote)
+                else:
+                    await interaction.response.send_message("That quote isn't in the list, though...", ephemeral=True)
+                    return
+            with open('quotes.json', 'w') as f:
+                json.dump(quotes, f)
+        except Exception as e:
+            await interaction.response.send_message(f'Something went wrong. Maybe try again?', ephemeral=True)
+            if config["General"]["VerboseErrors"]:
+                await interaction.followup.send(e + "\n-# To disable these messages, run /config verboseErrors false")
+            await log(f'Failed to remove "{quote}" from the list for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}', severity=logging.ERROR)
+            return
         await interaction.response.send_message(f'"{quote}" was removed from the list.')
         await log(f"{interaction.user} removed \"{quote}\" from the list")
     else:
@@ -394,7 +423,7 @@ async def channelmaker(interaction: discord.Interaction, channel_config: str, ty
             try:
                 channels = json.loads(channel_config) # Channels is a list of categories, each category is a list of channels
             except Exception:
-                await interaction.followup.send(f"I couldn't parse that JSON.\n\nIf you need help with making JSON, run /help channelmaker.")
+                await interaction.followup.send(f"I couldn't parse that JSON.\n\nIf you need help with using this command, run /help channelmaker.")
                 return
             for category in channels['categories']:
                 if not category in interaction.guild.categories:
@@ -416,7 +445,7 @@ async def channelmaker(interaction: discord.Interaction, channel_config: str, ty
             await interaction.followup.send(f"Something went wrong. Maybe try again?")
             if serverConfig(interaction.guild.id)['verboseErrors']:
                 await interaction.followup.send(str(e) + "\n-# To disable these messages, run /config verboseErrors false")
-            await log("Error while making channels: " + str(e) + "(initiated by " + str(interaction.user.name) + ")")
+            await log(f"Error while making channels in server {str(interaction.guild.name)} ({str(interaction.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
@@ -474,29 +503,27 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
     """
     await log(option)
     if has_bot_permissions(interaction.user, interaction.guild):
-        match(option):
-            case "aiEnabled":
-                try:
+        try:
+            match(option):
+                case "aiEnabled":
                     changed = serverConfig(interaction.guild.id)
                     changed['aiEnabled'] = value
                     with open(f"data/servers/{interaction.guild.id}/config.json", "w") as f:
                         json.dump(changed, f)
-                    await interaction.response.send_message("Done!", ephemeral=True)
-                except Exception as e:
-                    await interaction.response.send_message(f"Something went wrong. Maybe try again?", ephemeral=True)
-                    await log("Error while changing config for " + str(interaction.guild.id) + ": " + str(e) + "(initiated by " + str(interaction.user.name) + ")")
-            case "verboseErrors":
-                try:
+                    await interaction.response.send_message("Done!", ephemeral=True)  
+                case "verboseErrors":
                     changed = serverConfig(interaction.guild.id)
                     changed['verboseErrors'] = value
                     with open(f"data/servers/{interaction.guild.id}/config.json", "w") as f:
                         json.dump(changed, f)
                     await interaction.response.send_message("Done!", ephemeral=True)
-                except Exception as e:
-                    await interaction.response.send_message(f"Something went wrong. Maybe try again?", ephemeral=True)
-                    await log("Error while changing config for " + str(interaction.guild.id) + ": " + str(e) + "(initiated by " + str(interaction.user.name) + ")")
-            case _:
-                await interaction.response.send_message("That option doesn't seem to exist...", ephemeral=True)
+                case _:
+                    await interaction.response.send_message("That option doesn't seem to exist...", ephemeral=True)
+        except Exception as e:
+            await interaction.response.send_message(f"Something went wrong. Maybe try again?", ephemeral=True)
+            if serverConfig(interaction.guild.id)['verboseErrors']:
+                await interaction.followup.send_message(e + "\n-# To disable these messages, run /config verboseErrors false")
+            await log(f"Error while changing config for {interaction.guild.name} ({str(interaction.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
