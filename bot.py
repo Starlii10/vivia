@@ -126,7 +126,10 @@ async def log(message, sendToLogChannel=True, severity=logging.INFO):
     print(message)
     try:
         if sendToLogChannel:
-            await bot.get_channel(logChannel).send(message)
+            if severity == logging.ERROR:
+                await bot.get_channel(logChannel).send(f"<@{config["General"]["Owner"]}> " + message)
+            else:
+                await bot.get_channel(logChannel).send(message)
     except:
         pass # we don't care if the channel doesn't exist
     logging.log(severity, message)
