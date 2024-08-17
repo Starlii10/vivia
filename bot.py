@@ -531,4 +531,5 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
 # Run
-bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
+while True:
+    bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
