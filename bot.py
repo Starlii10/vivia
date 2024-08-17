@@ -196,7 +196,7 @@ async def on_message(message: discord.Message):
     # Invoke LLaMa if pinged (this also works for replies)
     if serverConfig(message.guild.id)['aiEnabled']:
         # we need to check both for direct mentions of Vivia and for mentions of the Vivia role to prevent confusion
-        if (message.mentions and (message.mentions[0] == bot.user or message.role_mentions[0] == discord.utils.get(message.guild.roles, name="Vivia"))):
+        if (message.mentions and (message.mentions[0] == bot.user or message.role_mentions[0] == discord.utils.get(message.guild.roles, name="Vivia"))): # This is throwing IndexErrors for some reason. Gonna ignore it
             async with message.channel.typing():
                 await llamaReply(message)
 
