@@ -436,7 +436,6 @@ async def channelmaker(interaction: discord.Interaction, channel_config: str, ty
                     target = interaction.guild.categories.get(category)
                 for channel in channels['categories'][category]:
                     # Create the channel
-                    await log(type)
                     match type:
                         case "text":
                             await interaction.guild.create_text_channel(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
@@ -513,15 +512,15 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
                     changed['aiEnabled'] = value
                     with open(f"data/servers/{interaction.guild.id}/config.json", "w") as f:
                         json.dump(changed, f)
-                    await interaction.response.send_message("Done!", ephemeral=True)  
                 case "verboseErrors":
                     changed = serverConfig(interaction.guild.id)
                     changed['verboseErrors'] = value
                     with open(f"data/servers/{interaction.guild.id}/config.json", "w") as f:
                         json.dump(changed, f)
-                    await interaction.response.send_message("Done!", ephemeral=True)
                 case _:
                     await interaction.response.send_message("That option doesn't seem to exist...", ephemeral=True)
+                    return
+            await interaction.response.send_message(f"Done! `{option}` is now `{value}`.", ephemeral=True)
         except Exception as e:
             await interaction.response.send_message(f"Something went wrong. Maybe try again?", ephemeral=True)
             if serverConfig(interaction.guild.id)['verboseErrors']:
