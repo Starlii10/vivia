@@ -24,6 +24,9 @@
 import json
 import os
 import sys
+import traceback
+import discord
+import requests
 
 print("Attempting to load LLaMa - this may take a moment")
 
@@ -47,13 +50,14 @@ else:
             n_gpu_layers=-1
         )
     except Exception as e:
-        print(f"Couldn't load LLaMa model. Please ensure that a supported model file exists in the models directory.\n\n{e}", file=sys.stderr)
+        print(f"Couldn't load LLaMa model. This can be caused by an invalid model path, no supported devices to run LLaMa on, or an error in the model.", file=sys.stderr)
         print("This is not a fatal error, however Vivia will not be able to generate responses unless it is installed.", file=sys.stderr)
+        print(f"{type(e)}: {e}\n{traceback.format_exc()}", file=sys.stderr)
         aiDisabled = True
 
-async def createResponse(prompt: str, username: str, internal_name: str):
+async def createResponse(prompt: str, username: str, internal_name: str, attachments: list[discord.Attachment] = []):
     if not aiDisabled:
-        print("Response generation requested - generating...")
+        print(f"Response generation requested by {internal_name} ({username}) - generating now! (This may take a moment)")
 
         # Read messages from memory file
         if not os.path.exists(f"data/tempchats/{internal_name}/messages.txt"):
@@ -62,7 +66,33 @@ async def createResponse(prompt: str, username: str, internal_name: str):
                 json.dump([], file)
         with open(f"data/tempchats/{internal_name}/messages.txt", "r") as file:
             additional_messages = json.load(file)
-        
+
+        # Read message attachments
+        if len(attachments) > 0:
+            print("Reading message attachments...")
+            for attachment in attachments:
+                print(f"Downloading {attachment.filename}...")
+                # Download attachment
+                url = attachment.url
+                response = requests.get(url)
+                if response.status_code != 200:
+                    print(f"Failed to download {attachment.filename}. Response code: {response.status_code}. Ignoring attachment.", file=sys.stderr)
+                    continue
+                with open(f"data/tempchats/{internal_name}/{attachment.filename}", "w") as file:
+                    file.write(response.text)
+                print(f"Downloaded {attachment.filename}.")
+
+                # Check if the attachment is text
+                if attachment.content_type == "text/plain":
+                    print(f"Reading {attachment.filename} as text...")
+                    with open(f"data/tempchats/{internal_name}/{attachment.filename}", "r") as file:
+                        additional_messages.append({"role": "user", "content": "A text file: " + file.read()})
+                else:
+                    # TODO: OCR for images
+                    print(f"Attachment {attachment.filename} is not text. Skipping.")
+                    
+
+
         # Combine the additional messages with the system prompt and user prompt
         generation = model.create_chat_completion(messages=additional_messages + [
             {"role": "system", "content": open("data/system-prompt.txt", "r").read().replace("{username}", username)},
@@ -79,3 +109,4 @@ async def createResponse(prompt: str, username: str, internal_name: str):
         # Return an error message if LLaMa failed to load
         print(f"Ignoring generation request by {internal_name} ({username}) due to previous errors while loading LLaMa", file=sys.stderr)
         return("Something's wrong with my programming, so I can't respond. Sorry.")
+

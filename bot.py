@@ -204,7 +204,7 @@ async def llamaReply(message: discord.Message):
     """
     Gets a reply using LLaMa.
     """
-    task = asyncio.create_task(Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "), message.author.display_name, message.author.name))
+    task = asyncio.create_task(Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "), message.author.display_name, message.author.name, message.attachments))
     await message.reply(await task)
 
 # Commands
