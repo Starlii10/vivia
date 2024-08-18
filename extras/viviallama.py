@@ -77,7 +77,7 @@ async def createResponse(prompt: str, username: str, internal_name: str, attachm
             for attachment in attachments:
                 print(f"Downloading {attachment.filename}...")
                 # Download attachment
-                attachment.save(f"data/tempchats/{internal_name}/{attachment.filename}")
+                await attachment.save(f"data/tempchats/{internal_name}/{attachment.filename}")
                 print(f"Downloaded {attachment.filename}.")
 
                 # Check if the attachment is text
