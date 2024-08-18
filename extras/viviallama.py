@@ -87,7 +87,7 @@ async def createResponse(prompt: str, username: str, internal_name: str, attachm
                 print(f"Downloaded {attachment.filename}.")
 
                 # Check if the attachment is text
-                if mimetypes.guess_type(f"data/tempchats/{internal_name}/{attachment.filename}")[0] == "text/plain":
+                if mimetypes.guess_type(f"data/tempchats/{internal_name}/{attachment.filename}")[0].startswith("text"):
                     print(f"Attachment {attachment.filename} is text")
                     with open(f"data/tempchats/{internal_name}/{attachment.filename}", "r") as file:
                         additional_messages.append({"role": "user", "content": "An attached text file: " + file.read()})
