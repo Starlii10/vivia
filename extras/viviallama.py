@@ -78,14 +78,20 @@ async def createResponse(prompt: str, username: str, internal_name: str, attachm
             for attachment in attachments:
                 print(f"Downloading {attachment.filename}...")
                 # Download attachment
-                await attachment.save(f"data/tempchats/{internal_name}/{attachment.filename}")
+                try:
+                    await attachment.save(f"data/tempchats/{internal_name}/{attachment.filename}")
+                except Exception as e:
+                    print(f"Error downloading {attachment.filename}. Ignoring.\n{type(e)}: {e}")
+                    additional_messages.append({"role": "user", "content": f"An attachment that failed to download."})
+                    continue
                 print(f"Downloaded {attachment.filename}.")
 
                 # Check if the attachment is text
                 if mimetypes.guess_type(f"data/tempchats/{internal_name}/{attachment.filename}")[0] == "text/plain":
-                    print(f"Reading {attachment.filename} as text...")
+                    print(f"Attachment {attachment.filename} is text")
                     with open(f"data/tempchats/{internal_name}/{attachment.filename}", "r") as file:
-                        additional_messages.append({"role": "user", "content": "A text file: " + file.read()})
+                        additional_messages.append({"role": "user", "content": "An attached text file: " + file.read()})
+                        print(f"Attachment {attachment.filename} has been processed.")
                 else:
                     # TODO: OCR for images
                     print(f"Attachment {attachment.filename} is not text. Skipping.")
