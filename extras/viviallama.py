@@ -33,7 +33,11 @@ print("Attempting to load LLaMa - this may take a moment")
 aiDisabled = False
 # Delete tempchats folder if it exists
 if os.path.exists("data/tempchats"):
-    os.system("rm -rf data/tempchats")
+    # Just like the terminal title, VSCode hates when I do it like this. Too bad, I can't write cross-platform code very well
+    if sys.platform == "win32":
+        os.system("rmdir /S /Q data/tempchats")  # Windows
+    else:
+        os.system("rm -rf data/tempchats")  # Linux/Unix/Mac/Insert-Non-Windows-OS-Here
 
 # Load LLaMa
 try:
@@ -73,17 +77,11 @@ async def createResponse(prompt: str, username: str, internal_name: str, attachm
             for attachment in attachments:
                 print(f"Downloading {attachment.filename}...")
                 # Download attachment
-                url = attachment.url
-                response = requests.get(url)
-                if response.status_code != 200:
-                    print(f"Failed to download {attachment.filename}. Response code: {response.status_code}. Ignoring attachment.", file=sys.stderr)
-                    continue
-                with open(f"data/tempchats/{internal_name}/{attachment.filename}", "w") as file:
-                    file.write(response.text)
+                attachment.save(f"data/tempchats/{internal_name}/{attachment.filename}")
                 print(f"Downloaded {attachment.filename}.")
 
                 # Check if the attachment is text
-                if attachment.content_type == "text/plain":
+                if attachment.content_type == "text":
                     print(f"Reading {attachment.filename} as text...")
                     with open(f"data/tempchats/{internal_name}/{attachment.filename}", "r") as file:
                         additional_messages.append({"role": "user", "content": "A text file: " + file.read()})
