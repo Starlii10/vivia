@@ -22,6 +22,7 @@
 """
 
 import json
+import mimetypes
 import os
 import sys
 import traceback
@@ -81,7 +82,7 @@ async def createResponse(prompt: str, username: str, internal_name: str, attachm
                 print(f"Downloaded {attachment.filename}.")
 
                 # Check if the attachment is text
-                if attachment.content_type == "text":
+                if mimetypes.guess_type(f"data/tempchats/{internal_name}/{attachment.filename}")[0] == "text/plain":
                     print(f"Reading {attachment.filename} as text...")
                     with open(f"data/tempchats/{internal_name}/{attachment.filename}", "r") as file:
                         additional_messages.append({"role": "user", "content": "A text file: " + file.read()})
