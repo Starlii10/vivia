@@ -12,6 +12,9 @@
     Have a great time using Vivia!
 """
 
+# Vivia version
+__VERSION__ = "Vivia v1.0.0"
+
 import asyncio
 import datetime
 import shutil
@@ -66,7 +69,7 @@ except:
 # Terminal title. VSCode will scream at you that one of these is unreachable, ignore it
 if sys.platform == 'win32':
     # Windows title
-    system("title Vivia - " + config['General']['StatusMessage'])
+    system("title Running " + __VERSION__ + " - " + config['General']['StatusMessage'])
 else:
     # Linux title (if this doesn't work on your distro please open an issue because I suck at Linux)
     system("echo -ne '\033]0;Vivia - " + config['General']['StatusMessage'] + "\007'")

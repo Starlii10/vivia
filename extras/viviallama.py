@@ -10,7 +10,6 @@
     If you'd like to contribute, please check out the GitHub repository at https://github.com/starlii10/vivia.
 
     This uses the llama-cpp-python package, licensed under the MIT License. This is not a required dependency for Vivia.
-    For more information, see their LICENSE file at https://github.com/abetlen/llama-cpp-python/blob/main/LICENSE.md.
     Note that you should compile it according to the hardware you're running Vivia on for maximum performance.
     For more info, see https://github.com/abetlen/llama-cpp-python?tab=readme-ov-file#are-there-pre-built-binaries--binary-wheels-available
 
@@ -20,6 +19,7 @@
 
     OCR is provided by pytesseract, licensed under the Apache License 2.0. This is not a required dependency for Vivia.
     For more information, see their LICENSE file at https://github.com/madmaze/pytesseract/blob/master/LICENSE.
+    You must install the tesseract-ocr package to use it, otherwise Vivia will not be able to read images.
 
     Have a great time using Vivia!
 """
@@ -33,6 +33,7 @@ import traceback
 import discord
 import numpy as np
 import requests
+import viviatools as viviaTools
 
 print("Attempting to load LLaMa - this may take a moment")
 
