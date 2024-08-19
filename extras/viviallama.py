@@ -39,6 +39,7 @@ print("Attempting to load LLaMa - this may take a moment")
 # Variable initialization
 aiDisabled = False
 imageReadingDisabled = False
+attachment_messages = []
 
 # Delete tempchats folder if it exists
 if os.path.exists("data/tempchats"):
@@ -91,12 +92,12 @@ async def createResponse(prompt: str, username: str, internal_name: str, attachm
         if len(attachments) > 0:
             print("Reading message attachments...")
             for attachment in attachments:
-                await processAttachment(attachment, additional_messages, internal_name)
+                attachment_messages.append(await processAttachment(attachment, internal_name))
 
         # Combine the additional messages with the system prompt and user prompt
         generation = model.create_chat_completion(messages=additional_messages + [
             {"role": "system", "content": open("data/system-prompt.txt", "r").read().replace("{username}", username)},
-        ] + [{"role": "user", "content": prompt}])
+        ] + [{"role": "user", "content": prompt}] + [{"role": "user", "content": attachment_messages}])
         response = generation['choices'][0]['message']['content']
         print("Response generated successfully.")
 
@@ -110,24 +111,19 @@ async def createResponse(prompt: str, username: str, internal_name: str, attachm
         print(f"Ignoring generation request by {internal_name} ({username}) due to previous errors while loading LLaMa", file=sys.stderr)
         return("Something's wrong with my programming, so I can't respond. Sorry.")
 
-async def processAttachment(attachment, additional_messages, internal_name):
-    print(f"Downloading {attachment.filename}...")
+async def processAttachment(attachment, internal_name):
     # Download attachment
     try:
         await attachment.save(f"data/tempchats/{internal_name}/{attachment.filename}")
     except Exception as e:
         print(f"Error downloading {attachment.filename}. Ignoring.\n{type(e)}: {e}")
-        additional_messages.append({"role": "user", "content": f"An attachment that failed to download."})
-        return
-    print(f"Downloaded {attachment.filename}.")
+        return {"role": "user", "content": f"An attachment that failed to download."}
 
     # Check if the attachment is text
     match mimetypes.guess_type(f"data/tempchats/{internal_name}/{attachment.filename}")[0].split("/")[0]:
-        case "text":   
-            print(f"Attachment {attachment.filename} is text")
+        case "text":
             with open(f"data/tempchats/{internal_name}/{attachment.filename}", "r") as file:
-                additional_messages.append({"role": "user", "content": "An attached text file: " + file.read()})
-                print(f"Attachment {attachment.filename} has been processed.")
+                return {"role": "user", "content": "An attached text file: " + file.read()}
         case "image":
             # Attempt OCR on the attachment
             if not imageReadingDisabled:
@@ -136,17 +132,16 @@ async def processAttachment(attachment, additional_messages, internal_name):
                     img = np.array(Image.open(f"data/tempchats/{internal_name}/{attachment.filename}"))
                     text = pytesseract.image_to_string(f"data/tempchats/{internal_name}/{attachment.filename}")
                     if text:
-                        print(f"Attachment {attachment.filename} has been processed successfully.")
-                        additional_messages.append({"role": "user", "content": "An attached image with the text: " + text})
+                        return {"role": "user", "content": "An attached image with the text: " + text}
                     else:
                         print(f"Couldn't find text in {attachment.filename}. Skipping.")
-                        additional_messages.append({"role": "user", "content": f"An image that couldn't be read: {attachment.filename}"})
+                        return {"role": "user", "content": f"An image that couldn't be read: {attachment.filename}"}
                 except Exception as e:
                     print(f"Error performing OCR on {attachment.filename}. Skipping.\n{type(e)}: {e}", file=sys.stderr)
-                    additional_messages.append({"role": "user", "content": f"An image that couldn't be read due to errors: {attachment.filename}"})
+                    return {"role": "user", "content": f"An image that couldn't be read due to errors: {attachment.filename}"}
             else:
                 print(f"Attachment {attachment.filename} is not text. Skipping OCR due to previous errors loading pytesseract.", file=sys.stderr)
-                additional_messages.append({"role": "user", "content": f"An image that couldn't be read due to errors: {attachment.filename}"})
+                return {"role": "user", "content": f"An image that couldn't be read due to errors: {attachment.filename}"}
         case _:
             print(f"Attachment {attachment.filename} is unrecognized. Skipping.")
-            additional_messages.append({"role": "user", "content": f"An unrecognized attachment: {attachment.filename}"})
+            return {"role": "user", "content": f"An unrecognized attachment: {attachment.filename}"}
