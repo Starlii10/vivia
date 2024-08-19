@@ -132,6 +132,7 @@ async def processAttachment(attachment, internal_name):
                     img = np.array(Image.open(f"data/tempchats/{internal_name}/{attachment.filename}"))
                     text = pytesseract.image_to_string(f"data/tempchats/{internal_name}/{attachment.filename}")
                     if text:
+                        print(f"Found text in {attachment.filename}: {text}")
                         return {"role": "user", "content": "An attached image with the text: " + text}
                     else:
                         print(f"Couldn't find text in {attachment.filename}. Skipping.")
