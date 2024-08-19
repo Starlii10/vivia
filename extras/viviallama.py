@@ -16,7 +16,10 @@
 
     This uses a LLaMa model in models/llama-model.gguf, which can be changed by the user.
     Vivia does not provide a default model. Please ensure that a supported model file exists in the models directory.
-    Usage of a model is governed by that model's respective license.   
+    Usage of a model is governed by that model's respective license.
+
+    OCR is provided by pytesseract, licensed under the Apache License 2.0. This is not a required dependency for Vivia.
+    For more information, see their LICENSE file at https://github.com/madmaze/pytesseract/blob/master/LICENSE.
 
     Have a great time using Vivia!
 """
@@ -25,13 +28,18 @@ import json
 import mimetypes
 import os
 import sys
+from tkinter import Image
 import traceback
 import discord
+import numpy as np
 import requests
 
 print("Attempting to load LLaMa - this may take a moment")
 
+# Variable initialization
 aiDisabled = False
+imageReadingDisabled = False
+
 # Delete tempchats folder if it exists
 if os.path.exists("data/tempchats"):
     # Just like the terminal title, VSCode hates when I do it like this. Too bad, I can't write cross-platform code very well
@@ -60,6 +68,13 @@ else:
         print(f"{type(e)}: {e}\n{traceback.format_exc()}", file=sys.stderr)
         aiDisabled = True
 
+# Load pytesseract
+try:
+    import pytesseract
+except:
+    print("Couldn't load pytesseract. This is not a fatal error, however Vivia will not be able to read images unless it is installed.", file=sys.stderr)
+    imageReadingDisabled = True
+
 async def createResponse(prompt: str, username: str, internal_name: str, attachments: list[discord.Attachment] = []):
     if not aiDisabled:
         print(f"Response generation requested by {internal_name} ({username}) - generating now! (This may take a moment)")
@@ -76,27 +91,7 @@ async def createResponse(prompt: str, username: str, internal_name: str, attachm
         if len(attachments) > 0:
             print("Reading message attachments...")
             for attachment in attachments:
-                print(f"Downloading {attachment.filename}...")
-                # Download attachment
-                try:
-                    await attachment.save(f"data/tempchats/{internal_name}/{attachment.filename}")
-                except Exception as e:
-                    print(f"Error downloading {attachment.filename}. Ignoring.\n{type(e)}: {e}")
-                    additional_messages.append({"role": "user", "content": f"An attachment that failed to download."})
-                    continue
-                print(f"Downloaded {attachment.filename}.")
-
-                # Check if the attachment is text
-                if mimetypes.guess_type(f"data/tempchats/{internal_name}/{attachment.filename}")[0].startswith("text"):
-                    print(f"Attachment {attachment.filename} is text")
-                    with open(f"data/tempchats/{internal_name}/{attachment.filename}", "r") as file:
-                        additional_messages.append({"role": "user", "content": "An attached text file: " + file.read()})
-                        print(f"Attachment {attachment.filename} has been processed.")
-                else:
-                    # TODO: OCR for images
-                    print(f"Attachment {attachment.filename} is not text. Skipping.")
-                    
-
+                await processAttachment(attachment, additional_messages, internal_name)
 
         # Combine the additional messages with the system prompt and user prompt
         generation = model.create_chat_completion(messages=additional_messages + [
@@ -115,3 +110,43 @@ async def createResponse(prompt: str, username: str, internal_name: str, attachm
         print(f"Ignoring generation request by {internal_name} ({username}) due to previous errors while loading LLaMa", file=sys.stderr)
         return("Something's wrong with my programming, so I can't respond. Sorry.")
 
+async def processAttachment(attachment, additional_messages, internal_name):
+    print(f"Downloading {attachment.filename}...")
+    # Download attachment
+    try:
+        await attachment.save(f"data/tempchats/{internal_name}/{attachment.filename}")
+    except Exception as e:
+        print(f"Error downloading {attachment.filename}. Ignoring.\n{type(e)}: {e}")
+        additional_messages.append({"role": "user", "content": f"An attachment that failed to download."})
+        return
+    print(f"Downloaded {attachment.filename}.")
+
+    # Check if the attachment is text
+    match mimetypes.guess_type(f"data/tempchats/{internal_name}/{attachment.filename}")[0].split("/")[0]:
+        case "text":   
+            print(f"Attachment {attachment.filename} is text")
+            with open(f"data/tempchats/{internal_name}/{attachment.filename}", "r") as file:
+                additional_messages.append({"role": "user", "content": "An attached text file: " + file.read()})
+                print(f"Attachment {attachment.filename} has been processed.")
+        case "image":
+            # Attempt OCR on the attachment
+            if not imageReadingDisabled:
+                print(f"Attachment {attachment.filename} is not text. Attempting OCR...")
+                try:
+                    img = np.array(Image.open(f"data/tempchats/{internal_name}/{attachment.filename}"))
+                    text = pytesseract.image_to_string(f"data/tempchats/{internal_name}/{attachment.filename}")
+                    if text:
+                        print(f"Attachment {attachment.filename} has been processed successfully.")
+                        additional_messages.append({"role": "user", "content": "An attached image with the text: " + text})
+                    else:
+                        print(f"Couldn't find text in {attachment.filename}. Skipping.")
+                        additional_messages.append({"role": "user", "content": f"An image that couldn't be read: {attachment.filename}"})
+                except Exception as e:
+                    print(f"Error performing OCR on {attachment.filename}. Skipping.\n{type(e)}: {e}", file=sys.stderr)
+                    additional_messages.append({"role": "user", "content": f"An image that couldn't be read due to errors: {attachment.filename}"})
+            else:
+                print(f"Attachment {attachment.filename} is not text. Skipping OCR due to previous errors loading pytesseract.", file=sys.stderr)
+                additional_messages.append({"role": "user", "content": f"An image that couldn't be read due to errors: {attachment.filename}"})
+        case _:
+            print(f"Attachment {attachment.filename} is unrecognized. Skipping.")
+            additional_messages.append({"role": "user", "content": f"An unrecognized attachment: {attachment.filename}"})
