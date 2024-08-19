@@ -28,7 +28,7 @@ import json
 import mimetypes
 import os
 import sys
-from tkinter import Image
+from PIL import Image
 import traceback
 import discord
 import numpy as np
