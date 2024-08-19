@@ -484,7 +484,7 @@ async def clearhistory(interaction: discord.Interaction):
     if os.path.exists(f"data/tempchats/{str(interaction.user.name)}"):
         shutil.rmtree(f"data/tempchats/{str(interaction.user.name)}")
         await interaction.response.send_message("Cleared your chat history with me!", ephemeral=True)
-        await log(f"{interaction.user} cleared their chat history")
+        await log(f"{interaction.user} cleared their chat history", False)
     else:
         await interaction.response.send_message("You haven't chatted with me yet, so there's nothing to clear!", ephemeral=True)
     
