@@ -95,7 +95,7 @@ async def createResponse(prompt: str, username: str, internal_name: str, attachm
                 attachment_messages.append(await processAttachment(attachment, internal_name))
 
         # Combine the additional messages with the system prompt and user prompt
-        generation = model.create_chat_completion(messages=additional_messages + [
+        await generation = model.create_chat_completion(messages=additional_messages + [
             {"role": "system", "content": open("data/system-prompt.txt", "r").read().replace("{username}", username)},
         ] + [{"role": "user", "content": prompt}] + [{"role": "user", "content": attachment_messages}])
         response = generation['choices'][0]['message']['content']
