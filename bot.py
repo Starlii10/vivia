@@ -12,6 +12,9 @@
     Have a great time using Vivia!
 """
 
+# Vivia version
+__VERSION__ = "Vivia 20240821"
+
 import asyncio
 import datetime
 import shutil
@@ -66,7 +69,7 @@ except:
 # Terminal title. VSCode will scream at you that one of these is unreachable, ignore it
 if sys.platform == 'win32':
     # Windows title
-    system("title Vivia - " + config['General']['StatusMessage'])
+    system("title Running " + __VERSION__ + " - " + config['General']['StatusMessage'])
 else:
     # Linux title (if this doesn't work on your distro please open an issue because I suck at Linux)
     system("echo -ne '\033]0;Vivia - " + config['General']['StatusMessage'] + "\007'")
@@ -204,7 +207,7 @@ async def llamaReply(message: discord.Message):
     """
     Gets a reply using LLaMa.
     """
-    task = asyncio.create_task(Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "), message.author.display_name, message.author.name))
+    task = asyncio.create_task(Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "), message.author.display_name, message.author.name, message.attachments))
     await message.reply(await task)
 
 # Commands
@@ -484,7 +487,7 @@ async def clearhistory(interaction: discord.Interaction):
     if os.path.exists(f"data/tempchats/{str(interaction.user.name)}"):
         shutil.rmtree(f"data/tempchats/{str(interaction.user.name)}")
         await interaction.response.send_message("Cleared your chat history with me!", ephemeral=True)
-        await log(f"{interaction.user} cleared their chat history")
+        await log(f"{interaction.user} cleared their chat history", False)
     else:
         await interaction.response.send_message("You haven't chatted with me yet, so there's nothing to clear!", ephemeral=True)
     
