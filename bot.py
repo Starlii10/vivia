@@ -38,9 +38,9 @@ import extras.viviallama as Llama
 
 # Config loading
 config = configparser.ConfigParser()
-try:
+if os.path.exists("config.ini"):
     config.read("config.ini")
-except:
+else:
     try:
         print("I didn't find a configuration file. I'm creating one for ya!")
         config.read("config.ini.example")
@@ -230,7 +230,7 @@ async def quote(interaction: discord.Interaction):
     except Exception as e:
         await interaction.response.send_message("Something went wrong. Maybe try again?")
         if serverConfig(interaction.guild.id)['verboseErrors']:
-            await interaction.followup.send(e + "\n-# To disable these messages, run /config verboseErrors false")
+            await interaction.followup.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
         await log(f"Couldn't send a quote for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}", severity=logging.ERROR)
     
 @tree.command(
@@ -251,10 +251,8 @@ async def listquotes(interaction: discord.Interaction):
     except Exception as e:
         await interaction.response.send_message("Something went wrong. Maybe try again?")
         if serverConfig(interaction.guild.id)['verboseErrors']:
-            await interaction.followup.send(e + "\n-# To disable these messages, run /config verboseErrors false")
+            await interaction.followup.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
         await log(f"Couldn't list quotes for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}", severity=logging.ERROR)
-
-
 @tree.command(
     name="help",
     description="Sends a help message, and virtual hugs!"
@@ -358,7 +356,7 @@ async def addquote(interaction: discord.Interaction, quote: str, author: str, da
         except Exception as e:
             await interaction.response.send_message(f'Something went wrong. Maybe try again?', ephemeral=True)
             if config["General"]["VerboseErrors"]:
-                await interaction.followup.send(e + "\n-# To disable these messages, run /config verboseErrors false")
+                await interaction.followup.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
             await log(f'Failed to add "{quote} - {author}, {date}" to the custom quote list for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}', severity=logging.ERROR)
             return
         await interaction.response.send_message(f'"{quote}" - {author}, {date} was added to the list.')
@@ -394,7 +392,7 @@ async def removequote(interaction: discord.Interaction, quote: str):
         except Exception as e:
             await interaction.response.send_message(f'Something went wrong. Maybe try again?', ephemeral=True)
             if config["General"]["VerboseErrors"]:
-                await interaction.followup.send(e + "\n-# To disable these messages, run /config verboseErrors false")
+                await interaction.followup.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
             await log(f'Failed to remove "{quote}" from the list for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}', severity=logging.ERROR)
             return
         await interaction.response.send_message(f'"{quote}" was removed from the list.')
@@ -527,7 +525,7 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
         except Exception as e:
             await interaction.response.send_message(f"Something went wrong. Maybe try again?", ephemeral=True)
             if serverConfig(interaction.guild.id)['verboseErrors']:
-                await interaction.followup.send_message(e + "\n-# To disable these messages, run /config verboseErrors false")
+                await interaction.followup.send_message(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
             await log(f"Error while changing config for {interaction.guild.name} ({str(interaction.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)

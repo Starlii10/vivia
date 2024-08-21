@@ -13,13 +13,13 @@
     Note that you should compile it according to the hardware you're running Vivia on for maximum performance.
     For more info, see https://github.com/abetlen/llama-cpp-python?tab=readme-ov-file#are-there-pre-built-binaries--binary-wheels-available
 
-    This uses a LLaMa model in models/llama-model.gguf, which can be changed by the user.
+    This uses a LLaMa model in extras/models/llama-model.gguf, which can be changed by the user.
     Vivia does not provide a default model. Please ensure that a supported model file exists in the models directory.
     Usage of a model is governed by that model's respective license.
 
     OCR is provided by pytesseract, licensed under the Apache License 2.0. This is not a required dependency for Vivia.
     For more information, see their LICENSE file at https://github.com/madmaze/pytesseract/blob/master/LICENSE.
-    You must install the tesseract-ocr package to use it, otherwise Vivia will not be able to read images.
+    You must install the tesseract-ocr package, otherwise Vivia will not be able to utilize it.
 
     Have a great time using Vivia!
 """
