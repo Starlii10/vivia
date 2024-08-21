@@ -1,3 +1,4 @@
+[General]
 # The status message for the bot. This will be shown in the terminal when running the bot as well.
 statusmessage = Statuses have moved to data/statuses.json
 # The ID for the bot's "owner" (the person who created/is running the bot).
