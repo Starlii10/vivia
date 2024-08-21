@@ -13,7 +13,7 @@
 """
 
 # Vivia version
-__VERSION__ = "Vivia v1.0.0"
+__VERSION__ = "Vivia 20240821"
 
 import asyncio
 import datetime

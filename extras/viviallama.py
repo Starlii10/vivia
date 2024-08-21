@@ -93,6 +93,7 @@ async def createResponse(prompt: str, username: str, internal_name: str, attachm
             print("Reading message attachments...")
             for attachment in attachments:
                 attachment_messages.append(await processAttachment(attachment, internal_name))
+            print("Attachments read.")
 
         # Combine the additional messages with the system prompt and user prompt
         generation = model.create_chat_completion(messages=additional_messages + [
