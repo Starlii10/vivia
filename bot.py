@@ -20,6 +20,7 @@ import datetime
 import shutil
 import sys
 import json
+import traceback
 import dotenv
 import random
 import os
@@ -46,8 +47,9 @@ else:
         config.read("config.ini.example")
         with open('config.ini', 'w') as configfile:
             config.write(configfile)
-    except:
+    except Exception as e:
         print("I couldn't create a config file. Is something wrong with config.ini.example?")
+        print(f"{type(e)}: {e}\n{traceback.format_exc()}")
         sys.exit(1)
 
 # Load commonly used config values
