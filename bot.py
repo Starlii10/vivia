@@ -506,7 +506,6 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
     ## Notes:
         - Only users with bot permissions can use this command.
     """
-    await log(option)
     if has_bot_permissions(interaction.user, interaction.guild):
         try:
             match(option):
