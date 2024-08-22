@@ -25,6 +25,7 @@
 """
 
 from configparser import ConfigParser
+import configparser
 import json
 import mimetypes
 import os
@@ -138,7 +139,7 @@ async def processAttachment(attachment, internal_name):
                     thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
                     noise_reduced = cv2.fastNlMeansDenoising(thresh, None, 10, 7, 21)
                     # DEBUG - Save image
-                    if ConfigParser.read("config.ini")["Advanced"]["debug"].lower() == "true":
+                    if configparser.ConfigParser.read("config.ini")["Advanced"]["debug"].lower() == "true":
                         cv2.imwrite(f"extras/ocr/{attachment.filename}", noise_reduced)
                         print(f"Debug: Saved image {attachment.filename} to extras/ocr")
                     text = pytesseract.image_to_string(noise_reduced)
