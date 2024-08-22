@@ -13,3 +13,6 @@ prefix = v!
 # Since logs may contain sensitive information, this should be a private channel.
 # Leave this as 0 to disable logging to a channel.
 loggingchannel = 0
+
+[Advanced]
+debug = False
