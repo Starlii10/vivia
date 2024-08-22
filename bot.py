@@ -33,10 +33,6 @@ import discord
 from discord import Embed, app_commands
 from discord.ext import tasks, commands
 
-# Vivia's extra scripts
-import extras.viviatools as viviaTools
-import extras.viviallama as Llama
-
 # Config loading
 config = configparser.ConfigParser()
 if os.path.exists("config.ini"):
@@ -51,6 +47,10 @@ else:
         print("I couldn't create a config file. Is something wrong with config.ini.example?")
         print(f"{type(e)}: {e}\n{traceback.format_exc()}")
         sys.exit(1)
+
+# Vivia's extra scripts (these require the config to be loaded first)
+import extras.viviatools as viviaTools
+import extras.viviallama as Llama
 
 # Load commonly used config values
 logChannel = int(config['Channels']['LoggingChannel'])
