@@ -30,6 +30,7 @@ import os
 import sys
 from PIL import Image
 import traceback
+import cv2
 import discord
 import numpy as np
 import requests
@@ -131,7 +132,11 @@ async def processAttachment(attachment, internal_name):
                 print(f"Attachment {attachment.filename} is not text. Attempting OCR...")
                 try:
                     img = np.array(Image.open(f"data/tempchats/{internal_name}/{attachment.filename}"))
-                    text = pytesseract.image_to_string(f"data/tempchats/{internal_name}/{attachment.filename}")
+                    # Process image
+                    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                    thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+                    noise_reduced = cv2.fastNlMeansDenoising(thresh, None, 10, 7, 21)
+                    text = pytesseract.image_to_string(noise_reduced)
                     if text:
                         print(f"Found text in {attachment.filename}: {text}")
                         return {"role": "user", "content": "An attached image with the text: " + text}
