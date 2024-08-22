@@ -34,7 +34,9 @@ import cv2
 import discord
 import numpy as np
 import requests
-import bot as Vivia
+
+# Essentials from Vivia
+from bot import config, log
 
 print("Attempting to load LLaMa - this may take a moment")
 
@@ -138,7 +140,7 @@ async def processAttachment(attachment, internal_name):
                     thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
                     noise_reduced = cv2.fastNlMeansDenoising(thresh, None, 10, 7, 21)
                     # DEBUG - Save image
-                    if Vivia.config["Advanced"]["debug"]:
+                    if config["Advanced"]["debug"]:
                         cv2.imwrite(f"extras/ocr/{attachment.filename}", noise_reduced)
                         print(f"Debug: Saved image {attachment.filename} to extras/ocr")
                     text = pytesseract.image_to_string(noise_reduced)
