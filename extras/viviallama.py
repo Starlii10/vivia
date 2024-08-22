@@ -24,6 +24,7 @@
     Have a great time using Vivia!
 """
 
+from configparser import ConfigParser
 import json
 import mimetypes
 import os
@@ -34,10 +35,6 @@ import cv2
 import discord
 import numpy as np
 import requests
-
-# Essentials from Vivia
-print("Debug. If the \"Attempting to load LLaMa\" message is not appearing, this import is broken")
-from bot import config, log
 
 print("Attempting to load LLaMa - this may take a moment")
 
@@ -141,7 +138,7 @@ async def processAttachment(attachment, internal_name):
                     thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
                     noise_reduced = cv2.fastNlMeansDenoising(thresh, None, 10, 7, 21)
                     # DEBUG - Save image
-                    if config["Advanced"]["debug"]:
+                    if ConfigParser.read("config.ini")["Advanced"]["debug"].lower() == "true":
                         cv2.imwrite(f"extras/ocr/{attachment.filename}", noise_reduced)
                         print(f"Debug: Saved image {attachment.filename} to extras/ocr")
                     text = pytesseract.image_to_string(noise_reduced)
