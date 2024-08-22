@@ -36,6 +36,7 @@ import numpy as np
 import requests
 
 # Essentials from Vivia
+print("Debug. If the \"Attempting to load LLaMa\" message is not appearing, this import is broken")
 from bot import config, log
 
 print("Attempting to load LLaMa - this may take a moment")
