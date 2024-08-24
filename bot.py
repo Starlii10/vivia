@@ -285,7 +285,7 @@ async def sync(ctx):
         - Only the bot owner can use this command. If you run Vivia locally, make sure to add your Discord user ID in config.ini.
         - This command does not appear in the command list. Use "v!sync" to run it.
     """
-    if ctx.author.id == config["General"]["Owner"]:
+    if ctx.author.id == config["General"]["owner"]:
         await bot.tree.sync()
         await ctx.send('The command tree was synced, whatever that means.')
         await log("The command tree was synced, whatever that means.")
@@ -301,7 +301,7 @@ async def fixconfig(ctx):
         - Only the bot owner can use this command. If you run Vivia locally, make sure to add your Discord user ID in config.ini.
         - This command does not appear in the command list. Use "v!fixconfig" to run it.
     """
-    if ctx.author.id == config["General"]["Owner"]:
+    if ctx.author.id == config["General"]["owner"]:
         for guild in bot.guilds:
             # Regenerate server data path if it doesn't exist
             if not os.path.exists(f'data/servers/{guild.id}'):
