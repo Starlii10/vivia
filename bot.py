@@ -277,7 +277,7 @@ async def help(interaction: discord.Interaction, message: str="general"):
     await interaction.response.send_message(f"Do you need me, {interaction.user.display_name}? I just sent you a message with some helpful information.", ephemeral=True)
 
 @bot.command()
-async def sync(ctx):
+async def sync(ctx: commands.Context):
     """
     Syncs the command tree.
 
@@ -285,7 +285,7 @@ async def sync(ctx):
         - Only the bot owner can use this command. If you run Vivia locally, make sure to add your Discord user ID in config.ini.
         - This command does not appear in the command list. Use "v!sync" to run it.
     """
-    if ctx.author.id == config["General"]["owner"]:
+    if ctx.author.id == int(config["General"]["owner"]):
         await bot.tree.sync()
         await ctx.send('The command tree was synced, whatever that means.')
         await log("The command tree was synced, whatever that means.")
@@ -293,7 +293,7 @@ async def sync(ctx):
         await ctx.send('That\'s for the bot owner, not random users...')
 
 @bot.command()
-async def fixconfig(ctx):
+async def fixconfig(ctx: commands.Context):
     """
     Regenerates configuration and custom quotes files for servers where they are missing.
 
@@ -301,7 +301,7 @@ async def fixconfig(ctx):
         - Only the bot owner can use this command. If you run Vivia locally, make sure to add your Discord user ID in config.ini.
         - This command does not appear in the command list. Use "v!fixconfig" to run it.
     """
-    if ctx.author.id == config["General"]["owner"]:
+    if ctx.author.id == int(config["General"]["owner"]):
         for guild in bot.guilds:
             # Regenerate server data path if it doesn't exist
             if not os.path.exists(f'data/servers/{guild.id}'):
