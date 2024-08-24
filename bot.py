@@ -117,18 +117,19 @@ def serverConfig(serverID: int):
     with open(f"data/servers/{serverID}/config.json", "r") as f:
         return json.load(f)
 
-async def log(message, sendToLogChannel=True, severity=logging.INFO):
+async def log(message: str, sendToLogChannel: bool=True, severity: int=logging.INFO):
     """
     Outputs a message to the log.
 
     ## Args:
-        - message (`print()`able): The message to output.
+        - message (str): The message to output.
+        - sendToLogChannel (bool): Whether to send the message to the log channel.
         - severity (int): The severity of the message (defaults to Info).
 
     ## Notes:
         - This function will output to the console, log file, and to a Discord channel.
+        - Errors will ping the owner of the bot if sent to the log channel.
     """
-    print(message)
     try:
         if sendToLogChannel:
             if severity == logging.ERROR:
@@ -137,7 +138,7 @@ async def log(message, sendToLogChannel=True, severity=logging.INFO):
                 await bot.get_channel(logChannel).send(message)
     except:
         pass # we don't care if the channel doesn't exist
-    logging.log(severity, message)
+    logging.log(severity, message) # also prints to the console
 
 # Events
 @bot.event
@@ -213,6 +214,7 @@ async def llamaReply(message: discord.Message):
     await message.reply(await task)
 
 # Commands
+# TODO: move commands to a separate file so they're easier to deal with
 @tree.command(
     name="quote",
     description="Say a random (slightly chaotic) quote."
