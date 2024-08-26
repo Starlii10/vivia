@@ -59,7 +59,7 @@ async def on_ready():
     Function called when Vivia starts up.
     """
     
-    await viviaTools.log("Vivia is online!")
+    await viviaTools.log("Vivia is powering up...")
     
     # Statuses
     with open("data/statuses.json", "r") as f:
@@ -70,7 +70,10 @@ async def on_ready():
     # Commands
     for file in os.listdir("commands"):
         if file.endswith(".py"):
+            await viviaTools.log(f"Loading extension {file[:-3]}")
             await bot.load_extension(f"commands.{file[:-3]}")
+
+    await viviaTools.log("Vivia is all ready!")
 
 @tasks.loop(hours=1)
 async def statusChanges():
