@@ -19,7 +19,7 @@ from extras.viviatools import has_bot_permissions, log, config, serverConfig
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(removequote)
 
-@app_commands.hybrid_command(
+@commands.hybrid_command(
     name = "removequote",
 )
 @app_commands.describe(

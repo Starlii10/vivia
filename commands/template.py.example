@@ -19,7 +19,7 @@ async def setup(bot: commands.Bot): # for extension loading
 """
     Commands must have the following structure:
 
-    @app_commands.hybrid_command(
+    @commands.hybrid_command(
         name = "command name"
     )
     async def command(ctx: app_commands.Context):
