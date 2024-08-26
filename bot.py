@@ -72,19 +72,6 @@ helpMsg = open("data/help/general.txt", "r").read()
 channelmakerHelpMsg = open("data/help/channelmaker.txt", "r").read()
 setupHelpMsg = open("data/help/setup.txt", "r").read()
 
-# Functions
-async def log(message: str, sendToLogChannel: bool=True, severity: int=logging.INFO):
-    """
-    Function for logging messages to the log channel. Also calls `ViviaTools.log()`.
-    """
-
-    if sendToLogChannel:
-        if severity >= logging.ERROR:
-            await bot.get_channel(logChannel).send(f"@{config['General']['owner']}**{message}**")
-        else:
-            await bot.get_channel(logChannel).send(message)
-    logging.log(severity, message)
-
 # Events
 @bot.event
 async def on_ready():
@@ -92,7 +79,7 @@ async def on_ready():
     Function called when Vivia starts up.
     """
     
-    await log("Vivia is online!", sendToLogChannel=False)
+    await viviaTools.log("Vivia is online!")
     
     # Statuses
     with open("data/statuses.json", "r") as f:
@@ -126,7 +113,7 @@ async def on_guild_join(guild: discord.Guild):
     Function called when the bot joins a server.
     """
 
-    await log(f"Bot joined {guild.name} ({guild.id})")
+    await viviaTools.log(f"Bot joined {guild.name} ({guild.id})")
     with open(f'data/servers/{guild.id}/quotes.json', 'w') as f:
         json.dump({'quotes': []}, f)
     with open(f'data/servers/{guild.id}/config.json', 'w') as f, open(f'data/config.json.example', 'r') as g:
@@ -185,7 +172,7 @@ async def quote(interaction: discord.Interaction):
         await interaction.response.send_message("Something went wrong. Maybe try again?")
         if serverConfig(interaction.guild.id)['verboseErrors']:
             await interaction.followup.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
-        await log(f"Couldn't send a quote for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}", severity=logging.ERROR)
+        await viviaTools.log(f"Couldn't send a quote for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}", severity=logging.ERROR)
     
 @tree.command(
     name="listquotes",
@@ -206,7 +193,7 @@ async def listquotes(interaction: discord.Interaction):
         await interaction.response.send_message("Something went wrong. Maybe try again?")
         if serverConfig(interaction.guild.id)['verboseErrors']:
             await interaction.followup.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
-        await log(f"Couldn't list quotes for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}", severity=logging.ERROR)
+        await viviaTools.log(f"Couldn't list quotes for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}", severity=logging.ERROR)
 @tree.command(
     name="help",
     description="Sends a help message, and virtual hugs!"
@@ -240,7 +227,7 @@ async def sync(ctx):
     if ctx.author.id == int(config["General"]["owner"]):
         await bot.tree.sync()
         await ctx.send('The command tree was synced, whatever that means.')
-        await log("The command tree was synced, whatever that means.")
+        await viviaTools.log("The command tree was synced, whatever that means.")
     else:
         await ctx.send('That\'s for the bot owner, not random users...')
 
@@ -258,13 +245,13 @@ async def fixconfig(ctx):
             # Regenerate server data path if it doesn't exist
             if not os.path.exists(f'data/servers/{guild.id}'):
                 os.mkdir(f'data/servers/{guild.id}')
-            await log(f'Data path for {guild.name} ({guild.id}) was regenerated.')
+            await viviaTools.log(f'Data path for {guild.name} ({guild.id}) was regenerated.')
 
             # Regenerate configuration if guild config is missing
             try:
                 with open(f'data/servers/{guild.id}/config.json', 'x') as f, open(f'data/config.json.example', 'r') as g:
                     json.dump(obj=json.load(g), fp=f)
-                await log(f'Config file for {guild.name} ({guild.id}) was regenerated.')
+                await viviaTools.log(f'Config file for {guild.name} ({guild.id}) was regenerated.')
             except FileExistsError:
                 pass # Most likely there was nothing wrong with it
 
@@ -272,7 +259,7 @@ async def fixconfig(ctx):
             try:
                 with open(f'data/servers/{guild.id}/quotes.json', 'x') as f:
                     json.dump({'quotes': []}, f)
-                await log(f'Custom quote file for {guild.name} ({guild.id}) was regenerated.')
+                await viviaTools.log(f'Custom quote file for {guild.name} ({guild.id}) was regenerated.')
             except FileExistsError:
                 pass # Most likely there was nothing wrong with it
 
@@ -311,10 +298,10 @@ async def addquote(interaction: discord.Interaction, quote: str, author: str, da
             await interaction.response.send_message(f'Something went wrong. Maybe try again?', ephemeral=True)
             if config["General"]["VerboseErrors"]:
                 await interaction.followup.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
-            await log(f'Failed to add "{quote} - {author}, {date}" to the custom quote list for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}', severity=logging.ERROR)
+            await viviaTools.log(f'Failed to add "{quote} - {author}, {date}" to the custom quote list for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}', severity=logging.ERROR)
             return
         await interaction.response.send_message(f'"{quote}" - {author}, {date} was added to the list.')
-        await log(f"{interaction.user} added \"{quote} - {author}, {date}\" to the custom quote list for server {interaction.guild.name} ({interaction.guild.id})")
+        await viviaTools.log(f"{interaction.user} added \"{quote} - {author}, {date}\" to the custom quote list for server {interaction.guild.name} ({interaction.guild.id})")
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
@@ -347,10 +334,10 @@ async def removequote(interaction: discord.Interaction, quote: str):
             await interaction.response.send_message(f'Something went wrong. Maybe try again?', ephemeral=True)
             if config["General"]["VerboseErrors"]:
                 await interaction.followup.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
-            await log(f'Failed to remove "{quote}" from the list for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}', severity=logging.ERROR)
+            await viviaTools.log(f'Failed to remove "{quote}" from the list for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}', severity=logging.ERROR)
             return
         await interaction.response.send_message(f'"{quote}" was removed from the list.')
-        await log(f"{interaction.user} removed \"{quote}\" from the list")
+        await viviaTools.log(f"{interaction.user} removed \"{quote}\" from the list")
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
@@ -402,7 +389,7 @@ async def channelmaker(interaction: discord.Interaction, channel_config: str, ty
             await interaction.followup.send(f"Something went wrong. Maybe try again?")
             if serverConfig(interaction.guild.id)['verboseErrors']:
                 await interaction.followup.send(str(e) + "\n-# To disable these messages, run /config verboseErrors false")
-            await log(f"Error while making channels in server {str(interaction.guild.name)} ({str(interaction.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
+            await viviaTools.log(f"Error while making channels in server {str(interaction.guild.name)} ({str(interaction.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
@@ -439,7 +426,7 @@ async def clearhistory(interaction: discord.Interaction):
     if os.path.exists(f"data/tempchats/{str(interaction.user.name)}"):
         shutil.rmtree(f"data/tempchats/{str(interaction.user.name)}")
         await interaction.response.send_message("Cleared your chat history with me!", ephemeral=True)
-        await log(f"{interaction.user} cleared their chat history", False)
+        await viviaTools.log(f"{interaction.user} cleared their chat history")
     else:
         await interaction.response.send_message("You haven't chatted with me yet, so there's nothing to clear!", ephemeral=True)
     
@@ -479,7 +466,7 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
             await interaction.response.send_message(f"Something went wrong. Maybe try again?", ephemeral=True)
             if serverConfig(interaction.guild.id)['verboseErrors']:
                 await interaction.followup.send_message(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
-            await log(f"Error while changing config for {interaction.guild.name} ({str(interaction.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
+            await viviaTools.log(f"Error while changing config for {interaction.guild.name} ({str(interaction.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 

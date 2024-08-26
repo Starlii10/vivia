@@ -103,3 +103,10 @@ def has_bot_permissions(user: discord.Member, server: discord.Guild):
 def serverConfig(serverID: int):
     with open(f"data/servers/{serverID}/config.json", "r") as f:
         return json.load(f)
+    
+async def log(message: str, severity: int=logging.INFO):
+    """
+    Logs a message to the console.
+    """
+
+    logging.log(severity, message)

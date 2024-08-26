@@ -15,11 +15,12 @@ import random
 import logging
 from discord.ext import commands
 import discord
-from extras.viviatools import config, serverConfig, log
+from extras.viviatools import serverConfig
 
-async def setup(bot: commands.Bot):
+async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(quote)
 
+# the command we actually care about
 @commands.command(
     name="quote"
 )
