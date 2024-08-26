@@ -1,5 +1,5 @@
 """
-    This is the quote command used in Vivia.
+    This is the listquotes command used in Vivia.
 
     Vivia is licensed under the MIT License. For more information, see the LICENSE file.
     TL:DR: you can use Vivia's code as long as you keep the original license intact.
@@ -10,21 +10,20 @@
     Have a great time using Vivia!
 """
 
-import json
-import random
-import logging
 from discord.ext import commands
+import json
+import logging
 from extras.viviatools import serverConfig, log
 
 async def setup(bot: commands.Bot): # for extension loading
-    bot.add_command(quote)
+    bot.add_command(listquotes)
 
 @commands.hybrid_command(
-    name="quote"
+    name="listquotes"
 )
-async def quote(ctx: commands.Context):
+async def listquotes(ctx: commands.Context):
     """
-    Sends a random (slightly chaotic) quote.
+    Sends a list of all quotes.
     """
     try:
         with open('data/quotes.json') as f:
@@ -32,10 +31,9 @@ async def quote(ctx: commands.Context):
                 default_quotes = json.load(f)
                 custom_quotes = json.load(g)
                 quotes = default_quotes['quotes'] + custom_quotes['quotes']
-                quote = random.choice(quotes)
-                await ctx.send(quote)
+                await ctx.send(quotes)
     except Exception as e:
         await ctx.send("Something went wrong. Maybe try again?")
         if serverConfig(ctx.guild.id)['verboseErrors']:
             await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
-        await log(f"Couldn't send a quote for server {ctx.guild.name} ({ctx.guild.id}): {type(e)}: {e}", severity=logging.ERROR)
+        await log(f"Couldn't list quotes for server {ctx.guild.name} ({ctx.guild.id}): {type(e)}: {e}", severity=logging.ERROR)

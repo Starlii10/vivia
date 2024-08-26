@@ -13,10 +13,9 @@
 """
 
 # Vivia version
-__VERSION__ = "Vivia 20240821"
+__VERSION__ = "Vivia 20240826"
 
 import asyncio
-import datetime
 import shutil
 import sys
 import json
@@ -24,31 +23,17 @@ import dotenv
 import random
 import os
 from os import system
-import configparser
 import logging
 
 # Discord
 import discord
-from discord import Embed, app_commands
+from discord import app_commands
 from discord.ext import tasks, commands
 
 # Vivia's extra scripts
 import extras.viviatools as viviaTools
-from extras.viviatools import config, logChannel, serverConfig
+from extras.viviatools import config, serverConfig, handler
 import extras.viviallama as Llama
-
-# Set up logging
-try:
-    handler = logging.FileHandler(
-        filename="data/logs/" + datetime.datetime.now().strftime("%Y-%m-%d") + ".log",
-        encoding='utf-8',
-        mode='w'
-    )
-    handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-    logging.basicConfig(level=logging.INFO)
-except:
-    print("Something's wrong with the logging file. I'm going to ignore it.")
-    handler = logging.StreamHandler(sys.stdout)
 
 # Terminal title. VSCode will scream at you that one of these is unreachable, ignore it
 if sys.platform == 'win32':
@@ -66,11 +51,6 @@ intents.message_content = True # will need to verify at 100 servers
 bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
 bot.remove_command("help") # because we hate the default help command
 tree = bot.tree
-
-# Help messages
-helpMsg = open("data/help/general.txt", "r").read()
-channelmakerHelpMsg = open("data/help/channelmaker.txt", "r").read()
-setupHelpMsg = open("data/help/setup.txt", "r").read()
 
 # Events
 @bot.event
@@ -150,49 +130,8 @@ async def llamaReply(message: discord.Message):
     task = asyncio.create_task(Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "), message.author.display_name, message.author.name, message.attachments))
     await message.reply(await task)
 
-# Commands
-# TODO: move commands to a separate file so they're easier to deal with
-    
-@tree.command(
-    name="listquotes",
-    description="List all quotes."
-)
-async def listquotes(interaction: discord.Interaction):
-    """
-    Sends a list of all quotes.
-    """
-    try:
-        with open('data/quotes.json') as f:
-            with open(f'data/servers/{interaction.guild.id}/quotes.json') as g:
-                default_quotes = json.load(f)
-                custom_quotes = json.load(g)
-                quotes = default_quotes['quotes'] + custom_quotes['quotes']
-                await interaction.response.send_message(quotes)
-    except Exception as e:
-        await interaction.response.send_message("Something went wrong. Maybe try again?")
-        if serverConfig(interaction.guild.id)['verboseErrors']:
-            await interaction.followup.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
-        await viviaTools.log(f"Couldn't list quotes for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}", severity=logging.ERROR)
-@tree.command(
-    name="help",
-    description="Sends a help message, and virtual hugs!"
-)
-@app_commands.choices(message=[
-    app_commands.Choice(name="general", value="general"),
-    app_commands.Choice(name="channelmaker", value="channelmaker"),
-    app_commands.Choice(name="setup", value="setup"),
-])
-async def help(interaction: discord.Interaction, message: str="general"):
-    match message:
-        case "general":
-            await interaction.user.send(helpMsg)
-        case "channelmaker":
-            await interaction.user.send(channelmakerHelpMsg)
-        case "setup":
-            await interaction.user.send(setupHelpMsg)
-        case _:
-            await interaction.user.send(helpMsg)
-    await interaction.response.send_message(f"Do you need me, {interaction.user.display_name}? I just sent you a message with some helpful information.", ephemeral=True)
+# Core commands
+# These commands are always available
 
 @bot.command()
 async def sync(ctx):
@@ -245,154 +184,6 @@ async def fixconfig(ctx):
         await ctx.send('Fixed all missing config and quotes files. Check log channel for more info.')
     else:
         await ctx.send('That\'s for the bot owner, not random users...')
-
-
-@tree.command(
-    name="addquote",
-    description="Adds a quote to the list."
-)
-async def addquote(interaction: discord.Interaction, quote: str, author: str, date: str):
-    """
-    Adds a quote to the list.
-
-    ## Args:
-        - quote (str): The quote to add.
-        - author (str): The author of the quote.
-        - date (str): The date of the quote.
-    ## Notes:
-        - Only users with bot permissions can use this command.
-        - The quote will be formatted as `"quote" - author, date`.
-        - This adds the quote to the custom quote list for the server the command was used in.
-    """
-    if viviaTools.has_bot_permissions(interaction.user, interaction.guild):
-        try:
-            with open(f'data/servers/{interaction.guild.id}/quotes.json') as f:
-                quotes = json.load(f)
-                # Add the quote
-                quotes['quotes'].append(f'"{quote}" - {author}, {date}')
-            # Write the updated list
-            with open(f'data/servers/{interaction.guild.id}/quotes.json', 'w') as f:
-                json.dump(quotes, f)
-        except Exception as e:
-            await interaction.response.send_message(f'Something went wrong. Maybe try again?', ephemeral=True)
-            if config["General"]["VerboseErrors"]:
-                await interaction.followup.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
-            await viviaTools.log(f'Failed to add "{quote} - {author}, {date}" to the custom quote list for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}', severity=logging.ERROR)
-            return
-        await interaction.response.send_message(f'"{quote}" - {author}, {date} was added to the list.')
-        await viviaTools.log(f"{interaction.user} added \"{quote} - {author}, {date}\" to the custom quote list for server {interaction.guild.name} ({interaction.guild.id})")
-    else:
-        await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
-
-@tree.command(
-    name="removequote",
-    description="Removes a quote from the list."
-)
-async def removequote(interaction: discord.Interaction, quote: str):
-    """
-    Removes a quote from the list.
-
-    ## Args:
-        - quote (str): The quote to remove.
-    ## Notes:
-        - Only users with bot permissions can use this command.
-        - This removes the quote from the custom quote list.
-    """
-    if viviaTools.has_bot_permissions(interaction.user, interaction.guild):
-        try:
-            with open(f'data/servers/{str(interaction.guild.id)}/quotes.json') as f:
-                quotes = json.load(f)
-                if quote in quotes['quotes']:
-                    quotes['quotes'].remove(quote)
-                else:
-                    await interaction.response.send_message("That quote isn't in the list, though...", ephemeral=True)
-                    return
-            with open('quotes.json', 'w') as f:
-                json.dump(quotes, f)
-        except Exception as e:
-            await interaction.response.send_message(f'Something went wrong. Maybe try again?', ephemeral=True)
-            if config["General"]["VerboseErrors"]:
-                await interaction.followup.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
-            await viviaTools.log(f'Failed to remove "{quote}" from the list for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}', severity=logging.ERROR)
-            return
-        await interaction.response.send_message(f'"{quote}" was removed from the list.')
-        await viviaTools.log(f"{interaction.user} removed \"{quote}\" from the list")
-    else:
-        await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
-
-@tree.command(
-    name="channelmaker",
-    description="Makes a bunch of channels from JSON."
-)
-@app_commands.choices(type=[
-    app_commands.Choice(name="text",value="text"),
-    app_commands.Choice(name="voice",value="voice"),
-    app_commands.Choice(name="forum",value="forum"),
-])
-async def channelmaker(interaction: discord.Interaction, channel_config: str, type: str="text"):
-    """
-    Makes a bunch of channels from JSON.
-
-    ## Args:
-        - channel_config (str): The JSON string containing the channel configuration.
-        - type (str): The type of channel to make. Defaults to "text".
-    ## Notes:
-        - Only users with bot permissions can use this command.
-        - The channelmaker JSON configuration looks like this: {"categories":{"test":["test"]}}
-        - For more info, read the channelmakerhelpmsg.txt file or run /help channelmaker when the bot is running.
-    """
-    if viviaTools.has_bot_permissions(interaction.user, interaction.guild):
-        await interaction.response.send_message("Making channels! (This may take a moment.)")
-        try:
-            try:
-                channels = json.loads(channel_config) # Channels is a list of categories, each category is a list of channels
-            except Exception:
-                await interaction.followup.send(f"I couldn't parse that JSON.\n\nIf you need help with using this command, run /help channelmaker.")
-                return
-            for category in channels['categories']:
-                if not category in interaction.guild.categories:
-                    # Create the category
-                    target = await interaction.guild.create_category(category, reason=f"Created by /channelmaker - run by {interaction.user}")
-                else:
-                    target = interaction.guild.categories.get(category)
-                for channel in channels['categories'][category]:
-                    # Create the channel
-                    match type:
-                        case "text":
-                            await interaction.guild.create_text_channel(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
-                        case "voice":
-                            await interaction.guild.create_voice_channel(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
-                        case "forum":
-                            await interaction.guild.create_forum(channel, category=target, reason=f"Created by /channelmaker - run by {interaction.user}")
-        except Exception as e:
-            await interaction.followup.send(f"Something went wrong. Maybe try again?")
-            if serverConfig(interaction.guild.id)['verboseErrors']:
-                await interaction.followup.send(str(e) + "\n-# To disable these messages, run /config verboseErrors false")
-            await viviaTools.log(f"Error while making channels in server {str(interaction.guild.name)} ({str(interaction.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
-    else:
-        await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
-
-@tree.command(
-    name="namegenerator",
-    description="Generator for names."
-)
-@app_commands.choices(type=[
-    app_commands.Choice(name="first",value="first"),
-    app_commands.Choice(name="middle",value="middle"),
-    app_commands.Choice(name="last",value="last"),
-    app_commands.Choice(name="full",value="full"),
-])
-@app_commands.choices(gender=[
-    app_commands.Choice(name="male",value="male"),
-    app_commands.Choice(name="female",value="female"),
-    app_commands.Choice(name="none",value="none"),
-])
-async def namegenerator(interaction: discord.Interaction, type: str="first", gender: str="none"):
-    """
-    Generator for names.
-    """
-    name = viviaTools.generate_name(type, gender)
-    await interaction.response.send_message(name)
 
 @tree.command(
     name="clearhistory",

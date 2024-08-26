@@ -1,0 +1,34 @@
+"""
+    This is the {command name} command used in Vivia.
+
+    Vivia is licensed under the MIT License. For more information, see the LICENSE file.
+    TL:DR: you can use Vivia's code as long as you keep the original license intact.
+    Vivia is made open source in the hopes that you'll find her code useful.
+
+    If you'd like to contribute, please check out the GitHub repository at https://github.com/starlii10/vivia.
+
+    Have a great time using Vivia!
+"""
+
+from discord.ext import commands
+from discord import app_commands
+
+async def setup(bot: commands.Bot): # for extension loading
+    bot.add_command(command) # type: ignore
+
+"""
+    Commands must have the following structure:
+
+    @app_commands.hybrid_command(
+        name = "command name"
+    )
+    async def command(ctx: app_commands.Context):
+        ...
+    
+    with optional decorators:
+
+    @app_commands.describe(
+        param1 = "param1 description",
+        param2 = "param2 description"
+    )
+"""

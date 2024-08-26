@@ -13,6 +13,7 @@
 """
 
 import configparser
+import datetime
 import json
 import logging
 import os
@@ -37,8 +38,26 @@ else:
         print(f"{type(e)}: {e}\n{traceback.format_exc()}")
         sys.exit(1)
 
+# Set up logging
+try:
+    handler = logging.FileHandler(
+        filename="data/logs/" + datetime.datetime.now().strftime("%Y-%m-%d") + ".log",
+        encoding='utf-8',
+        mode='w'
+    )
+    handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+    logging.basicConfig(level=logging.INFO)
+except:
+    print("Something's wrong with the logging file. I'm going to ignore it.")
+    handler = logging.StreamHandler(sys.stdout)
+
 # Load commonly used config values
 logChannel = int(config['Channels']['LoggingChannel'])
+
+# Help messages
+helpMsg = open("data/help/general.txt", "r").read()
+channelmakerHelpMsg = open("data/help/channelmaker.txt", "r").read()
+setupHelpMsg = open("data/help/setup.txt", "r").read()
 
 def generate_name(type, gender):
     """
