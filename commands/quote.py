@@ -14,7 +14,6 @@ import json
 import random
 import logging
 from discord.ext import commands
-import discord
 from extras.viviatools import serverConfig, log
 
 async def setup(bot: commands.Bot): # for extension loading
