@@ -129,3 +129,4 @@ async def log(message: str, severity: int=logging.INFO):
     """
 
     logging.log(severity, message)
+    print(message + f"({severity})")
