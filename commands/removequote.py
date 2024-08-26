@@ -25,7 +25,7 @@ async def setup(bot: commands.Bot): # for extension loading
 @app_commands.describe(
     quote = "The quote to remove."
 )
-async def removequote(ctx: app_commands.Context, quote: str):
+async def removequote(ctx: commands.Context, quote: str):
     """
     Removes a quote from the list.
 
