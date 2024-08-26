@@ -15,29 +15,29 @@ import random
 import logging
 from discord.ext import commands
 import discord
-from extras.viviatools import serverConfig
+from extras.viviatools import serverConfig, log
 
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(quote)
 
 # the command we actually care about
-@commands.command(
+@commands.hybrid_command(
     name="quote"
 )
-async def quote(interaction: discord.Interaction):
+async def quote(ctx: commands.Context):
     """
     Sends a random (slightly chaotic) quote.
     """
     try:
         with open('data/quotes.json') as f:
-            with open(f'data/servers/{interaction.guild.id}/quotes.json') as g:
+            with open(f'data/servers/{ctx.guild.id}/quotes.json') as g:
                 default_quotes = json.load(f)
                 custom_quotes = json.load(g)
                 quotes = default_quotes['quotes'] + custom_quotes['quotes']
                 quote = random.choice(quotes)
-                await interaction.response.send_message(quote)
+                await ctx.send(quote)
     except Exception as e:
-        await interaction.response.send_message("Something went wrong. Maybe try again?")
-        if serverConfig(interaction.guild.id)['verboseErrors']:
-            await interaction.followup.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
-        await log(f"Couldn't send a quote for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}", severity=logging.ERROR)
+        await ctx.send("Something went wrong. Maybe try again?")
+        if serverConfig(ctx.guild.id)['verboseErrors']:
+            await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
+        await log(f"Couldn't send a quote for server {ctx.guild.name} ({ctx.guild.id}): {type(e)}: {e}", severity=logging.ERROR)
