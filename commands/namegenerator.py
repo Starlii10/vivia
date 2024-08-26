@@ -35,7 +35,7 @@ async def setup(bot: commands.Bot): # for extension loading
     type = "The type of name to generate.",
     gender = "The gender of the name.",
 )
-async def namegenerator(ctx: app_commands.Context, type: str="first", gender: str="none"):
+async def namegenerator(ctx: commands.Context, type: str="first", gender: str="none"):
     """
     Generator for names.
     """

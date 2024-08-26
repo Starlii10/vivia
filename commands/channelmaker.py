@@ -27,7 +27,7 @@ async def setup(bot: commands.Bot): # for extension loading
     app_commands.Choice(name="voice",value="voice"),
     app_commands.Choice(name="forum",value="forum"),
 ])
-async def channelmaker(ctx: app_commands.Context, channel_config: str, type: str="text"):
+async def channelmaker(ctx: commands.Context, channel_config: str, type: str="text"):
     """
     Makes a bunch of channels from JSON.
 
