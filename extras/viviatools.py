@@ -12,8 +12,33 @@
     Have a great time using Vivia!
 """
 
+import configparser
 import json
+import logging
+import os
 import random
+import sys
+import traceback
+
+import discord
+
+# Config loading
+config = configparser.ConfigParser()
+if os.path.exists("config.ini"):
+    config.read("config.ini")
+else:
+    try:
+        print("I didn't find a configuration file. I'm creating one for ya!")
+        config.read("config.ini.example")
+        with open('config.ini', 'w') as configfile:
+            config.write(configfile)
+    except Exception as e:
+        print("I couldn't create a config file. Is something wrong with config.ini.example?")
+        print(f"{type(e)}: {e}\n{traceback.format_exc()}")
+        sys.exit(1)
+
+# Load commonly used config values
+logChannel = int(config['Channels']['LoggingChannel'])
 
 def generate_name(type, gender):
     """
@@ -53,3 +78,28 @@ def generate_name(type, gender):
                         return names['first']['female'][random.randint(0, len(names['first']['female']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
                     case _:
                         return all_names[random.randint(0, len(all_names) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
+
+def has_bot_permissions(user: discord.Member, server: discord.Guild):
+    """
+    Checks if the specified user has bot permissions.
+
+    ## Args:
+        - user (discord.User): The user to check.
+        - server (discord.Guild): The server to check in.
+
+    ## Returns:
+        - bool: True if the user has bot permissions, False otherwise.
+    ## Notes:
+        - This always returns true for the server owner.
+        - This also returns true if the user has a role with administrator permissions.
+    """
+    try:
+        adminRole = discord.utils.find(lambda a: a.name == "Vivia Admin", server.roles)
+    except AttributeError:
+        # TODO: log this issue so it can be fixed by the server admins
+        return False
+    return user.id == server.owner or user.guild_permissions.administrator or user in adminRole.members
+
+def serverConfig(serverID: int):
+    with open(f"data/servers/{serverID}/config.json", "r") as f:
+        return json.load(f)

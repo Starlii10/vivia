@@ -20,7 +20,6 @@ import datetime
 import shutil
 import sys
 import json
-import traceback
 import dotenv
 import random
 import os
@@ -33,27 +32,10 @@ import discord
 from discord import Embed, app_commands
 from discord.ext import tasks, commands
 
-# Config loading
-config = configparser.ConfigParser()
-if os.path.exists("config.ini"):
-    config.read("config.ini")
-else:
-    try:
-        print("I didn't find a configuration file. I'm creating one for ya!")
-        config.read("config.ini.example")
-        with open('config.ini', 'w') as configfile:
-            config.write(configfile)
-    except Exception as e:
-        print("I couldn't create a config file. Is something wrong with config.ini.example?")
-        print(f"{type(e)}: {e}\n{traceback.format_exc()}")
-        sys.exit(1)
-
-# Vivia's extra scripts (these require the config to be loaded first)
+# Vivia's extra scripts
 import extras.viviatools as viviaTools
+from extras.viviatools import config, logChannel, serverConfig
 import extras.viviallama as Llama
-
-# Load commonly used config values
-logChannel = int(config['Channels']['LoggingChannel'])
 
 # Set up logging
 try:
@@ -91,54 +73,17 @@ channelmakerHelpMsg = open("data/help/channelmaker.txt", "r").read()
 setupHelpMsg = open("data/help/setup.txt", "r").read()
 
 # Functions
-# I should separate this into ViviaTools but who cares
-def has_bot_permissions(user: discord.Member, server: discord.Guild):
-    """
-    Checks if the specified user has bot permissions.
-
-    ## Args:
-        - user (discord.User): The user to check.
-        - server (discord.Guild): The server to check in.
-
-    ## Returns:
-        - bool: True if the user has bot permissions, False otherwise.
-    ## Notes:
-        - This always returns true for the server owner.
-        - This also returns true if the user has a role with administrator permissions.
-    """
-    try:
-        adminRole = discord.utils.find(lambda a: a.name == "Vivia Admin", server.roles)
-    except AttributeError:
-        # TODO: log this issue so it can be fixed by the server admins
-        return False
-    return user.id == server.owner or user.guild_permissions.administrator or user in adminRole.members
-
-def serverConfig(serverID: int):
-    with open(f"data/servers/{serverID}/config.json", "r") as f:
-        return json.load(f)
-
 async def log(message: str, sendToLogChannel: bool=True, severity: int=logging.INFO):
     """
-    Outputs a message to the log.
-
-    ## Args:
-        - message (str): The message to output.
-        - sendToLogChannel (bool): Whether to send the message to the log channel.
-        - severity (int): The severity of the message (defaults to Info).
-
-    ## Notes:
-        - This function will output to the console, log file, and to a Discord channel.
-        - Errors will ping the owner of the bot if sent to the log channel.
+    Function for logging messages to the log channel. Also calls `ViviaTools.log()`.
     """
-    try:
-        if sendToLogChannel:
-            if severity == logging.ERROR:
-                await bot.get_channel(logChannel).send("<@" + config["General"]["Owner"] + "> " + message)
-            else:
-                await bot.get_channel(logChannel).send(message)
-    except:
-        pass # we don't care if the channel doesn't exist
-    logging.log(severity, message) # also prints to the console
+
+    if sendToLogChannel:
+        if severity >= logging.ERROR:
+            await bot.get_channel(logChannel).send(f"@{config['General']['owner']}**{message}**")
+        else:
+            await bot.get_channel(logChannel).send(message)
+    logging.log(severity, message)
 
 # Events
 @bot.event
@@ -154,6 +99,11 @@ async def on_ready():
         statuses = json.load(f)
     await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=random.choice(statuses["statuses"])))
     statusChanges.start()
+
+    # Commands
+    for file in os.listdir("commands"):
+        if file.endswith(".py"):
+            await bot.load_extension(f"commands.{file[:-3]}")
 
 @tasks.loop(hours=1)
 async def statusChanges():
@@ -348,7 +298,7 @@ async def addquote(interaction: discord.Interaction, quote: str, author: str, da
         - The quote will be formatted as `"quote" - author, date`.
         - This adds the quote to the custom quote list for the server the command was used in.
     """
-    if has_bot_permissions(interaction.user, interaction.guild):
+    if viviaTools.has_bot_permissions(interaction.user, interaction.guild):
         try:
             with open(f'data/servers/{interaction.guild.id}/quotes.json') as f:
                 quotes = json.load(f)
@@ -382,7 +332,7 @@ async def removequote(interaction: discord.Interaction, quote: str):
         - Only users with bot permissions can use this command.
         - This removes the quote from the custom quote list.
     """
-    if has_bot_permissions(interaction.user, interaction.guild):
+    if viviaTools.has_bot_permissions(interaction.user, interaction.guild):
         try:
             with open(f'data/servers/{str(interaction.guild.id)}/quotes.json') as f:
                 quotes = json.load(f)
@@ -425,7 +375,7 @@ async def channelmaker(interaction: discord.Interaction, channel_config: str, ty
         - The channelmaker JSON configuration looks like this: {"categories":{"test":["test"]}}
         - For more info, read the channelmakerhelpmsg.txt file or run /help channelmaker when the bot is running.
     """
-    if has_bot_permissions(interaction.user, interaction.guild):
+    if viviaTools.has_bot_permissions(interaction.user, interaction.guild):
         await interaction.response.send_message("Making channels! (This may take a moment.)")
         try:
             try:
@@ -508,7 +458,7 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
     ## Notes:
         - Only users with bot permissions can use this command.
     """
-    if has_bot_permissions(interaction.user, interaction.guild):
+    if viviaTools.has_bot_permissions(interaction.user, interaction.guild):
         try:
             match(option):
                 case "aiEnabled":

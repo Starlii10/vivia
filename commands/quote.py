@@ -11,16 +11,17 @@
 """
 
 import json
-import logging
 import random
-import discord
+import logging
 from discord.ext import commands
-from bot import serverConfig, tree, log
-from extras.viviatools import viviaTools
+import discord
+from extras.viviatools import config, serverConfig, log
 
-@tree.command(
-    name="quote",
-    description="Say a random (slightly chaotic) quote."
+async def setup(bot: commands.Bot):
+    bot.add_command(quote)
+
+@commands.command(
+    name="quote"
 )
 async def quote(interaction: discord.Interaction):
     """
