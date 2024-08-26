@@ -152,27 +152,6 @@ async def llamaReply(message: discord.Message):
 
 # Commands
 # TODO: move commands to a separate file so they're easier to deal with
-@tree.command(
-    name="quote",
-    description="Say a random (slightly chaotic) quote."
-)
-async def quote(interaction: discord.Interaction):
-    """
-    Sends a random (slightly chaotic) quote.
-    """
-    try:
-        with open('data/quotes.json') as f:
-            with open(f'data/servers/{interaction.guild.id}/quotes.json') as g:
-                default_quotes = json.load(f)
-                custom_quotes = json.load(g)
-                quotes = default_quotes['quotes'] + custom_quotes['quotes']
-                quote = random.choice(quotes)
-                await interaction.response.send_message(quote)
-    except Exception as e:
-        await interaction.response.send_message("Something went wrong. Maybe try again?")
-        if serverConfig(interaction.guild.id)['verboseErrors']:
-            await interaction.followup.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
-        await viviaTools.log(f"Couldn't send a quote for server {interaction.guild.name} ({interaction.guild.id}): {type(e)}: {e}", severity=logging.ERROR)
     
 @tree.command(
     name="listquotes",
