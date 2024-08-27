@@ -12,6 +12,7 @@
 
 import json
 import logging
+import discord
 from discord.ext import commands
 from discord import app_commands
 from extras.viviatools import has_bot_permissions, log, config
@@ -59,3 +60,7 @@ async def addquote(ctx: commands.Context, quote: str, author: str, date: str):
         await log(f"{ctx.author} added \"{quote} - {author}, {date}\" to the custom quote list for server {ctx.guild.name} ({ctx.guild.id})")
     else:
         await ctx.send("That's for authorized users, not you...")
+
+@app_commands.context_menu(name="Add Custom Quote")
+async def add_custom_quote(interaction: discord.Interaction, message: discord.Message):
+    await addquote(interaction, message.content, message.author.display_name, message.created_at.strftime("%Y-%m-%d"))
