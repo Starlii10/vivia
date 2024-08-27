@@ -19,6 +19,7 @@ from extras.viviatools import has_bot_permissions, log, config
 
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(addquote)
+    bot.add_command(add_custom_quote)
 
 @commands.hybrid_command(
     name="addquote",
