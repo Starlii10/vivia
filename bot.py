@@ -31,6 +31,7 @@ from discord import app_commands
 from discord.ext import tasks, commands
 
 # Vivia's extra scripts
+from commands.addquote import addquote
 import extras.viviatools as viviaTools
 from extras.viviatools import config, serverConfig, handler
 import extras.viviallama as Llama
@@ -242,6 +243,10 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
             await viviaTools.log(f"Error while changing config for {interaction.guild.name} ({str(interaction.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
+
+@app_commands.context_menu(name="Add Custom Quote")
+async def add_custom_quote(interaction: discord.Interaction, message: discord.Message):
+    await addquote(interaction, message.content, message.author.display_name, message.created_at.strftime("%Y-%m-%d"))
 
 # Run
 while True:
