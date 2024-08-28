@@ -160,7 +160,7 @@ async def sync(ctx, guild: int=0):
         await ctx.send('That\'s for the bot owner, not random users...')
 
 @bot.command()
-async def fixconfig(ctx):
+async def fixconfig(ctx: commands.Context):
     """
     Regenerates configuration and custom quotes files for servers where they are missing.
 
