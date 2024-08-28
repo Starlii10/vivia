@@ -138,16 +138,20 @@ async def llamaReply(message: discord.Message):
 # These commands are always available
 
 @bot.command()
-async def sync(ctx):
+async def sync(ctx, guild: int=0):
     """
     Syncs the command tree.
 
     ## Notes:
         - Only the bot owner can use this command. If you run Vivia locally, make sure to add your Discord user ID in config.ini.
         - This command does not appear in the command list. Use "v!sync" to run it.
+        - If you want to sync the entire bot, use "v!sync 0" or "v!sync". Otherwise specify the ID of the guild you want to sync.
     """
     if ctx.author.id == int(config["General"]["owner"]):
-        await bot.tree.sync()
+        if guild is 0:
+            await bot.tree.sync()
+        else:
+            await bot.tree.sync(guild=guild)
         await ctx.send('The command tree was synced, whatever that means.')
         await viviaTools.log("The command tree was synced, whatever that means.")
     else:
@@ -244,9 +248,13 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
 
+# Context menu commands
 @app_commands.context_menu(name="Add Custom Quote")
 async def add_custom_quote(interaction: discord.Interaction, message: discord.Message):
     await addquote(interaction, message.content, message.author.display_name, message.created_at.strftime("%Y-%m-%d"))
+
+# Add context menu commands
+tree.add_command(add_custom_quote)
 
 # Run
 while True:
