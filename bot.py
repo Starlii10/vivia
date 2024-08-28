@@ -253,7 +253,7 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
 # Context menu commands
 @app_commands.context_menu(name="Add Custom Quote")
 async def add_custom_quote(interaction: discord.Interaction, message: discord.Message):
-    await add_custom_quote(f"\"{message.content}\" - {message.author.display_name}, {message.created_at.strftime('%Y-%m-%d')}", interaction.guild.id)
+    await viviaTools.add_custom_quote(f"\"{message.content}\" - {message.author.display_name}, {message.created_at.strftime('%Y-%m-%d')}", interaction.guild.id)
 
 # Add context menu commands
 tree.add_command(add_custom_quote)
