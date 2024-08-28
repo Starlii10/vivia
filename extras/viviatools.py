@@ -73,7 +73,7 @@ def generate_name(type, gender):
     Notes:
         - This function assumes that the names.json file is in the same directory as the script.
     """
-    with open('names.json') as f:
+    with open('data/names.json') as f:
         names = json.load(f)
         all_names = names['first']['male'] + names['first']['female']
         match type:
