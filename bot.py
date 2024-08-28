@@ -151,7 +151,7 @@ async def sync(ctx, guild: int=0):
         if guild is 0:
             await bot.tree.sync()
         else:
-            await bot.tree.sync(guild=guild)
+            await bot.tree.sync(guild=discord.utils.get(bot.guilds, id=guild))
         await ctx.send('The command tree was synced, whatever that means.')
         await viviaTools.log("The command tree was synced, whatever that means.")
     else:
