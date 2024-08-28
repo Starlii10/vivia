@@ -150,10 +150,12 @@ async def sync(ctx, guild: int=0):
     if ctx.author.id == int(config["General"]["owner"]):
         if guild is 0:
             await bot.tree.sync()
+            await ctx.send('The command tree was synced, whatever that means.')
+            await viviaTools.log("The command tree was synced, whatever that means.")
         else:
             await bot.tree.sync(guild=discord.utils.get(bot.guilds, id=guild))
-        await ctx.send('The command tree was synced, whatever that means.')
-        await viviaTools.log("The command tree was synced, whatever that means.")
+            await ctx.send(f'The command tree was synced for {guild}, whatever that means.')
+            await viviaTools.log(f"The command tree was synced for {guild}, whatever that means.")
     else:
         await ctx.send('That\'s for the bot owner, not random users...')
 
