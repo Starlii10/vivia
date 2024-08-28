@@ -130,3 +130,10 @@ async def log(message: str, severity: int=logging.INFO):
 
     logging.log(severity, message)
     print(message + f" ({logging.getLevelName(severity)})")
+
+def add_custom_quote(quote: str, serverID: int):
+    with open(f"data/servers/{serverID}/quotes.json", "r") as f:
+        quotes = json.load(f)
+    quotes["quotes"].append(quote)
+    with open(f"data/servers/{serverID}/quotes.json", "w") as f:
+        json.dump(quotes, f)

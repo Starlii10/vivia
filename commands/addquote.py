@@ -15,7 +15,7 @@ import logging
 import discord
 from discord.ext import commands
 from discord import app_commands
-from extras.viviatools import has_bot_permissions, log, config
+from extras.viviatools import has_bot_permissions, log, config, add_custom_quote
 
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(addquote)
@@ -43,13 +43,7 @@ async def addquote(ctx: commands.Context, quote: str, author: str, date: str):
     """
     if has_bot_permissions(ctx.author, ctx.guild):
         try:
-            with open(f'data/servers/{ctx.guild.id}/quotes.json') as f:
-                quotes = json.load(f)
-                # Add the quote
-                quotes['quotes'].append(f'"{quote}" - {author}, {date}')
-            # Write the updated list
-            with open(f'data/servers/{ctx.guild.id}/quotes.json', 'w') as f:
-                json.dump(quotes, f)
+            add_custom_quote(f'"{quote}" - {author}, {date}', ctx.guild.id)
         except Exception as e:
             await ctx.send(f'Something went wrong. Maybe try again?')
             if config["General"]["VerboseErrors"]:
