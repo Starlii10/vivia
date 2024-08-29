@@ -15,18 +15,8 @@ Clone this repo and place the token in a file named `token.env` in the root dire
 
 `token="replace_with_your_token"`
 
-Finally, run the bot manually or as a Docker container.
-
-### Docker (recommended)
-
-Run `docker compose up --build` to run the bot as a Docker container. To stop it, run `docker compose down`.
-Currently there is no officially supported way to utilize AI functionality with Docker. If you'd like to try it, you'll have to run the bot manually.
-
-### Manual
-
 Run `pip install -r requirements.txt` in the root to install dependencies. After that, run `python bot.py` to start up the bot.
 
 For AI functionality, you'll want to install the `llama-cpp-python` package. Since the installation options can vary between computers, you should look at their [installation guide](https://github.com/abetlen/llama-cpp-python/blob/main/README.md#installation).
 
 If you want Vivia to be able to read images via OCR, you will want the `pytesseract` package. This requires the Tesseract engine to already be installed on your computer.
-
