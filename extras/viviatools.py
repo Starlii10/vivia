@@ -51,9 +51,6 @@ except:
     print("Something's wrong with the logging file. I'm going to ignore it.")
     handler = logging.StreamHandler(sys.stdout)
 
-# Load commonly used config values
-logChannel = int(config['Channels']['LoggingChannel'])
-
 # Help messages
 helpMsg = open("data/help/general.txt", "r").read()
 channelmakerHelpMsg = open("data/help/channelmaker.txt", "r").read()

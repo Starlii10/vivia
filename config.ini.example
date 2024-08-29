@@ -5,14 +5,7 @@ statusmessage = Statuses have moved to data/statuses.json
 # Replace this with your Discord user ID, otherwise advanced commands will not run.
 owner = 0
 # The command prefix for the bot.
-# This will be used for more advanced commands such as sync.
 prefix = v!
-
-[Channels]
-# The ID for the channel where logs are sent. Must be a text channel in a server that the bot is in, and the bot must be able to send messages in it.
-# Since logs may contain sensitive information, this should be a private channel.
-# Leave this as 0 to disable logging to a channel.
-loggingchannel = 0
 
 [Advanced]
 debug = False
