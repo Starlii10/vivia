@@ -60,15 +60,12 @@ def generate_name(type, gender):
     """
     Generator for names.
 
-    Args:
+    ## Args:
         type (str): The type of name to generate.
         gender (str): The gender of the name to generate.
 
-    Returns:
+    ## Returns:
         str: The generated name.
-
-    Notes:
-        - This function assumes that the names.json file is in the same directory as the script.
     """
     with open('data/names.json') as f:
         names = json.load(f)
@@ -105,6 +102,7 @@ def has_bot_permissions(user: discord.Member, server: discord.Guild):
 
     ## Returns:
         - bool: True if the user has bot permissions, False otherwise.
+
     ## Notes:
         - This always returns true for the server owner.
         - This also returns true if the user has a role with administrator permissions.
@@ -117,10 +115,19 @@ def has_bot_permissions(user: discord.Member, server: discord.Guild):
     return user.id == server.owner or user.guild_permissions.administrator or user in adminRole.members
 
 def serverConfig(serverID: int):
+    """
+    Gets the configuration of a server.
+
+    ## Args:
+        - serverID (int): The ID of the server to get the config file of.
+
+    ## Returns:
+        - dict: The configuration of the server as loaded JSON.
+    """
     with open(f"data/servers/{serverID}/config.json", "r") as f:
         return json.load(f)
     
-async def log(message: str, severity: int=logging.INFO):
+def log(message: str, severity: int=logging.INFO):
     """
     Logs a message to the console.
     """
@@ -129,6 +136,13 @@ async def log(message: str, severity: int=logging.INFO):
     print(message + f" ({logging.getLevelName(severity)})")
 
 def add_custom_quote(quote: str, serverID: int):
+    """
+    Adds a custom quote to a server's quotes.json file.
+
+    ## Args:
+        - quote (str): The quote to add.
+        - serverID (int): The ID of the server to add the quote to.
+    """
     with open(f"data/servers/{serverID}/quotes.json", "r") as f:
         quotes = json.load(f)
     quotes["quotes"].append(quote)

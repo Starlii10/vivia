@@ -26,6 +26,7 @@
 
 import configparser
 import json
+import logging
 import mimetypes
 import os
 import sys
@@ -34,7 +35,8 @@ import traceback
 import cv2
 import discord
 import numpy as np
-import requests
+
+from extras import viviatools
 
 print("Attempting to load LLaMa - this may take a moment")
 
@@ -84,7 +86,7 @@ except:
 
 async def createResponse(prompt: str, username: str, internal_name: str, attachments: list[discord.Attachment] = []):
     if not aiDisabled:
-        print(f"Response generation requested by {internal_name} ({username}) - generating now! (This may take a moment)")
+        viviatools.log(f"Response generation requested by {internal_name} ({username}) - generating now! (This may take a moment)")
 
         # Read messages from memory file
         if not os.path.exists(f"data/tempchats/{internal_name}/messages.txt"):
@@ -96,17 +98,17 @@ async def createResponse(prompt: str, username: str, internal_name: str, attachm
 
         # Read message attachments
         if len(attachments) > 0:
-            print("Reading message attachments...")
+            viviatools.log("Reading message attachments...", logging.DEBUG)
             for attachment in attachments:
                 attachment_messages.append(await processAttachment(attachment, internal_name))
-            print("Attachments read.")
+            viviatools.log("Attachments read.", logging.DEBUG)
 
         # Combine the additional messages with the system prompt and user prompt
         generation = model.create_chat_completion(messages=additional_messages + [
             {"role": "system", "content": open("data/system-prompt.txt", "r").read().replace("{username}", username)},
         ] + [{"role": "user", "content": prompt}] + [{"role": "user", "content": attachment_messages}])
         response = generation['choices'][0]['message']['content']
-        print("Response generated successfully.")
+        viviatools.log(f"Response generated successfully for user {internal_name} ({username}).", logging.DEBUG)
 
         # Write messages to memory file
         with open(f"data/tempchats/{internal_name}/messages.txt", "w") as file:
@@ -115,26 +117,28 @@ async def createResponse(prompt: str, username: str, internal_name: str, attachm
         return response
     else:
         # Return an error message if LLaMa failed to load
-        print(f"Ignoring generation request by {internal_name} ({username}) due to previous errors while loading LLaMa", file=sys.stderr)
+        viviatools.log(f"Ignoring generation request by {internal_name} ({username}) due to previous errors while loading LLaMa", logging.WARNING)
         return("Something's wrong with my programming, so I can't respond. Sorry.")
 
 async def processAttachment(attachment, internal_name):
     # Download attachment
     try:
+        viviatools.log(f"Downloading {attachment.filename}", logging.DEBUG)
         await attachment.save(f"data/tempchats/{internal_name}/{attachment.filename}")
     except Exception as e:
-        print(f"Error downloading {attachment.filename}. Ignoring.\n{type(e)}: {e}")
+        viviatools.log(f"Error downloading {attachment.filename}. Ignoring.\n{type(e)}: {e}", logging.WARNING)
         return {"role": "user", "content": f"An attachment that failed to download."}
 
     # Check if the attachment is text
     match mimetypes.guess_type(f"data/tempchats/{internal_name}/{attachment.filename}")[0].split("/")[0]:
         case "text":
             with open(f"data/tempchats/{internal_name}/{attachment.filename}", "r") as file:
+                viviatools.log(f"Attachment {attachment.filename} read as text", logging.DEBUG)
                 return {"role": "user", "content": "An attached text file: " + file.read()}
         case "image":
             # Attempt OCR on the attachment
             if not imageReadingDisabled:
-                print(f"Attachment {attachment.filename} is not text. Attempting OCR...")
+                viviatools.log(f"Attachment {attachment.filename} is not text. Attempting OCR...", logging.DEBUG)
                 try:
                     img = np.array(Image.open(f"data/tempchats/{internal_name}/{attachment.filename}"))
                     # Process image
@@ -147,17 +151,17 @@ async def processAttachment(attachment, internal_name):
                         print(f"Debug: Saved image {attachment.filename} to extras/ocr")
                     text = pytesseract.image_to_string(noise_reduced)
                     if text:
-                        print(f"Found text in {attachment.filename}: {text}")
+                        viviatools.log(f"Found text in {attachment.filename}: {text}", logging.DEBUG)
                         return {"role": "user", "content": "An attached image with the text: " + text}
                     else:
-                        print(f"Couldn't find text in {attachment.filename}. Skipping.")
+                        viviatools.log(f"Couldn't find text in {attachment.filename}. Skipping.", logging.DEBUG)
                         return {"role": "user", "content": f"An image that couldn't be read: {attachment.filename}"}
                 except Exception as e:
-                    print(f"Error performing OCR on {attachment.filename}. Skipping.\n{type(e)}: {e}", file=sys.stderr)
+                    viviatools.log(f"Error performing OCR on {attachment.filename}. Skipping.\n{type(e)}: {e}", logging.ERROR)
                     return {"role": "user", "content": f"An image that couldn't be read due to errors: {attachment.filename}"}
             else:
-                print(f"Attachment {attachment.filename} is not text. Skipping OCR due to previous errors loading pytesseract.", file=sys.stderr)
+                viviatools.log(f"Attachment {attachment.filename} is not text. Skipping OCR due to previous errors loading pytesseract.", logging.WARNING)
                 return {"role": "user", "content": f"An image that couldn't be read due to errors: {attachment.filename}"}
         case _:
-            print(f"Attachment {attachment.filename} is unrecognized. Skipping.")
+            viviatools.log(f"Attachment {attachment.filename} is unrecognized. Skipping.", logging.WARNING)
             return {"role": "user", "content": f"An unrecognized attachment: {attachment.filename}"}
