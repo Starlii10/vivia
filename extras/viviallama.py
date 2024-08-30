@@ -112,9 +112,8 @@ async def createResponse(
                 attachment_messages.append(await processAttachment(attachment, internal_name))
             viviatools.log("Attachments read.", logging.DEBUG)
 
-        # Sysprompt processing
-        sysprompt = [{"role": "system", "content": open("data/system-prompt.txt", "r").read()}]
-        add_info_to_sysprompt(sysprompt, internal_name, username, user_status, current_status, server_name, channel_name, category_name)
+        # Sysprompt processing. Terrible, ik. Too bad!
+        sysprompt = [{"role": "system", "content": {add_info_to_sysprompt(open("data/system-prompt.txt", "r").read(), internal_name, username, user_status, current_status, server_name, channel_name, category_name)}}]
 
         # Combine the additional messages with the system prompt and user prompt
         generation = model.create_chat_completion(messages=additional_messages + sysprompt +
