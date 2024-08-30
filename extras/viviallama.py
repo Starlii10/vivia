@@ -114,7 +114,7 @@ async def createResponse(
 
         # Sysprompt processing
         sysprompt = [{"role": "system", "content": open("data/system-prompt.txt", "r").read()}]
-        add_info_to_sysprompt(sysprompt, user_status, current_status, server_name, channel_name, category_name)
+        add_info_to_sysprompt(sysprompt, internal_name, username, user_status, current_status, server_name, channel_name, category_name)
 
         # Combine the additional messages with the system prompt and user prompt
         generation = model.create_chat_completion(messages=additional_messages + sysprompt +
