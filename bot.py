@@ -220,6 +220,21 @@ async def fixconfig(ctx: commands.Context):
     else:
         await ctx.send('That\'s for the bot owner, not random users...')
 
+@bot.command()
+async def statuschange(ctx: commands.Context):
+    """
+    Manually randomizes the current status of the bot.
+
+    ## Notes:
+        - Only the bot owner can use this command. If you run Vivia locally, make sure to add your Discord user ID in config.ini.
+        - This command does not appear in the command list. Use "v!statuschange" to run it.
+    """
+    if ctx.author.id == int(config["General"]["owner"]):
+        await statusChanges()
+        await ctx.send('Status randomized!')
+    else:
+        await ctx.send('That\'s for the bot owner, not random users...')
+
 @tree.command(
     name="clearhistory",
     description="Clears your recent chat history with me."
