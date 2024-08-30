@@ -112,15 +112,11 @@ async def createResponse(
                 attachment_messages.append(await processAttachment(attachment, internal_name))
             viviatools.log("Attachments read.", logging.DEBUG)
 
+        # Sysprompt processing
+        sysprompt = [{"role": "system", "content": open("data/system-prompt.txt", "r").read()}]
+        add_info_to_sysprompt(sysprompt, user_status, current_status, server_name, channel_name, category_name)
+
         # Combine the additional messages with the system prompt and user prompt
-        sysprompt = [{"role": "system", "content": open("data/system-prompt.txt", "r").read().replace(
-                                                                                            "{username}", username,
-                                                                                            "{status_user}", user_status if user_status is not None else "",
-                                                                                            "{status_bot}", current_status if current_status is not None else "",
-                                                                                            "{server_name}", server_name if server_name is not None else "",
-                                                                                            "{channel_name}", channel_name if channel_name is not None else "",
-                                                                                            "{category_name}", category_name if category_name is not None else "",
-                                                                                            )}]
         generation = model.create_chat_completion(messages=additional_messages + sysprompt +
                                                   [{"role": "user", "content": prompt}] + [{"role": "user", "content": attachment_messages}])
         response = generation['choices'][0]['message']['content']
@@ -181,3 +177,14 @@ async def processAttachment(attachment, internal_name):
         case _:
             viviatools.log(f"Attachment {attachment.filename} is unrecognized. Skipping.", logging.WARNING)
             return {"role": "user", "content": f"An unrecognized attachment: {attachment.filename}"}
+
+def add_info_to_sysprompt(sysprompt, internal_name, username, discord_status_user, status_bot, server_name, channel_name, category_name):
+    # This is a TERRIBLE way to do this. I know
+    sysprompt = sysprompt.replace("{username}", username)
+    sysprompt = sysprompt.replace("{discord_status_user}", discord_status_user)
+    sysprompt = sysprompt.replace("{status_bot}", status_bot)
+    sysprompt = sysprompt.replace("{server_name}", server_name)
+    sysprompt = sysprompt.replace("{channel_name}", channel_name)
+    sysprompt = sysprompt.replace("{category_name}", category_name)
+    sysprompt = sysprompt.replace("{internal_name}", internal_name)
+    return sysprompt
