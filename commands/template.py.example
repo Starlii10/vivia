@@ -1,11 +1,14 @@
 """
-    This is the {command name} command used in Vivia.
+    This is a custom command template used for compatibility with Vivia.
 
     Vivia is licensed under the MIT License. For more information, see the LICENSE file.
     TL:DR: you can use Vivia's code as long as you keep the original license intact.
     Vivia is made open source in the hopes that you'll find her code useful.
 
     If you'd like to contribute, please check out the GitHub repository at https://github.com/starlii10/vivia.
+
+    Note that any files made with this template are not subject to Vivia's license, however the template itself is.
+    You may redistribute any Vivia-compatible commands under any license you wish, open-source or proprietary.
 
     Have a great time using Vivia!
 """
@@ -21,11 +24,11 @@ async def setup(bot: commands.Bot): # for extension loading
 
     @commands.hybrid_command(
         name = "command name"
-    )
-    async def command(ctx: commands.Context):
+    ) # or another Command subtype. hybrid_command is used here since it creates both a slash and text command
+    async def command(ctx: commands.Context): # as well as any arguments you will use
         ...
     
-    with optional decorators:
+    # with optional decorators:
 
     @app_commands.describe(
         param1 = "param1 description",
