@@ -36,6 +36,9 @@ import extras.viviatools as viviatools
 from extras.viviatools import config, serverConfig, handler
 import extras.viviallama as Llama
 
+# Variables
+current_status = "Vivia is powering up..."
+
 # Terminal title. VSCode will scream at you that one of these is unreachable, ignore it
 if sys.platform == 'win32':
     # Windows title
@@ -81,8 +84,10 @@ async def statusChanges():
     """
     with open("data/statuses.json", "r") as f:
         statuses = json.load(f)
-    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=random.choice(statuses["statuses"])))
-    viviatools.log(f"Status changed to {random.choice(statuses['statuses'])}", logging.DEBUG)
+    status = random.choice(statuses["statuses"])
+    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=status))
+    current_status = status
+    viviatools.log(f"Status changed to {status}", logging.DEBUG)
 
 @bot.event
 async def on_member_join(member):
@@ -142,7 +147,15 @@ async def llamaReply(message: discord.Message):
     """
     Gets a reply using LLaMa.
     """
-    task = asyncio.create_task(Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "), message.author.display_name, message.author.name, message.attachments))
+    task = asyncio.create_task(Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "),
+                                                    message.author.display_name,
+                                                    message.author.name,
+                                                    message.attachments,
+                                                    message.author.raw_status,
+                                                    current_status,
+                                                    message.guild.name,
+                                                    message.channel.name,
+                                                    message.channel.category.name))
     await message.reply(await task)
 
 # Core commands

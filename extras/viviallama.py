@@ -84,7 +84,16 @@ except:
     print("Couldn't load pytesseract. This is not a fatal error, however Vivia will not be able to read images unless it is installed.", file=sys.stderr)
     imageReadingDisabled = True
 
-async def createResponse(prompt: str, username: str, internal_name: str, attachments: list[discord.Attachment] = []):
+async def createResponse(
+        prompt: str,
+        username: str,
+        internal_name: str,
+        attachments: list[discord.Attachment] = [],
+        user_status: str | None = None,
+        current_status: str | None = None,
+        server_name: str | None = None,
+        channel_name: str | None = None,
+        category_name: str | None = None):
     if not aiDisabled:
         viviatools.log(f"Response generation requested by {internal_name} ({username}) - generating now! (This may take a moment)")
 
@@ -104,9 +113,16 @@ async def createResponse(prompt: str, username: str, internal_name: str, attachm
             viviatools.log("Attachments read.", logging.DEBUG)
 
         # Combine the additional messages with the system prompt and user prompt
-        generation = model.create_chat_completion(messages=additional_messages + [
-            {"role": "system", "content": open("data/system-prompt.txt", "r").read().replace("{username}", username)},
-        ] + [{"role": "user", "content": prompt}] + [{"role": "user", "content": attachment_messages}])
+        sysprompt = [{"role": "system", "content": open("data/system-prompt.txt", "r").read().replace(
+                                                                                            "{username}", username,
+                                                                                            "{status_user}", user_status if user_status is not None else "",
+                                                                                            "{status_bot}", current_status if current_status is not None else "",
+                                                                                            "{server_name}", server_name if server_name is not None else "",
+                                                                                            "{channel_name}", channel_name if channel_name is not None else "",
+                                                                                            "{category_name}", category_name if category_name is not None else "",
+                                                                                            )}]
+        generation = model.create_chat_completion(messages=additional_messages + sysprompt +
+                                                  [{"role": "user", "content": prompt}] + [{"role": "user", "content": attachment_messages}])
         response = generation['choices'][0]['message']['content']
         viviatools.log(f"Response generated successfully for user {internal_name} ({username}).", logging.DEBUG)
 
