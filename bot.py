@@ -150,7 +150,7 @@ async def on_message(message: discord.Message):
 def llamaReply(message: discord.Message):
     """
     Gets a reply using LLaMa.
-    This has to be a separate function because threads.
+    This has to be a separate (non-async) function because threads.
     """
 
     async def reply(message: discord.Message, reply: str):
@@ -166,11 +166,8 @@ def llamaReply(message: discord.Message):
                                                     message.channel.name,
                                                     message.channel.category.name)
     
-    # This is terrible, but to allow llamaReply to be threaded I have to do this terribleness
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(reply(message, generation))
-    loop.close()
+    # Send the reply (note that reply is async so we need to use asyncio)
+    asyncio.run_coroutine_threadsafe(reply(message, generation), bot.loop) # we don't care about the result
 
 # Core commands
 # These commands are always available
