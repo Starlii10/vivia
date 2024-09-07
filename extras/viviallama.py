@@ -113,7 +113,15 @@ async def createResponse(
             viviatools.log("Attachments read.", logging.DEBUG)
 
         # Sysprompt processing. Terrible, ik. Too bad!
-        sysprompt = [{"role": "system", "content": {add_info_to_sysprompt(open("data/system-prompt.txt", "r").read(), internal_name, username, user_status, current_status, server_name, channel_name, category_name)}}]
+        sysprompt = [{"role": "system", "content": {
+            add_info_to_sysprompt(open("data/system-prompt.txt", "r").read(), 
+                                  internal_name, 
+                                  username, 
+                                  user_status, 
+                                  current_status, 
+                                  server_name, 
+                                  channel_name, 
+                                  category_name)}}]
 
         # Combine the additional messages with the system prompt and user prompt
         generation = model.create_chat_completion(messages=additional_messages + sysprompt +
@@ -159,7 +167,7 @@ async def processAttachment(attachment, internal_name):
                     # DEBUG - Save image
                     if config["Advanced"]["debug"].lower() == "true":
                         cv2.imwrite(f"extras/ocr/{attachment.filename}", noise_reduced)
-                        print(f"Debug: Saved image {attachment.filename} to extras/ocr")
+                        viviatools.log(f"Debug: Saved image {attachment.filename} to extras/ocr", logging.DEBUG)
                     text = pytesseract.image_to_string(noise_reduced)
                     if text:
                         viviatools.log(f"Found text in {attachment.filename}: {text}", logging.DEBUG)

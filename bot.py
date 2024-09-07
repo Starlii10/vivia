@@ -19,6 +19,7 @@ import asyncio
 import shutil
 import sys
 import json
+import threading
 import dotenv
 import random
 import os
@@ -42,10 +43,10 @@ current_status = "Vivia is powering up..."
 # Terminal title. VSCode will scream at you that one of these is unreachable, ignore it
 if sys.platform == 'win32':
     # Windows title
-    system("title Running " + __VERSION__ + " - " + config['General']['StatusMessage'])
+    system(f"title Running {__VERSION__}- {config['General']['StatusMessage']}")
 else:
     # Linux title (if this doesn't work on your distro please open an issue because I suck at Linux)
-    system("echo -ne '\033]0;Vivia - " + config['General']['StatusMessage'] + "\007'")
+    system(f"echo -ne '\033]0;Running {__VERSION__}- {config['General']['StatusMessage']}\007'")
 
 # Get ready to run the bot
 intents = discord.Intents.default()
@@ -112,6 +113,7 @@ async def on_guild_join(guild: discord.Guild):
     for member in guild.members:
         if member.guild_permissions.administrator:
             await member.add_roles(discord.utils.find(lambda r: r.name == "Vivia Admin", guild.roles), reason="Vivia setup: This user has administrative permissions and was automatically assigned to the Vivia Admin role.")
+            viviatools.log(f"User {member.name} ({member.id}) was automatically assigned the Vivia Admin role in {guild.name} ({guild.id}).", logging.DEBUG)
     if config["Advanced"]["Debug"]:
         viviatools.log(f"Setup complete for {guild.name} ({guild.id})", logging.DEBUG)    
 
@@ -126,7 +128,7 @@ async def on_message(message: discord.Message):
         return
     
     # Ignore DMs
-    if message.guild is None:
+    if message.guild == None:
         return
 
     # Process commands
@@ -137,11 +139,13 @@ async def on_message(message: discord.Message):
         pass
 
     # Invoke LLaMa if pinged (this also works for replies)
+    # "Starlii when will this be async?" Good question
     if serverConfig(message.guild.id)['aiEnabled']:
         # we need to check both for direct mentions of Vivia and for mentions of the Vivia role to prevent confusion
-        if (message.mentions and (message.mentions[0] == bot.user or message.role_mentions[0] == discord.utils.get(message.guild.roles, name="Vivia"))): # This is throwing IndexErrors for some reason. Gonna ignore it
+        if (message.mentions and (message.mentions[0] == bot.user or message.role_mentions[0] == discord.utils.get(message.guild.roles, name="Vivia"))):
             async with message.channel.typing():
-                await llamaReply(message)
+                threading.Thread(target=llamaReply, args=(message,)).start()
+
 
 async def llamaReply(message: discord.Message):
     """
