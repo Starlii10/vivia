@@ -43,10 +43,10 @@ current_status = "Vivia is powering up..."
 # Terminal title. VSCode will scream at you that one of these is unreachable, ignore it
 if sys.platform == 'win32':
     # Windows title
-    system(f"title Running {__VERSION__}- {config['General']['StatusMessage']}")
+    system(f"title Running {__VERSION__} - {config['General']['StatusMessage']}")
 else:
     # Linux title (if this doesn't work on your distro please open an issue because I suck at Linux)
-    system(f"echo -ne '\033]0;Running {__VERSION__}- {config['General']['StatusMessage']}\007'")
+    system(f"echo -ne '\033]0;Running {__VERSION__} - {config['General']['StatusMessage']}\007'")
 
 # Get ready to run the bot
 intents = discord.Intents.default()
@@ -144,7 +144,7 @@ async def on_message(message: discord.Message):
         # we need to check both for direct mentions of Vivia and for mentions of the Vivia role to prevent confusion
         if (message.mentions and (message.mentions[0] == bot.user or message.role_mentions[0] == discord.utils.get(message.guild.roles, name="Vivia"))):
             async with message.channel.typing():
-                threading.Thread(target=llamaReply, args=(message,)).start()
+                threading.Thread(target=await llamaReply, args=(message,)).start()
 
 
 async def llamaReply(message: discord.Message):
