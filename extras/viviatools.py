@@ -107,11 +107,9 @@ def has_bot_permissions(user: discord.Member, server: discord.Guild):
         - This always returns true for the server owner.
         - This also returns true if the user has a role with administrator permissions.
     """
-    try:
-        adminRole = discord.utils.find(lambda a: a.name == "Vivia Admin", server.roles)
-    except AttributeError:
-        # TODO: log this issue so it can be fixed by the server admins
-        return False
+    adminRole = discord.utils.find(lambda a: a.name == "Vivia Admin", server.roles)
+    if adminRole == None:
+        return user.id == server.owner or user.guild_permissions.administrator
     return user.id == server.owner or user.guild_permissions.administrator or user in adminRole.members
 
 def serverConfig(serverID: int):
