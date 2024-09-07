@@ -166,7 +166,11 @@ def llamaReply(message: discord.Message):
                                                     message.channel.name,
                                                     message.channel.category.name)
     
-    asyncio.run(reply(message, generation))
+    # This is terrible, but to allow llamaReply to be threaded I have to do this terribleness
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(reply(message, generation))
+    loop.close()
 
 # Core commands
 # These commands are always available
