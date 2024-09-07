@@ -144,14 +144,19 @@ async def on_message(message: discord.Message):
         # we need to check both for direct mentions of Vivia and for mentions of the Vivia role to prevent confusion
         if (message.mentions and (message.mentions[0] == bot.user or message.role_mentions[0] == discord.utils.get(message.guild.roles, name="Vivia"))):
             async with message.channel.typing():
-                threading.Thread(target=await llamaReply, args=(message,)).start()
+                threading.Thread(target=llamaReply, args=(message,)).start()
 
 
-async def llamaReply(message: discord.Message):
+def llamaReply(message: discord.Message):
     """
     Gets a reply using LLaMa.
+    This has to be a separate function because threads.
     """
-    task = asyncio.create_task(Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "),
+
+    async def reply(message: discord.Message, reply: str):
+        await message.reply(reply)
+    
+    generation = Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "),
                                                     message.author.display_name,
                                                     message.author.name,
                                                     message.attachments,
@@ -159,8 +164,9 @@ async def llamaReply(message: discord.Message):
                                                     current_status,
                                                     message.guild.name,
                                                     message.channel.name,
-                                                    message.channel.category.name))
-    await message.reply(await task)
+                                                    message.channel.category.name)
+    
+    asyncio.run(reply(message, generation))
 
 # Core commands
 # These commands are always available
