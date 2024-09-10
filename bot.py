@@ -20,6 +20,7 @@ import shutil
 import sys
 import json
 import threading
+import traceback
 import dotenv
 import random
 import os
@@ -32,7 +33,7 @@ from discord import app_commands
 from discord.ext import tasks, commands
 
 # Vivia's extra scripts
-from commands.addquote import addquote
+from commands.viviabase.viviabase_addquote import addquote
 import extras.viviatools as viviatools
 from extras.viviatools import config, serverConfig, handler
 import extras.viviallama as Llama
@@ -70,11 +71,31 @@ async def on_ready():
     await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=random.choice(statuses["statuses"])))
     statusChanges.start()
 
-    # Commands
+    # Load extensions
+    viviatools.log("Loading extensions!")
+
+    # viviabase
+    for file in os.listdir("commands/viviabase"):
+        if file.endswith(".py"):
+            try:
+                await bot.load_extension(f"commands.viviabase.{file[:-3]}")
+            except Exception as e:
+                viviatools.log(f"Failed to load base extension {file[:-3]}", logging.ERROR)
+                viviatools.log(f"{type(e)}: {e}\n{traceback.format_exc()}", logging.ERROR)
+                viviatools.log("Functionality may be limited. Please report this on GitHub.", logging.ERROR)
+                continue
+            viviatools.log(f"Loaded base extension {file[:-3]}")
+
+    # Custom extensions
     for file in os.listdir("commands"):
         if file.endswith(".py"):
-            viviatools.log(f"Loading extension {file[:-3]}")
-            await bot.load_extension(f"commands.{file[:-3]}")
+            try:
+                await bot.load_extension(f"commands.{file[:-3]}")
+            except Exception as e:
+                viviatools.log(f"Failed to load custom extension {file[:-3]}")
+                viviatools.log(f"{type(e)}: {e}\n{traceback.format_exc()}")
+                continue
+            viviatools.log(f"Loaded extension {file[:-3]}")
 
     viviatools.log("Vivia is all ready!")
 
@@ -152,9 +173,6 @@ def llamaReply(message: discord.Message):
     Gets a reply using LLaMa.
     This has to be a separate (non-async) function because threads.
     """
-
-    async def reply(message: discord.Message, reply: str):
-        await message.reply(reply)
     
     generation = Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "),
                                                     message.author.display_name,
@@ -167,7 +185,7 @@ def llamaReply(message: discord.Message):
                                                     message.channel.category.name)
     
     # Send the reply (note that reply is async so we need to use asyncio)
-    asyncio.run_coroutine_threadsafe(reply(message, generation), bot.loop) # we don't care about the result
+    asyncio.run_coroutine_threadsafe(message.reply(message, generation), bot.loop) # we don't care about the result
 
 # Core commands
 # These commands are always available
