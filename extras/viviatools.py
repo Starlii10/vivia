@@ -162,5 +162,5 @@ def personalityMessage(type: str):
             messages = json.load(f)
             return messages[type][random.randint(0, len(messages[type]) - 1)]
     except FileNotFoundError:
-        log((f"Couldn't find personality message database for type {type}. Does it even exist?"), logging.ERROR)
+        log(f"Couldn't find personality message database for type {type}. Does it even exist?", logging.ERROR)
         return ""
