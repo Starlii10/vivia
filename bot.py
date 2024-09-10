@@ -156,7 +156,8 @@ async def on_message(message: discord.Message):
     try:
         await bot.process_commands(message)
     except app_commands.CommandNotFound:
-        viviatools.log(f"Command not found: {message.content}. Ignoring.", logging.WARNING)
+        viviatools.log(f"Command not found: {message.content} (requested by {message.author}). Ignoring.", logging.WARNING)
+        await message.reply("That command doesn't seem to exist... did you spell it correctly?")
         pass
 
     # Invoke LLaMa if pinged (this also works for replies)
@@ -202,7 +203,7 @@ async def sync(ctx, guild: int=0):
         - This command does not appear in the command list. Use "v!sync" to run it.
         - If you want to sync the entire bot, use "v!sync 0" or "v!sync". Otherwise specify the ID of the guild you want to sync.
     """
-    if ctx.author.id == int(config["General"]["owner"]):
+    if bot.is_owner(ctx.author):
         if guild is 0:
             await bot.tree.sync()
             await ctx.send('The command tree was synced, whatever that means.')
@@ -223,8 +224,8 @@ async def fixconfig(ctx: commands.Context):
         - Only the bot owner can use this command. If you run Vivia locally, make sure to add your Discord user ID in config.ini.
         - This command does not appear in the command list. Use "v!fixconfig" to run it.
     """
-    viviatools.log(f"Regenerating missing data files for all servers...", logging.DEBUG)
-    if ctx.author.id == int(config["General"]["owner"]):
+    if bot.is_owner(ctx.author):
+        viviatools.log(f"Regenerating missing data files for all servers...", logging.DEBUG)
         for guild in bot.guilds:
             # Regenerate server data path if it doesn't exist
             if not os.path.exists(f'data/servers/{guild.id}'):
@@ -260,7 +261,7 @@ async def statuschange(ctx: commands.Context):
         - Only the bot owner can use this command. If you run Vivia locally, make sure to add your Discord user ID in config.ini.
         - This command does not appear in the command list. Use "v!statuschange" to run it.
     """
-    if ctx.author.id == int(config["General"]["owner"]):
+    if bot.is_owner(ctx.author):
         await statusChanges()
         await ctx.send('Status randomized!')
     else:

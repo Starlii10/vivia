@@ -1,11 +1,9 @@
 [General]
 # The status message for the bot. This will be shown in the terminal when running the bot as well.
 statusmessage = Statuses have moved to data/statuses.json
-# The ID for the bot's "owner" (the person who created/is running the bot).
-# Replace this with your Discord user ID, otherwise advanced commands will not run.
-owner = 0
 # The command prefix for the bot.
 prefix = v!
 
 [Advanced]
+# Shows more verbose information about Vivia in the terminal/logs.
 debug = False
