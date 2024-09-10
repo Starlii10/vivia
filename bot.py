@@ -174,7 +174,7 @@ def llamaReply(message: discord.Message):
     This has to be a separate (non-async) function because threads.
     """
     
-    generation = Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "),
+    generation_fut = asyncio.run_coroutine_threadsafe(Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "),
                                                     message.author.display_name,
                                                     message.author.name,
                                                     message.attachments,
@@ -182,7 +182,9 @@ def llamaReply(message: discord.Message):
                                                     current_status,
                                                     message.guild.name,
                                                     message.channel.name,
-                                                    message.channel.category.name)
+                                                    message.channel.category.name))
+
+    generation = generation_fut.result()
     
     # Send the reply (note that reply is async so we need to use asyncio)
     asyncio.run_coroutine_threadsafe(message.reply(generation), bot.loop) # we don't care about the result
