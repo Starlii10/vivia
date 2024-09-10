@@ -185,7 +185,7 @@ def llamaReply(message: discord.Message):
                                                     message.channel.category.name)
     
     # Send the reply (note that reply is async so we need to use asyncio)
-    asyncio.run_coroutine_threadsafe(message.reply(message, generation), bot.loop) # we don't care about the result
+    asyncio.run_coroutine_threadsafe(message.reply(generation)) # we don't care about the result
 
 # Core commands
 # These commands are always available
