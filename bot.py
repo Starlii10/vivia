@@ -30,7 +30,7 @@ import logging
 # Discord
 import discord, discord.ext
 from discord import app_commands
-from discord.ext import tasks, commands, app_commands
+from discord.ext import tasks, commands
 
 # Vivia's extra scripts
 from commands.viviabase.viviabase_addquote import addquote
