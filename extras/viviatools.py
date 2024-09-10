@@ -160,7 +160,7 @@ def personalityMessage(type: str):
     try:
         with open(f'data/personalityMessages/{type}.json') as f:
             messages = json.load(f)
-            return messages["messages"][random.randint(0, len(messages[type]) - 1)]
+            return messages["messages"][random.randint(0, len(messages["messages"]) - 1)]
     except FileNotFoundError:
         log(f"Couldn't find personality message database for type {type}. Does it even exist?", logging.ERROR)
         return ""
