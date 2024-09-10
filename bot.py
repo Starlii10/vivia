@@ -182,7 +182,7 @@ def llamaReply(message: discord.Message):
                                                     current_status,
                                                     message.guild.name,
                                                     message.channel.name,
-                                                    message.channel.category.name))
+                                                    message.channel.category.name), bot.loop)
 
     generation = generation_fut.result()
     
