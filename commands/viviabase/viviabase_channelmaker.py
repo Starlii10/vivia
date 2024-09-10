@@ -14,7 +14,7 @@ import json
 import logging
 from discord.ext import commands
 from discord import app_commands
-from extras.viviatools import has_bot_permissions, log, serverConfig
+from extras.viviatools import has_bot_permissions, log, personalityMessage, serverConfig
 
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(channelmaker)
@@ -63,7 +63,7 @@ async def channelmaker(ctx: commands.Context, channel_config: str, type: str="te
                         case "forum":
                             await ctx.guild.create_forum(channel, category=target, reason=f"Created by /channelmaker - run by {ctx.author}")
         except Exception as e:
-            await ctx.send(f"Something went wrong. Maybe try again?")
+            await ctx.send(personalityMessage("error"))
             if serverConfig(ctx.guild.id)['verboseErrors']:
                 await ctx.send(str(e) + "\n-# To disable these messages, run /config verboseErrors false")
             await log(f"Error while making channels in server {str(ctx.guild.name)} ({str(ctx.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)

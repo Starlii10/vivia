@@ -15,7 +15,7 @@ import logging
 import discord
 from discord.ext import commands
 from discord import app_commands
-from extras.viviatools import has_bot_permissions, log, config, add_custom_quote
+from extras.viviatools import has_bot_permissions, log, config, add_custom_quote, personalityMessage
 
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(addquote)
@@ -45,7 +45,7 @@ async def addquote(ctx: commands.Context, quote: str, author: str, date: str):
         try:
             add_custom_quote(f'"{quote}" - {author}, {date}', ctx.guild.id)
         except Exception as e:
-            await ctx.send(f'Something went wrong. Maybe try again?')
+            await ctx.send(personalityMessage("error"))
             if config["General"]["VerboseErrors"]:
                 await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
             await log(f'Failed to add "{quote} - {author}, {date}" to the custom quote list for server {ctx.guild.name} ({ctx.guild.id}): {type(e)}: {e}', severity=logging.ERROR)

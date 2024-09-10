@@ -14,7 +14,7 @@ import json
 import logging
 from discord.ext import commands
 from discord import app_commands
-from extras.viviatools import has_bot_permissions, log, config, serverConfig
+from extras.viviatools import has_bot_permissions, log, personalityMessage, serverConfig
 
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(removequote)
@@ -47,8 +47,8 @@ async def removequote(ctx: commands.Context, quote: str):
             with open('quotes.json', 'w') as f:
                 json.dump(quotes, f)
         except Exception as e:
-            await ctx.send(f'Something went wrong. Maybe try again?')
-            if config["General"]["VerboseErrors"]:
+            await ctx.send(personalityMessage("error"))
+            if serverConfig(ctx.guild.id)['verboseErrors']:
                 await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
             await log(f'Failed to remove "{quote}" from the list for server {ctx.guild.name} ({ctx.guild.id}): {type(e)}: {e}', severity=logging.ERROR)
             return

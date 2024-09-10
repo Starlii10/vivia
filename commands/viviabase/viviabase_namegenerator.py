@@ -12,7 +12,7 @@
 
 from discord.ext import commands
 from discord import app_commands
-from extras.viviatools import generate_name
+from extras.viviatools import generate_name, personalityMessage
 
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(namegenerator)
@@ -40,4 +40,4 @@ async def namegenerator(ctx: commands.Context, type: str="first", gender: str="n
     Generator for names.
     """
     name = generate_name(type, gender)
-    await ctx.send(name)
+    await ctx.send(personalityMessage("namegeneration").replace("{name}", name))

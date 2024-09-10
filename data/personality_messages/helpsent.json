@@ -1,0 +1,12 @@
+{
+    "messages": [
+        "I just sent a help message your way, {user}!",
+        "I've sent you a help message, {user}. Hope it, well, helps!",
+        "I've sent you a help message, {user}!",
+        "I just sent you a help message, {user}!",
+        "I've sent you a help message, {user}!",
+        "{user}, I just sent you a help message!",
+        "Did you need me, {user}? Check your DMs for a help message from me!",
+        "Do you need me, {user}? I just sent you a message with some helpful information."
+    ]
+}

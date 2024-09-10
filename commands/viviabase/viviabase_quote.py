@@ -14,7 +14,7 @@ import json
 import random
 import logging
 from discord.ext import commands
-from extras.viviatools import serverConfig, log
+from extras.viviatools import personalityMessage, serverConfig, log
 
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(quote)
@@ -35,7 +35,7 @@ async def quote(ctx: commands.Context):
                 quote = random.choice(quotes)
                 await ctx.send(quote)
     except Exception as e:
-        await ctx.send("Something went wrong. Maybe try again?")
+        await ctx.send(personalityMessage("error"))
         if serverConfig(ctx.guild.id)['verboseErrors']:
             await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
         await log(f"Couldn't send a quote for server {ctx.guild.name} ({ctx.guild.id}): {type(e)}: {e}", severity=logging.ERROR)

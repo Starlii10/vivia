@@ -13,7 +13,7 @@
 """
 
 # Vivia version
-__VERSION__ = "Vivia 20240826"
+__VERSION__ = "Vivia 20240910"
 
 import asyncio
 import shutil
@@ -36,7 +36,7 @@ from discord.ext.commands import errors
 # Vivia's extra scripts
 from commands.viviabase.viviabase_addquote import addquote
 import extras.viviatools as viviatools
-from extras.viviatools import config, serverConfig, handler
+from extras.viviatools import config, serverConfig, handler, personalityMessage
 import extras.viviallama as Llama
 
 # Variables
@@ -278,10 +278,10 @@ async def clearhistory(interaction: discord.Interaction):
     """
     if os.path.exists(f"data/tempchats/{str(interaction.user.name)}"):
         shutil.rmtree(f"data/tempchats/{str(interaction.user.name)}")
-        await interaction.response.send_message("Cleared your chat history with me!", ephemeral=True)
+        await interaction.response.send_message(personalityMessage("historyclear"), ephemeral=True)
         viviatools.log(f"{interaction.user} cleared their chat history", logging.DEBUG)
     else:
-        await interaction.response.send_message("You haven't chatted with me yet, so there's nothing to clear!", ephemeral=True)
+        await interaction.response.send_message(personalityMessage("nohistory"), ephemeral=True)
     
 @tree.command(
     name="setting",
@@ -316,7 +316,7 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
                     return
             await interaction.response.send_message(f"Done! `{option}` is now `{value}`.", ephemeral=True)
         except Exception as e:
-            await interaction.response.send_message(f"Something went wrong. Maybe try again?", ephemeral=True)
+            await interaction.response.send_message(personalityMessage("error"), ephemeral=True)
             if serverConfig(interaction.guild.id)['verboseErrors']:
                 await interaction.followup.send_message(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
             viviatools.log(f"Error while changing config for {interaction.guild.name} ({str(interaction.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)

@@ -12,7 +12,7 @@
 
 from discord.ext import commands
 from discord import app_commands
-from extras.viviatools import helpMsg, channelmakerHelpMsg, setupHelpMsg
+from extras.viviatools import helpMsg, channelmakerHelpMsg, setupHelpMsg, personalityMessage
 
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(help)
@@ -36,4 +36,4 @@ async def help(ctx: commands.Context, message: str="general"):
             await ctx.author.send(setupHelpMsg)
         case _:
             await ctx.author.send(helpMsg)
-    await ctx.send(f"Do you need me, {ctx.author.display_name}? I just sent you a message with some helpful information.", ephemeral=True)
+    await ctx.send(personalityMessage("helpsent").replace("{user}", ctx.author.mention), ephemeral=True)

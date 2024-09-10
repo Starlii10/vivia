@@ -146,3 +146,21 @@ def add_custom_quote(quote: str, serverID: int):
     quotes["quotes"].append(quote)
     with open(f"data/servers/{serverID}/quotes.json", "w") as f:
         json.dump(quotes, f)
+
+def personalityMessage(type: str):
+    """
+    Gets a random message of the specified type.
+
+    ## Args:
+        - type (str): The type of message to get.
+
+    ## Returns:
+        - str: The random message of the specified type. An empty string if the type is not found.
+    """
+    try:
+        with open(f'data/personalityMessages/{str}.json') as f:
+            messages = json.load(f)
+            return messages[type][random.randint(0, len(messages[type]) - 1)]
+    except FileNotFoundError:
+        log((f"Couldn't find personality message database for type {type}. Does it even exist?"), logging.ERROR)
+        return ""

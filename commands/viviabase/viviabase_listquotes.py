@@ -13,7 +13,7 @@
 from discord.ext import commands
 import json
 import logging
-from extras.viviatools import serverConfig, log
+from extras.viviatools import personalityMessage, serverConfig, log
 
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(listquotes)
@@ -33,7 +33,7 @@ async def listquotes(ctx: commands.Context):
                 quotes = default_quotes['quotes'] + custom_quotes['quotes']
                 await ctx.send(quotes)
     except Exception as e:
-        await ctx.send("Something went wrong. Maybe try again?")
+        await ctx.send(personalityMessage("error"))
         if serverConfig(ctx.guild.id)['verboseErrors']:
             await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
         await log(f"Couldn't list quotes for server {ctx.guild.name} ({ctx.guild.id}): {type(e)}: {e}", severity=logging.ERROR)
