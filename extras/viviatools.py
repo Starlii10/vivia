@@ -158,9 +158,9 @@ def personalityMessage(type: str):
         - str: The random message of the specified type. An empty string if the type is not found.
     """
     try:
-        with open(f'data/personalityMessages/{str}.json') as f:
+        with open(f'data/personalityMessages/{type}.json') as f:
             messages = json.load(f)
-            return messages[type][random.randint(0, len(messages[type]) - 1)]
+            return messages["messages"][random.randint(0, len(messages[type]) - 1)]
     except FileNotFoundError:
         log(f"Couldn't find personality message database for type {type}. Does it even exist?", logging.ERROR)
         return ""
