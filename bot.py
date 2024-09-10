@@ -28,9 +28,9 @@ from os import system
 import logging
 
 # Discord
-import discord
+import discord, discord.ext
 from discord import app_commands
-from discord.ext import tasks, commands
+from discord.ext import tasks, commands, app_commands
 
 # Vivia's extra scripts
 from commands.viviabase.viviabase_addquote import addquote
@@ -155,7 +155,7 @@ async def on_message(message: discord.Message):
     # Process commands
     try:
         await bot.process_commands(message)
-    except app_commands.CommandNotFound:
+    except app_commands.CommandNotFound or discord.ext.commands.errors.CommandNotFound:
         viviatools.log(f"Command not found: {message.content} (requested by {message.author}). Ignoring.", logging.WARNING)
         await message.reply("That command doesn't seem to exist... did you spell it correctly?")
         pass
