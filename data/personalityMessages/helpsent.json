@@ -7,6 +7,7 @@
         "I've sent you a help message, {user}!",
         "{user}, I just sent you a help message!",
         "Did you need me, {user}? Check your DMs for a help message from me!",
-        "Do you need me, {user}? I just sent you a message with some helpful information."
+        "Do you need me, {user}? I just sent you a message with some helpful information.",
+        "Hiya {user}, I just sent you a DM!"
     ]
 }
