@@ -194,14 +194,13 @@ def llamaReply(message: discord.Message):
 # Core commands
 # These commands are always available
 
-@bot.command()
+@bot.hybrid_command()
 async def sync(ctx, guild: int=0):
     """
     Syncs the command tree.
 
     ## Notes:
         - Only the bot owner can use this command.
-        - This command does not appear in the command list. Use "v!sync" to run it.
         - If you want to sync the entire bot, use "v!sync 0" or "v!sync". Otherwise specify the ID of the guild you want to sync.
     """
     if await bot.is_owner(ctx.author):
@@ -216,14 +215,13 @@ async def sync(ctx, guild: int=0):
     else:
         await ctx.send('That\'s for the bot owner, not random users...')
 
-@bot.command()
+@bot.hybrid_command()
 async def fixconfig(ctx: commands.Context):
     """
     Regenerates configuration and custom quotes files for servers where they are missing.
 
     ## Notes:
         - Only the bot owner can use this command.
-        - This command does not appear in the command list. Use "v!fixconfig" to run it.
     """
     if await bot.is_owner(ctx.author):
         viviatools.log(f"Regenerating missing data files for all servers...", logging.DEBUG)
@@ -253,14 +251,16 @@ async def fixconfig(ctx: commands.Context):
     else:
         await ctx.send('That\'s for the bot owner, not random users...')
 
-@bot.command()
+@bot.hybrid_command(
+    name="statuschange",
+    description="Manually randomizes the current status of the bot."
+)
 async def statuschange(ctx: commands.Context):
     """
     Manually randomizes the current status of the bot.
 
     ## Notes:
         - Only the bot owner can use this command.
-        - This command does not appear in the command list. Use "v!statuschange" to run it.
     """
     if await bot.is_owner(ctx.author):
         await statusChanges()
@@ -268,22 +268,22 @@ async def statuschange(ctx: commands.Context):
     else:
         await ctx.send('That\'s for the bot owner, not random users...')
 
-@tree.command(
+@bot.hybrid_command(
     name="clearhistory",
     description="Clears your recent chat history with me."
 )
-async def clearhistory(interaction: discord.Interaction):
+async def clearhistory(ctx: commands.Context):
     """
     Clears a user's recent chat history with Vivia.
     """
-    if os.path.exists(f"data/tempchats/{str(interaction.user.name)}"):
-        shutil.rmtree(f"data/tempchats/{str(interaction.user.name)}")
-        await interaction.response.send_message(personalityMessage("historyclear"), ephemeral=True)
-        viviatools.log(f"{interaction.user} cleared their chat history", logging.DEBUG)
+    if os.path.exists(f"data/tempchats/{str(ctx.author.name)}"):
+        shutil.rmtree(f"data/tempchats/{str(ctx.author.name)}")
+        await ctx.send(personalityMessage("historyclear"), ephemeral=True)
+        viviatools.log(f"{ctx.user} cleared their chat history", logging.DEBUG)
     else:
-        await interaction.response.send_message(personalityMessage("nohistory"), ephemeral=True)
+        await ctx.send(personalityMessage("nohistory"), ephemeral=True)
     
-@tree.command(
+@bot.hybrid_command(
     name="setting",
     description="Manages Vivia's configuration."
 )
@@ -291,54 +291,54 @@ async def clearhistory(interaction: discord.Interaction):
     app_commands.Choice(name="AI Enabled",value="aiEnabled"),
     app_commands.Choice(name="Verbose Errors",value="verboseErrors"),
 ])
-async def setting(interaction: discord.Interaction, option: str, value: bool):
+async def setting(ctx: commands.Context, option: str, value: bool):
     """
     Manages Vivia's configuration.
 
     ## Notes:
         - Only users with bot permissions can use this command.
     """
-    if viviatools.has_bot_permissions(interaction.user, interaction.guild):
+    if viviatools.has_bot_permissions(ctx.author, ctx.guild):
         try:
             match(option):
                 case "aiEnabled":
-                    changed = serverConfig(interaction.guild.id)
+                    changed = serverConfig(ctx.guild.id)
                     changed['aiEnabled'] = value
-                    with open(f"data/servers/{interaction.guild.id}/config.json", "w") as f:
+                    with open(f"data/servers/{ctx.guild.id}/config.json", "w") as f:
                         json.dump(changed, f)
                 case "verboseErrors":
-                    changed = serverConfig(interaction.guild.id)
+                    changed = serverConfig(ctx.guild.id)
                     changed['verboseErrors'] = value
-                    with open(f"data/servers/{interaction.guild.id}/config.json", "w") as f:
+                    with open(f"data/servers/{ctx.guild.id}/config.json", "w") as f:
                         json.dump(changed, f)
                 case _:
-                    await interaction.response.send_message("That option doesn't seem to exist...", ephemeral=True)
+                    await ctx.send("That option doesn't seem to exist...", ephemeral=True)
                     return
-            await interaction.response.send_message(f"Done! `{option}` is now `{value}`.", ephemeral=True)
+            await ctx.send(f"Done! `{option}` is now `{value}`.", ephemeral=True)
         except Exception as e:
-            await interaction.response.send_message(personalityMessage("error"), ephemeral=True)
-            if serverConfig(interaction.guild.id)['verboseErrors']:
-                await interaction.followup.send_message(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
-            viviatools.log(f"Error while changing config for {interaction.guild.name} ({str(interaction.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
+            await ctx.send(personalityMessage("error"), ephemeral=True)
+            if serverConfig(ctx.guild.id)['verboseErrors']:
+                await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
+            viviatools.log(f"Error while changing config for {ctx.guild.name} ({str(ctx.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
     else:
-        await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
+        await ctx.send("That's for authorized users, not you...", ephemeral=True)
 
-@tree.command(
+@bot.hybrid_command(
     name="reboot",
     description="Performs a full reboot of Vivia."
 )
-async def reboot(interaction: discord.Interaction):
+async def reboot(ctx: commands.Context):
     """
     Performs a full reboot of Vivia.
 
     ## Notes:
         - Only the bot owner can use this command.
     """
-    if await bot.is_owner(interaction.user):
-        await interaction.response.send_message("Rebooting...")
+    if await bot.is_owner(ctx.author):
+        await ctx.send("Rebooting...")
         await bot.close()
     else:
-        await interaction.response.send_message("That's for the bot owner, not random users...", ephemeral=True)
+        await ctx.send("That's for the bot owner, not random users...", ephemeral=True)
 
 # Context menu commands
 @app_commands.context_menu(name="Add Custom Quote")
