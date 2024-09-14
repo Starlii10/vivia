@@ -336,7 +336,9 @@ async def reboot(ctx: commands.Context):
     """
     if await bot.is_owner(ctx.author):
         await ctx.send("Rebooting...")
-        await bot.close()
+        viviatools.log(f"Rebooting on request of {ctx.author.name} ({str(ctx.author.id)})...")
+        await bot.clear()
+        await bot.start(dotenv.get_key("token.env", "token"), reconnect=True)
     else:
         await ctx.send("That's for the bot owner, not random users...", ephemeral=True)
 
