@@ -38,6 +38,10 @@ import numpy as np
 
 from extras import viviatools
 
+if __name__ == "__main__":
+    print("This is a helper script for Vivia that should not be run directly.", file=sys.stderr)
+    print("To run Vivia, please use \"python bot.py\" in the root directory.", file=sys.stderr)
+
 print("Attempting to load LLaMa - this may take a moment")
 
 # Variable initialization
@@ -195,7 +199,3 @@ def add_info_to_sysprompt(sysprompt, internal_name, username, discord_status_use
     sysprompt = sysprompt.replace("{category_name}", category_name)
     sysprompt = sysprompt.replace("{internal_name}", internal_name)
     return sysprompt
-
-if __name__ == "__main__":
-    print("This is a helper script for Vivia that should not be run directly.", file=sys.stderr)
-    print("To run Vivia, please use \"python bot.py\" in the root directory.", file=sys.stderr)

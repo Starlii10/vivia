@@ -23,6 +23,10 @@ import traceback
 
 import discord
 
+if __name__ == "__main__":
+    print("This is a helper script for Vivia that should not be run directly.", file=sys.stderr)
+    print("To run Vivia, please use \"python bot.py\" in the root directory.", file=sys.stderr)
+
 # Config loading
 config = configparser.ConfigParser()
 if os.path.exists("config.ini"):
@@ -164,7 +168,3 @@ def personalityMessage(type: str):
     except FileNotFoundError:
         log(f"Couldn't find personality message database for type {type}. Does it even exist?", logging.ERROR)
         return ""
-
-if __name__ == "__main__":
-    print("This is a helper script for Vivia that should not be run directly.", file=sys.stderr)
-    print("To run Vivia, please use \"python bot.py\" in the root directory.", file=sys.stderr)
