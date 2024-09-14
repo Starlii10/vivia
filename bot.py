@@ -95,6 +95,7 @@ async def on_ready():
             except Exception as e:
                 viviatools.log(f"Failed to load custom extension {file[:-3]}")
                 viviatools.log(f"{type(e)}: {e}\n{traceback.format_exc()}")
+                viviatools.log("Functionality may be limited. Ensure the extension contains no errors.", logging.ERROR)
                 continue
             viviatools.log(f"Loaded extension {file[:-3]}")
 
@@ -150,6 +151,7 @@ async def on_message(message: discord.Message):
         return
     
     # Ignore DMs
+    # TODO: Should Vivia LLaMa trigger in DMs?
     if message.guild == None:
         return
 
@@ -185,6 +187,8 @@ def llamaReply(message: discord.Message):
                                                     message.guild.name,
                                                     message.channel.name,
                                                     message.channel.category.name), bot.loop)
+    
+    asyncio.wait([generation_fut])
 
     generation = generation_fut.result()
     
@@ -333,6 +337,7 @@ async def reboot(ctx: commands.Context):
 
     ## Notes:
         - Only the bot owner can use this command.
+        - Because this command replaces the running bot script with another one, any changes made to the script will take effect after this command is run.
     """
     if await bot.is_owner(ctx.author):
         await ctx.send("Rebooting...")
