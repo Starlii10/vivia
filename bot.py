@@ -335,6 +335,7 @@ async def reboot(interaction: discord.Interaction):
         - Only the bot owner can use this command.
     """
     if await bot.is_owner(interaction.user):
+        await interaction.response.send_message("Rebooting...")
         await bot.close()
     else:
         await interaction.response.send_message("That's for the bot owner, not random users...", ephemeral=True)
