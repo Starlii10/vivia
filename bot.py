@@ -200,7 +200,7 @@ async def sync(ctx, guild: int=0):
     Syncs the command tree.
 
     ## Notes:
-        - Only the bot owner can use this command. If you run Vivia locally, make sure to add your Discord user ID in config.ini.
+        - Only the bot owner can use this command.
         - This command does not appear in the command list. Use "v!sync" to run it.
         - If you want to sync the entire bot, use "v!sync 0" or "v!sync". Otherwise specify the ID of the guild you want to sync.
     """
@@ -222,7 +222,7 @@ async def fixconfig(ctx: commands.Context):
     Regenerates configuration and custom quotes files for servers where they are missing.
 
     ## Notes:
-        - Only the bot owner can use this command. If you run Vivia locally, make sure to add your Discord user ID in config.ini.
+        - Only the bot owner can use this command.
         - This command does not appear in the command list. Use "v!fixconfig" to run it.
     """
     if await bot.is_owner(ctx.author):
@@ -259,7 +259,7 @@ async def statuschange(ctx: commands.Context):
     Manually randomizes the current status of the bot.
 
     ## Notes:
-        - Only the bot owner can use this command. If you run Vivia locally, make sure to add your Discord user ID in config.ini.
+        - Only the bot owner can use this command.
         - This command does not appear in the command list. Use "v!statuschange" to run it.
     """
     if await bot.is_owner(ctx.author):
@@ -322,6 +322,22 @@ async def setting(interaction: discord.Interaction, option: str, value: bool):
             viviatools.log(f"Error while changing config for {interaction.guild.name} ({str(interaction.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
     else:
         await interaction.response.send_message("That's for authorized users, not you...", ephemeral=True)
+
+@tree.command(
+    name="reboot",
+    description="Performs a full reboot of Vivia."
+)
+async def reboot(interaction: discord.Interaction):
+    """
+    Performs a full reboot of Vivia.
+
+    ## Notes:
+        - Only the bot owner can use this command.
+    """
+    if await bot.is_owner(interaction.user):
+        await bot.close()
+    else:
+        await interaction.response.send_message("That's for the bot owner, not random users...", ephemeral=True)
 
 # Context menu commands
 @app_commands.context_menu(name="Add Custom Quote")
