@@ -7,6 +7,8 @@
         "I'm thinking about {name}. Yeah, that sounds good.",
         "Maybe try {name}?",
         "How about {name}?",
-        "{name} is pretty cool."
+        "{name} is pretty cool.",
+        "What about {name}?",
+        "What do you think of {name}?"
     ]
 }
