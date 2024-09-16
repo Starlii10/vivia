@@ -3,11 +3,13 @@
         "How does {name} sound?",
         "Hmmm... {name}!",
         "I think {name} is pretty cool.",
+        "I think {name} is pretty neat.",
         "Indecisive, hm? How about {name}?",
         "I'm thinking about {name}. Yeah, that sounds good.",
         "Maybe try {name}?",
         "How about {name}?",
         "{name} is pretty cool.",
+        "{name} is pretty neat.",
         "What about {name}?",
         "What do you think of {name}?"
     ]

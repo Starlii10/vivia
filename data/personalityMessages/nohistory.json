@@ -8,6 +8,7 @@
         "No history to clear.",
         "Doesn't look like there's anything to clear!",
         "Nothing to clear.",
-        "Looks like there isn't anything in here to clear."
+        "Looks like there isn't anything in here to clear.",
+        "See? It's empty. No chat history in here!"
     ]
 }
