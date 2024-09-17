@@ -34,7 +34,6 @@ from discord.ext import tasks, commands, commands
 from discord.ext.commands import errors
 
 # Vivia's extra scripts
-from commands.viviabase.viviabase_addquote import addquote
 import extras.viviatools as viviatools
 from extras.viviatools import config, serverConfig, handler, personalityMessage
 import extras.viviallama as Llama
@@ -208,7 +207,7 @@ async def sync(ctx, guild: int=0):
         - If you want to sync the entire bot, use "v!sync 0" or "v!sync". Otherwise specify the ID of the guild you want to sync.
     """
     if await bot.is_owner(ctx.author):
-        if guild is 0:
+        if guild == 0:
             await bot.tree.sync()
             await ctx.send('The command tree was synced, whatever that means.')
             viviatools.log("The command tree was synced, whatever that means.")
@@ -358,4 +357,8 @@ tree.add_command(add_custom_quote)
 
 # Run
 while True:
-    bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
+    try:
+        bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
+    except TypeError:
+        viviatools.log("Unable to start Vivia. Is the token in token.env correct?", logging.ERROR)
+        sys.exit(1)

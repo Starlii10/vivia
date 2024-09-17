@@ -36,11 +36,12 @@ import cv2
 import discord
 import numpy as np
 
-from extras import viviatools
-
 if __name__ == "__main__":
     print("This is a helper script for Vivia that should not be run directly.", file=sys.stderr)
     print("To run Vivia, please use \"python bot.py\" in the root directory.", file=sys.stderr)
+    sys.exit(1)
+
+from extras import viviatools
 
 print("Attempting to load LLaMa - this may take a moment")
 

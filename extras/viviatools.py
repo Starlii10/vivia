@@ -26,6 +26,7 @@ import discord
 if __name__ == "__main__":
     print("This is a helper script for Vivia that should not be run directly.", file=sys.stderr)
     print("To run Vivia, please use \"python bot.py\" in the root directory.", file=sys.stderr)
+    sys.exit(1)
 
 # Config loading
 config = configparser.ConfigParser()
@@ -49,8 +50,12 @@ try:
         encoding='utf-8',
         mode='w'
     )
-    handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+    # date (%Y-%m-%d) time (%H:%M:%S) level (%(levelname)s) message (%(message)s)
+    handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s\t%(message)s'))
+    handler.set_name("Vivia")
+    handler.set_level(logging.INFO)
     logging.basicConfig(level=logging.INFO)
+    logging.getLogger().addHandler(handler)
 except:
     print("Something's wrong with the logging file. I'm going to ignore it.")
     handler = logging.StreamHandler(sys.stdout)
