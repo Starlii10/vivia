@@ -330,18 +330,27 @@ async def setting(ctx: commands.Context, option: str, value: bool):
     name="reboot",
     description="Performs a full reboot of Vivia."
 )
-async def reboot(ctx: commands.Context):
+async def reboot(ctx: commands.Context, pull_git: bool = False):
     """
     Performs a full reboot of Vivia.
 
+    ## Args:
+        pull_git (bool, optional): Whether to pull the git repository before rebooting to automatically update Vivia. Defaults to False.
     ## Notes:
         - Only the bot owner can use this command.
         - Because this command replaces the running bot script with another one, any changes made to the script will take effect after this command is run.
+        - `pull_git` requires `git` to be installed on your system, but you probably already have it if you're running Vivia anyway, don't you?
     """
     if await bot.is_owner(ctx.author):
         await ctx.send("Rebooting...")
         viviatools.log(f"Rebooting on request of {ctx.author.name} ({str(ctx.author.id)})...")
         await bot.close()
+        if pull_git:
+            try:
+                os.system("git pull")
+                viviatools.log("Pulled git repository.", logging.DEBUG)
+            except Exception as e:
+                viviatools.log(f"Failed to pull git repository: {type(e)}: {str(e)}", logging.ERROR)
         os.execl(sys.executable, sys.executable, *sys.argv)
     else:
         await ctx.send("That's for the bot owner, not random users...", ephemeral=True)
