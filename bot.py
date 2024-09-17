@@ -362,3 +362,6 @@ while True:
     except TypeError:
         viviatools.log("Unable to start Vivia. Is the token in token.env correct?", logging.ERROR)
         sys.exit(1)
+    except Exception as e:
+        viviatools.log(f"A severe error has occurred while running Vivia and will now exit.")
+        viviatools.log(f"{type(e)}: {str(e)}", severity=logging.FATAL)

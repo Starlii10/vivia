@@ -45,19 +45,31 @@ else:
 
 # Set up logging
 try:
+    # Create log folder if it doesn't exist
+    os.makedirs("data/logs", exist_ok=True)
+
     handler = logging.FileHandler(
-        filename="data/logs/" + datetime.datetime.now().strftime("%Y-%m-%d") + ".log",
+        filename=f"data/logs/{datetime.datetime.now().strftime("%Y-%m-%d")}-{datetime.datetime.now().strftime('%H-%M-%S')}.log",
         encoding='utf-8',
         mode='w'
     )
-    # date (%Y-%m-%d) time (%H:%M:%S) level (%(levelname)s) message (%(message)s)
+
+    # file logging
+    handler.setFormatter(logging.Formatter('%(asctime)s\t -\t [%(levelname)s]: %(message)s'))
+    handler.set_name("Vivia")
+    handler.setLevel(logging.INFO)
+    logging.basicConfig(level=logging.INFO)
+    logging.getLogger().addHandler(handler)
+
+    # terminal logging
+    handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s\t%(message)s'))
     handler.set_name("Vivia")
-    handler.set_level(logging.INFO)
-    logging.basicConfig(level=logging.INFO)
+    handler.setLevel(logging.INFO)
     logging.getLogger().addHandler(handler)
 except:
     print("Something's wrong with the logging file. I'm going to ignore it.")
+    
     handler = logging.StreamHandler(sys.stdout)
 
 # Help messages
@@ -140,7 +152,6 @@ def log(message: str, severity: int=logging.INFO):
     """
 
     logging.log(severity, message)
-    print(message + f" ({logging.getLevelName(severity)})")
 
 def add_custom_quote(quote: str, serverID: int):
     """
