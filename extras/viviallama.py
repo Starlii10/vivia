@@ -31,19 +31,18 @@ import mimetypes
 import os
 import sys
 from PIL import Image
-import traceback
 import cv2
 import discord
 import numpy as np
 
 if __name__ == "__main__":
-    print("This is a helper script for Vivia that should not be run directly.", file=sys.stderr)
-    print("To run Vivia, please use \"python bot.py\" in the root directory.", file=sys.stderr)
+    viviatools.log("This is a helper script for Vivia that should not be run directly.", logging.ERROR)
+    viviatools.log("To run Vivia, please use \"python bot.py\" in the root directory.", logging.ERROR)
     sys.exit(1)
 
 from extras import viviatools
 
-print("Attempting to load LLaMa - this may take a moment")
+viviatools.log("Attempting to load LLaMa - this may take a moment", logging.INFO)
 
 # Variable initialization
 aiDisabled = False
@@ -61,13 +60,14 @@ if os.path.exists("data/tempchats"):
         os.system("rmdir /S /Q data/tempchats")  # Windows
     else:
         os.system("rm -rf data/tempchats")  # Linux/Unix/Mac/Insert-Non-Windows-OS-Here
+    viviatools.log("Deleted temporary chat files", logging.DEBUG)
 
 # Load LLaMa
 try:
     from llama_cpp import Llama
 except:
-    print("Couldn't load llama-cpp-python. This is not a fatal error, however Vivia will not be able to generate responses unless it is installed.", file=sys.stderr)
-    print("Please install it according to their installation guide. See https://github.com/abetlen/llama-cpp-python/blob/main/README.md#installation.", file=sys.stderr)
+    viviatools.log("Couldn't load llama-cpp-python. This is not a fatal error, however Vivia will not be able to generate responses unless it is installed.", logging.ERROR)
+    viviatools.log("Please install it according to their installation guide. See https://github.com/abetlen/llama-cpp-python/blob/main/README.md#installation.", logging.ERROR)
     aiDisabled = True
 else:
     try:
@@ -77,16 +77,16 @@ else:
             n_gpu_layers=-1
         )
     except Exception as e:
-        print(f"Couldn't load LLaMa model. This can be caused by an invalid model path, no supported devices to run LLaMa on, or an error in the model.", file=sys.stderr)
-        print("This is not a fatal error, however Vivia will not be able to generate responses unless it is installed.", file=sys.stderr)
-        print(f"{type(e)}: {e}\n{traceback.format_exc()}", file=sys.stderr)
+        viviatools.log(f"Couldn't load LLaMa model. This can be caused by an invalid model path, no supported devices to run LLaMa on, or an error in the model.", logging.ERROR)
+        viviatools.log("This is not a fatal error, however Vivia will not be able to generate responses unless it is installed.", logging.ERROR)
+        viviatools.log(f"{type(e)}: {str(e)}", logging.ERROR)
         aiDisabled = True
 
 # Load pytesseract
 try:
     import pytesseract
 except:
-    print("Couldn't load pytesseract. This is not a fatal error, however Vivia will not be able to read images unless it is installed.", file=sys.stderr)
+    viviatools.log("Couldn't load pytesseract. This is not a fatal error, however Vivia will not be able to read images unless it is installed.", logging.ERROR)
     imageReadingDisabled = True
 
 async def createResponse(
@@ -100,7 +100,7 @@ async def createResponse(
         channel_name: str | None = None,
         category_name: str | None = None):
     if not aiDisabled:
-        viviatools.log(f"Response generation requested by {internal_name} ({username}) - generating now! (This may take a moment)")
+        viviatools.log(f"Response generation requested by {internal_name} ({username}) - generating now! (This may take a moment)", logging.DEBUG)
 
         # Read messages from memory file
         if not os.path.exists(f"data/tempchats/{internal_name}/messages.txt"):

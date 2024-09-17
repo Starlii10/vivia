@@ -20,12 +20,14 @@ import os
 import random
 import sys
 import traceback
+import colorlog
 
 import discord
 
 if __name__ == "__main__":
     print("This is a helper script for Vivia that should not be run directly.", file=sys.stderr)
     print("To run Vivia, please use \"python bot.py\" in the root directory.", file=sys.stderr)
+    print("Exiting.", file=sys.stderr)
     sys.exit(1)
 
 # Config loading
@@ -42,34 +44,39 @@ else:
         print("I couldn't create a config file. Is something wrong with config.ini.example?")
         print(f"{type(e)}: {e}\n{traceback.format_exc()}")
         sys.exit(1)
-
+    
 # Set up logging
 try:
     # Create log folder if it doesn't exist
     os.makedirs("data/logs", exist_ok=True)
 
-    handler = logging.FileHandler(
-        filename=f"data/logs/{datetime.datetime.now().strftime("%Y-%m-%d")}-{datetime.datetime.now().strftime('%H-%M-%S')}.log",
-        encoding='utf-8',
-        mode='w'
-    )
+    # Set up logging
+    # should be in the format "(gray) YYYY-MM-DD HH:MM:SS (level color) LEVEL (reset)    (pink) NAME (reset) MESSAGE"
+    # TODO: align messages to the left
+    handler = colorlog.StreamHandler()
+    handler.setFormatter(colorlog.ColoredFormatter(
+        '\033[0;37m%(asctime)s %(log_color)s%(levelname)s\t \033[0;35m%(name)s %(reset)s%(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+        reset=True,
+        log_colors={
+            'DEBUG':    'cyan',
+            'INFO':     'cyan',
+            'WARNING':  'yellow',
+            'ERROR':    'red',
+            'CRITICAL': 'red',
+        }
+    ))
 
-    # file logging
-    handler.setFormatter(logging.Formatter('%(asctime)s\t -\t [%(levelname)s]: %(message)s'))
-    handler.set_name("Vivia")
-    handler.setLevel(logging.INFO)
-    logging.basicConfig(level=logging.INFO)
-    logging.getLogger().addHandler(handler)
+    logger = logging.getLogger()
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
 
-    # terminal logging
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s\t%(message)s'))
-    handler.set_name("Vivia")
-    handler.setLevel(logging.INFO)
-    logging.getLogger().addHandler(handler)
-except:
+    handler = logging.FileHandler(f'data/logs/{datetime.datetime.now().strftime("%Y-%m-%d")}.log')
+    handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s\t %(message)s'))
+    logger.addHandler(handler)
+except Exception as e:
     print("Something's wrong with the logging file. I'm going to ignore it.")
-    
+    print(f"{type(e)}: {e}\n{traceback.format_exc()}")
     handler = logging.StreamHandler(sys.stdout)
 
 # Help messages
