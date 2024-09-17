@@ -340,6 +340,8 @@ async def reboot(ctx: commands.Context, pull_git: bool = False):
         - Only the bot owner can use this command.
         - Because this command replaces the running bot script with another one, any changes made to the script will take effect after this command is run.
         - `pull_git` requires `git` to be installed on your system, but you probably already have it if you're running Vivia anyway, don't you?
+        - `pull_git` will also run `pip install -r requirements.txt` in the root to install any new dependencies.
+        - `pull_git` will OVERRIDE LOCAL CHANGES TO THE SCRIPT! Be careful!
     """
     if await bot.is_owner(ctx.author):
         await ctx.send("Rebooting...")
@@ -349,6 +351,7 @@ async def reboot(ctx: commands.Context, pull_git: bool = False):
             try:
                 os.system("git pull")
                 viviatools.log("Pulled git repository.", logging.DEBUG)
+                os.system("pip install -r requirements.txt")
             except Exception as e:
                 viviatools.log(f"Failed to pull git repository: {type(e)}: {str(e)}", logging.ERROR)
         os.execl(sys.executable, sys.executable, *sys.argv)
