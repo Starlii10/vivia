@@ -28,7 +28,7 @@ async def setup(bot: commands.Bot): # for extension loading
 @commands.hybrid_command(
     name = "warn"
 )
-@commands.describe(
+@app_commands.describe(
     user = "The user to warn.",
     reason = "The reason for the warning."
 )
@@ -56,7 +56,7 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No re
 @commands.hybrid_command(
     name = "unwarn"
 )
-@commands.describe(
+@app_commands.describe(
     user = "The user to unwarn.",
     reason = "The reason for the unwarning."
 )
@@ -83,7 +83,7 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
 @commands.hybrid_command(
     name = "kick"
 )
-@commands.describe(
+@app_commands.describe(
     user = "The user to kick.",
     reason = "The reason for the kick."
 )
@@ -106,7 +106,7 @@ async def kick(ctx: commands.Context, user: discord.Member, reason: str = "No re
 @commands.hybrid_command(
     name = "ban"
 )
-@commands.describe(
+@app_commands.describe(
     user = "The user to ban."
 )
 async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No reason provided."):
@@ -128,7 +128,7 @@ async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No rea
 @commands.hybrid_command(
     name = "unban"
 )
-@commands.describe(
+@app_commands.describe(
     user = "The user to unban."
 )
 async def unban(ctx: commands.Context, user: discord.User, reason: str = "No reason provided."):
