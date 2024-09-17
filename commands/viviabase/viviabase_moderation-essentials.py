@@ -12,7 +12,6 @@
 
 import logging
 import discord
-import json
 from discord.ext import commands
 from discord import app_commands
 from extras import viviatools
@@ -21,10 +20,10 @@ from extras.viviatools import personalityMessage
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command() # type: ignore
 
-@app_commands.hybrid_command(
+@commands.hybrid_command(
     name = "warn"
 )
-@app_commands.describe(
+@commands.describe(
     user = "The user to warn."
 )
 async def warn(ctx: commands.Context, user: discord.Member, reason: str = ""):
@@ -47,10 +46,10 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = ""):
     viviatools.log(f"{ctx.user} warned {user} in {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
 
-@app_commands.hybrid_command(
+@commands.hybrid_command(
     name = "unwarn"
 )
-@app_commands.describe(
+@commands.describe(
     user = "The user to unwarn."
 )
 async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = ""):
@@ -72,10 +71,10 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = ""):
         del viviatools.warns(ctx.guild.id)[user.id]
     viviatools.log(f"{ctx.user} unwarned {user} in {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
-@app_commands.hybrid_command(
+@commands.hybrid_command(
     name = "kick"
 )
-@app_commands.describe(
+@commands.describe(
     user = "The user to kick."
 )
 async def kick(ctx: commands.Context, user: discord.Member):
@@ -91,10 +90,10 @@ async def kick(ctx: commands.Context, user: discord.Member):
     await user.kick()
     viviatools.log(f"{ctx.user} kicked {user} from {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
-@app_commands.hybrid_command(
+@commands.hybrid_command(
     name = "ban"
 )
-@app_commands.describe(
+@commands.describe(
     user = "The user to ban."
 )
 async def ban(ctx: commands.Context, user: discord.Member):
@@ -110,10 +109,10 @@ async def ban(ctx: commands.Context, user: discord.Member):
     await user.ban()
     viviatools.log(f"{ctx.user} banned {user} from {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
-@app_commands.hybrid_command(
+@commands.hybrid_command(
     name = "unban"
 )
-@app_commands.describe(
+@commands.describe(
     user = "The user to unban."
 )
 async def unban(ctx: commands.Context, user: discord.User):

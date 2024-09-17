@@ -73,12 +73,14 @@ async def on_ready():
 
     # Load extensions
     viviatools.log("Loading extensions!")
+    loaded = []
 
     # viviabase
     for file in os.listdir("commands/viviabase"):
         if file.endswith(".py"):
             try:
                 await bot.load_extension(f"commands.viviabase.{file[:-3]}")
+                loaded += [f"viviabase.{file[:-3]}"]
             except Exception as e:
                 viviatools.log(f"Failed to load base extension {file[:-3]}", logging.ERROR)
                 viviatools.log(f"{type(e)}: {e}\n{traceback.format_exc()}", logging.ERROR)
@@ -91,6 +93,7 @@ async def on_ready():
         if file.endswith(".py"):
             try:
                 await bot.load_extension(f"commands.{file[:-3]}")
+                loaded += [f"{file[:-3]}"]
             except Exception as e:
                 viviatools.log(f"Failed to load custom extension {file[:-3]}")
                 viviatools.log(f"{type(e)}: {e}\n{traceback.format_exc()}")
@@ -98,6 +101,8 @@ async def on_ready():
                 continue
             viviatools.log(f"Loaded extension {file[:-3]}")
 
+    viviatools.log(f"Loaded {len(loaded)} extensions.")
+    viviatools.loaded_extensions = loaded
     viviatools.log("Vivia is all ready!")
 
 @tasks.loop(hours=1)
@@ -356,6 +361,22 @@ async def reboot(ctx: commands.Context, pull_git: bool = False):
             except Exception as e:
                 viviatools.log(f"Failed to pull git repository: {type(e)}: {str(e)}", logging.ERROR)
         os.execl(sys.executable, sys.executable, *sys.argv)
+    else:
+        await ctx.send("That's for the bot owner, not random users...", ephemeral=True)
+
+@bot.hybrid_command(
+    name="extensions",
+    description="Displays Vivia's available extensions."
+)
+async def extensions(ctx: commands.Context):
+    """
+    Displays Vivia's available extensions.
+
+    ## Notes:
+        - Only the bot owner can use this command.
+    """
+    if await bot.is_owner(ctx.author):
+        await ctx.send("Available extensions: " + ", ".join(viviatools.get_extensions()), ephemeral=True)
     else:
         await ctx.send("That's for the bot owner, not random users...", ephemeral=True)
 

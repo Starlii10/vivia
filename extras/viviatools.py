@@ -30,6 +30,9 @@ if __name__ == "__main__":
     print("Exiting.", file=sys.stderr)
     sys.exit(1)
 
+# Variables
+loaded_extensions = set(str())
+
 # Config loading
 config = configparser.ConfigParser()
 if os.path.exists("config.ini"):
