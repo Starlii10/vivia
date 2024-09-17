@@ -335,7 +335,8 @@ async def reboot(ctx: commands.Context, pull_git: bool = False):
     Performs a full reboot of Vivia.
 
     ## Args:
-        pull_git (bool, optional): Whether to pull the git repository before rebooting to automatically update Vivia. Defaults to False.
+        pull_git (bool, optional): Whether to pull the git repository before rebooting to automatically update Vivia.
+                                   Defaults to False. May increase reboot time by a few seconds. Also updates dependencies.
     ## Notes:
         - Only the bot owner can use this command.
         - Because this command replaces the running bot script with another one, any changes made to the script will take effect after this command is run.
