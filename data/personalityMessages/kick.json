@@ -1,0 +1,14 @@
+{
+    "messages": [
+        "Kicked {user}.",
+        "I kicked {user}.",
+        "I've kicked {user}.",
+        "No worry, I kicked {user}.",
+        "{user} was kicked.",
+        "{user} has been politely kicked.",
+        "{user} has been kicked.",
+        "Bye bye, {user}!",
+        "Bye {user}!",
+        "At last, {user} has been kicked."
+    ]
+}

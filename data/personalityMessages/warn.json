@@ -1,0 +1,12 @@
+{
+    "messages": [
+        "Gave {user} a warning.",
+        "Warned {user}.",
+        "I warned {user}.",
+        "I've warned {user}.",
+        "No worry, I warned {user}.",
+        "{user} was warned.",
+        "{user} has been politely warned.",
+        "{user} has been warned."
+    ]
+}

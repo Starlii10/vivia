@@ -12,7 +12,7 @@
 
     Have a great time using Vivia!
 """
-
+import discord
 from discord.ext import commands
 from discord import app_commands
 # Add any additional imports you may need in here

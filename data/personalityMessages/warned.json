@@ -1,0 +1,10 @@
+{
+    "messages": [
+        "I apologize, but a moderator in {server} has asked me to say that you've been warned.",
+        "I'm sorry, but a moderator in {server} has asked me to say that you've been warned.",
+        "{server}'s moderators have asked me to say that you've been warned.",
+        "I must apologize, but a moderator in {server} has asked me to say that you've been warned.",
+        "You've been warned in {server}.",
+        "A warning has been issued to you in {server}."
+    ]
+}
