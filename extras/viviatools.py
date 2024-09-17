@@ -45,39 +45,34 @@ else:
         print(f"{type(e)}: {e}\n{traceback.format_exc()}")
         sys.exit(1)
     
+# Create log folder if it doesn't exist
+os.makedirs("data/logs", exist_ok=True)
+
 # Set up logging
-try:
-    # Create log folder if it doesn't exist
-    os.makedirs("data/logs", exist_ok=True)
 
-    # Set up logging
-    # should be in the format "(gray) YYYY-MM-DD HH:MM:SS (level color) LEVEL (reset)    (pink) NAME (reset) MESSAGE"
-    # TODO: align messages to the left
-    handler = colorlog.StreamHandler()
-    handler.setFormatter(colorlog.ColoredFormatter(
-        '\033[0;37m%(asctime)s %(log_color)s%(levelname)s\t \033[0;35m%(name)s %(reset)s%(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S',
-        reset=True,
-        log_colors={
-            'DEBUG':    'cyan',
-            'INFO':     'cyan',
-            'WARNING':  'yellow',
-            'ERROR':    'red',
-            'CRITICAL': 'red',
-        }
-    ))
+# Terminal logging (color)
+handler = colorlog.StreamHandler()
+handler.setFormatter(colorlog.ColoredFormatter(
+    '\033[0;37m%(asctime)s %(log_color)s%(levelname)s\t \033[0;35m%(name)s %(reset)s%(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    reset=True,
+    log_colors={
+        'DEBUG':    'cyan',
+        'INFO':     'cyan',
+        'WARNING':  'yellow',
+        'ERROR':    'red',
+        'CRITICAL': 'red',
+    }
+))
 
-    logger = logging.getLogger()
-    logger.addHandler(handler)
-    logger.setLevel(logging.INFO)
+logger = logging.getLogger()
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 
-    handler = logging.FileHandler(f'data/logs/{datetime.datetime.now().strftime("%Y-%m-%d")}.log')
-    handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s\t %(message)s'))
-    logger.addHandler(handler)
-except Exception as e:
-    print("Something's wrong with the logging file. I'm going to ignore it.")
-    print(f"{type(e)}: {e}\n{traceback.format_exc()}")
-    handler = logging.StreamHandler(sys.stdout)
+# File logging
+handler = logging.FileHandler(f'data/logs/{datetime.datetime.now().strftime("%Y-%m-%d")}.log')
+handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s\t %(message)s'))
+logger.addHandler(handler)
 
 # Help messages
 helpMsg = open("data/help/general.txt", "r").read()
