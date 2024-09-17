@@ -32,6 +32,7 @@ if __name__ == "__main__":
 
 # Variables
 loaded_extensions = set(str())
+failed_extensions = set(str())
 
 # Config loading
 config = configparser.ConfigParser()
@@ -189,3 +190,16 @@ def personalityMessage(type: str):
     except FileNotFoundError:
         log(f"Couldn't find personality message database for type {type}. Does it even exist?", logging.ERROR)
         return ""
+
+def warns(serverID: int):
+    """
+    Gets the warns of a server.
+
+    ## Args:
+        - serverID (int): The ID of the server to get the warns of.
+
+    ## Returns:
+        - dict: The warns of the server as a dictionary.
+    """
+    with open(f"data/servers/{serverID}/warns.json", "r") as f:
+        return json.load(f)

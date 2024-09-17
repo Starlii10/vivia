@@ -13,7 +13,7 @@
 """
 
 # Vivia version
-__VERSION__ = "Vivia 20240910"
+__VERSION__ = "Vivia 20240918"
 
 import asyncio
 import shutil
@@ -74,6 +74,7 @@ async def on_ready():
     # Load extensions
     viviatools.log("Loading extensions!")
     loaded = []
+    failed = []
 
     # viviabase
     for file in os.listdir("commands/viviabase"):
@@ -85,6 +86,7 @@ async def on_ready():
                 viviatools.log(f"Failed to load base extension {file[:-3]}", logging.ERROR)
                 viviatools.log(f"{type(e)}: {e}\n{traceback.format_exc()}", logging.ERROR)
                 viviatools.log("Functionality may be limited. Please report this on GitHub.", logging.ERROR)
+                failed += [f"viviabase.{file[:-3]}"]
                 continue
             viviatools.log(f"Loaded base extension {file[:-3]}")
 
@@ -98,11 +100,13 @@ async def on_ready():
                 viviatools.log(f"Failed to load custom extension {file[:-3]}")
                 viviatools.log(f"{type(e)}: {e}\n{traceback.format_exc()}")
                 viviatools.log("Functionality may be limited. Ensure the extension contains no errors.", logging.ERROR)
+                failed += [f"{file[:-3]}"]
                 continue
             viviatools.log(f"Loaded extension {file[:-3]}")
 
-    viviatools.log(f"Loaded {len(loaded)} extensions.")
+    viviatools.log(f"Loaded {len(loaded)} extensions - failed loading {len(failed)}.")
     viviatools.loaded_extensions = loaded
+    viviatools.failed_extensions = failed
     viviatools.log("Vivia is all ready!")
 
 @tasks.loop(hours=1)
@@ -226,7 +230,7 @@ async def sync(ctx, guild: int=0):
 @bot.hybrid_command()
 async def fixconfig(ctx: commands.Context):
     """
-    Regenerates configuration and custom quotes files for servers where they are missing.
+    Regenerates server files for servers where they are missing.
 
     ## Notes:
         - Only the bot owner can use this command.
@@ -252,6 +256,14 @@ async def fixconfig(ctx: commands.Context):
                 with open(f'data/servers/{guild.id}/quotes.json', 'x') as f:
                     json.dump({'quotes': []}, f)
                 viviatools.log(f'Custom quote file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
+            except FileExistsError:
+                pass # Most likely there was nothing wrong with it
+
+            # Regenerate warns if guild warns is missing
+            try:
+                with open(f'data/servers/{guild.id}/warns.json', 'x') as f:
+                    json.dump({'warns': []}, f)
+                viviatools.log(f'Warn file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
             except FileExistsError:
                 pass # Most likely there was nothing wrong with it
 
@@ -376,7 +388,8 @@ async def extensions(ctx: commands.Context):
         - Only the bot owner can use this command.
     """
     if await bot.is_owner(ctx.author):
-        await ctx.send("Available extensions: " + ", ".join(viviatools.get_extensions()), ephemeral=True)
+        await ctx.send("Available extensions: " + ", ".join(viviatools.loaded_extensions), ephemeral=True)
+        await ctx.send("Extensions that failed to load: " + ", ".join(viviatools.failed_extensions), ephemeral=True)
     else:
         await ctx.send("That's for the bot owner, not random users...", ephemeral=True)
 

@@ -1,0 +1,9 @@
+{
+    "messages": [
+        "The moderators of {server} have asked me to say that you've been unwarned.",
+        "A moderator in {server} has asked me to say that you've been unwarned.",
+        "{server}'s moderators have asked me to say that you've been unwarned.",
+        "{server}'s moderators have unwarned you!",
+        "I've been informed that {server} has unwarned you!"
+    ]
+}

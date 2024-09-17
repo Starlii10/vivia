@@ -1,0 +1,11 @@
+{
+    "messages": [
+        "I've removed a warning from {user}.",
+        "I removed a warning from {user}.",
+        "{user} has been unwarned.",
+        "{user} was unwarned.",
+        "I've unwarned {user}.",
+        "I removed {user}'s warning.",
+        "{user}'s warning has been removed."
+    ]
+}

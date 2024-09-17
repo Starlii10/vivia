@@ -18,15 +18,21 @@ from extras import viviatools
 from extras.viviatools import personalityMessage
 
 async def setup(bot: commands.Bot): # for extension loading
-    bot.add_command() # type: ignore
+    bot.add_command(warn) # type: ignore
+    bot.add_command(unwarn) # type: ignore
+    bot.add_command(kick) # type: ignore
+    bot.add_command(ban) # type: ignore
+    bot.add_command(unban) # type: ignore
+
 
 @commands.hybrid_command(
     name = "warn"
 )
 @commands.describe(
-    user = "The user to warn."
+    user = "The user to warn.",
+    reason = "The reason for the warning."
 )
-async def warn(ctx: commands.Context, user: discord.Member, reason: str = ""):
+async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No reason provided."):
     """
     Warns the user.
 
@@ -42,7 +48,8 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = ""):
                     + "\n" + personalityMessage("followrules").replace("{server}", ctx.guild.name))
     
     # add user to warned users
-    viviatools.warns(ctx.guild.id)[user.id] = [reason, ctx.message.created_at, ctx.author.id, viviatools.warns(ctx.guild.id)[user.id][3] + 1]
+    # TODO: users can be warned multiple times
+    viviatools.warns(ctx.guild.id)[user.id] = [reason, ctx.message.created_at, ctx.author.id]
     viviatools.log(f"{ctx.user} warned {user} in {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
 
@@ -50,44 +57,50 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = ""):
     name = "unwarn"
 )
 @commands.describe(
-    user = "The user to unwarn."
+    user = "The user to unwarn.",
+    reason = "The reason for the unwarning."
 )
-async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = ""):
+async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No reason provided."):
     """
     Unwarns the user.
 
     Args:
         - user (discord.User): The user to unwarn.
+        - reason (str): The reason for the unwarning.
     """
 
+    # messages
     await ctx.send(personalityMessage("unwarn").replace("{user}", user.mention), ephemeral=True)
-    await user.send(personalityMessage("unwarned").replace("{user}", ctx.author.mention))
+    await user.send(personalityMessage("unwarned").replace("{user}", ctx.author.mention)
+                    + "\n" + personalityMessage("reason").replace("{reason}", reason).replace("{action}", "unwarning").replace("{reason}", reason)
+                    + "\n" + personalityMessage("followrules").replace("{server}", ctx.guild.name))
 
     # remove user from warned users
-    viviatools.warns(ctx.guild.id)[user.id] = [reason, ctx.message.created_at, ctx.author.id, viviatools.warns(ctx.guild.id)[user.id][3] - 1]
-
-    if viviatools.warns(ctx.guild.id)[user.id][3] == 0:
-        # no more warns for this user, pop
-        del viviatools.warns(ctx.guild.id)[user.id]
+    # TODO: users can be warned multiple times
+    del viviatools.warns(ctx.guild.id)[user.id]
     viviatools.log(f"{ctx.user} unwarned {user} in {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
 @commands.hybrid_command(
     name = "kick"
 )
 @commands.describe(
-    user = "The user to kick."
+    user = "The user to kick.",
+    reason = "The reason for the kick."
 )
-async def kick(ctx: commands.Context, user: discord.Member):
+async def kick(ctx: commands.Context, user: discord.Member, reason: str = "No reason provided."):
     """
     Kicks the user.
 
     Args:
         - user (discord.User): The user to kick.
+        - reason (str): The reason for the kick.
     """
 
     await ctx.send(personalityMessage("kick").replace("{user}", user.mention), ephemeral=True)
-    await user.send(personalityMessage("kicked").replace("{user}", ctx.author.mention))
-    await user.kick()
+    await user.send(personalityMessage("kicked").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
+                    + "\n" + personalityMessage("reason").replace("{reason}", "").replace("{action}", "kicking").replace("{reason}", reason)
+                    + "\n" + personalityMessage("followrules").replace("{server}", ctx.guild.name))
+    await user.kick(reason=f"Kicked by {ctx.author}: {reason}")
     viviatools.log(f"{ctx.user} kicked {user} from {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
 @commands.hybrid_command(
@@ -96,17 +109,20 @@ async def kick(ctx: commands.Context, user: discord.Member):
 @commands.describe(
     user = "The user to ban."
 )
-async def ban(ctx: commands.Context, user: discord.Member):
+async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No reason provided."):
     """
     Bans the user.
 
     Args:
         - user (discord.User): The user to ban.
+        - reason (str): The reason for the ban.
     """
 
     await ctx.send(personalityMessage("ban").replace("{user}", user.mention), ephemeral=True)
-    await user.send(personalityMessage("banned").replace("{user}", ctx.author.mention))
-    await user.ban()
+    await user.send(personalityMessage("banned").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
+                    + "\n" + personalityMessage("reason").replace("{reason}", "").replace("{action}", "banning").replace("{reason}", reason)
+                    + "\n" + personalityMessage("followrules").replace("{server}", "other servers"))
+    await user.ban(reason=f"Banned by {ctx.author}: {reason}")
     viviatools.log(f"{ctx.user} banned {user} from {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
 @commands.hybrid_command(
@@ -115,15 +131,18 @@ async def ban(ctx: commands.Context, user: discord.Member):
 @commands.describe(
     user = "The user to unban."
 )
-async def unban(ctx: commands.Context, user: discord.User):
+async def unban(ctx: commands.Context, user: discord.User, reason: str = "No reason provided."):
     """
     Unbans the user.
 
     Args:
         - user (discord.User): The user to unban.
+        - reason (str): The reason for the unban.
     """
 
     await ctx.send(personalityMessage("unban").replace("{user}", user.mention), ephemeral=True)
-    await user.send(personalityMessage("unbanned").replace("{user}", ctx.author.mention))
+    await user.send(personalityMessage("unbanned").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
+                    + "\n" + personalityMessage("reason").replace("{reason}", "").replace("{action}", "unbanning").replace("{reason}", "")
+                    + "\n" + personalityMessage("followrules").replace("{server}", ctx.guild.name))
     await ctx.guild.unban(user)
     viviatools.log(f"{ctx.user} unbanned {user} from {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
