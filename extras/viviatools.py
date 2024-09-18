@@ -83,6 +83,8 @@ helpMsg = open("data/help/general.txt", "r").read()
 channelmakerHelpMsg = open("data/help/channelmaker.txt", "r").read()
 setupHelpMsg = open("data/help/setup.txt", "r").read()
 
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Functions
 def generate_name(type, gender):
     """
     Generator for names.
@@ -101,23 +103,27 @@ def generate_name(type, gender):
             case "first":
                 match gender:
                     case "male":
-                        return names['first']['male'][random.randint(0, len(names['first']['male']) - 1)]
+                        random = names['first']['male'][random.randint(0, len(names['first']['male']) - 1)]
                     case "female":
-                        return names['first']['female'][random.randint(0, len(names['first']['female']) - 1)]
+                        random = names['first']['female'][random.randint(0, len(names['first']['female']) - 1)]
                     case _:
-                        return all_names[random.randint(0, len(all_names) - 1)]
+                        random = all_names[random.randint(0, len(all_names) - 1)]
             case "middle":
-                return names['middle'][random.randint(0, len(names['middle']) - 1)]
+                random = names['middle'][random.randint(0, len(names['middle']) - 1)]
             case "last":
-                return names['last'][random.randint(0, len(names['last']) - 1)]
+                random = names['last'][random.randint(0, len(names['last']) - 1)]
             case "full":
                 match gender:
                     case "male":
-                        return names['first']['male'][random.randint(0, len(names['first']['male']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
+                        random = names['first']['male'][random.randint(0, len(names['first']['male']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
                     case "female":
-                        return names['first']['female'][random.randint(0, len(names['first']['female']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
+                        random = names['first']['female'][random.randint(0, len(names['first']['female']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
                     case _:
-                        return all_names[random.randint(0, len(all_names) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
+                        random = all_names[random.randint(0, len(all_names) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
+            
+        if config["General"]["Debug"]:
+            log(f"Generated name: {random}", logging.DEBUG)
+        return random
 
 def has_bot_permissions(user: discord.Member, server: discord.Guild):
     """
@@ -172,6 +178,8 @@ def add_custom_quote(quote: str, serverID: int):
     quotes["quotes"].append(quote)
     with open(f"data/servers/{serverID}/quotes.json", "w") as f:
         json.dump(quotes, f)
+    if config["General"]["Debug"]:
+        log(f"Added custom quote for {serverID}: {quote}", logging.DEBUG)
 
 def personalityMessage(type: str):
     """
@@ -182,11 +190,19 @@ def personalityMessage(type: str):
 
     ## Returns:
         - str: The random message of the specified type. An empty string if the type is not found.
+    
+    ## Notes:
+        - In debug mode, this will log the message to the console and also return the message type at the end of the string.
     """
     try:
         with open(f'data/personalityMessages/{type}.json') as f:
             messages = json.load(f)
-            return messages["messages"][random.randint(0, len(messages["messages"]) - 1)]
+            random = messages["messages"][random.randint(0, len(messages["messages"]) - 1)]
+            if config["General"]["Debug"]:
+                log(f"Got a random {type} message: {random}", logging.DEBUG)
+                return random + f" (Message type: {type})"
+            else:
+                return random
     except FileNotFoundError:
         log(f"Couldn't find personality message database for type {type}. Does it even exist?", logging.ERROR)
         return ""

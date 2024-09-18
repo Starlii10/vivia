@@ -1,0 +1,9 @@
+{
+    "messages": [
+        "I can't {action} {user}. They're higher in the role hierarchy than you.",
+        "I'm sorry, but you can't {action} {user}. They're higher in the role hierarchy than you.",
+        "You can't {action} {user}. They're higher in the role hierarchy than you.",
+        "{user} is higher in the role hierarchy than you. I can't allow you to {action} them.",
+        "{user} is higher in the role hierarchy than you. You can't {action} them."
+    ]
+}

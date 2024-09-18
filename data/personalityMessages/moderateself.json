@@ -1,0 +1,9 @@
+{
+    "messages": [
+        "I don't think you can just {action} yourself.",
+        "I'm sorry, but you can't {action} yourself.",
+        "You can't {action} yourself, silly.",
+        "Can't {action} yourself.",
+        "Why would you want to {action} yourself?"
+    ]
+}

@@ -1,0 +1,10 @@
+{
+    "messages": [
+        "...you're trying to {action} me? What did I ever do?!",
+        "I'm sorry, but you can't {action} me.",
+        "...{action} me?!",
+        "I don't think so. No {action} for me.",
+        "Absolutely not. You cannot {action} me.",
+        "...why? Why would **I** deserve a {action}?"
+    ]
+}

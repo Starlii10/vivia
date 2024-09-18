@@ -5,5 +5,6 @@ statusmessage = Statuses have moved to data/statuses.json
 prefix = v!
 
 [Advanced]
-# Shows more verbose information about Vivia in the terminal/logs.
+# Shows more verbose information about Vivia in the terminal/logs, as well as in some messages.
+# This should usually be set to False, however this may help finding issues in some extensions.
 debug = False
