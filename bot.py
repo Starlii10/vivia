@@ -84,7 +84,7 @@ async def on_ready():
                 loaded += [f"viviabase.{file[:-3]}"]
             except Exception as e:
                 viviatools.log(f"Failed to load base extension {file[:-3]}", logging.ERROR)
-                viviatools.log(f"{type(e)}: {e}\n{traceback.format_exc()}", logging.ERROR)
+                viviatools.log(f"{type(e)}: {e}", logging.ERROR)
                 viviatools.log("Functionality may be limited. Please report this on GitHub.", logging.ERROR)
                 failed += [f"viviabase.{file[:-3]}"]
                 continue
@@ -96,17 +96,24 @@ async def on_ready():
             try:
                 await bot.load_extension(f"commands.{file[:-3]}")
                 loaded += [f"{file[:-3]}"]
+            except discord.ext.commands.NoEntryPointError:
+                viviatools.log(f"Failed to load custom extension {file[:-3]}", logging.ERROR)
+                viviatools.log("No entry point found. Ensure the extension contains a setup(bot) function.", logging.ERROR)
+                viviatools.log("Functionality may be limited.", logging.ERROR)
+                failed += [f"{file[:-3]}"]
+                continue
             except Exception as e:
                 viviatools.log(f"Failed to load custom extension {file[:-3]}")
-                viviatools.log(f"{type(e)}: {e}\n{traceback.format_exc()}")
+                viviatools.log(f"{type(e)}: {e}")
                 viviatools.log("Functionality may be limited. Ensure the extension contains no errors.", logging.ERROR)
                 failed += [f"{file[:-3]}"]
                 continue
             viviatools.log(f"Loaded extension {file[:-3]}")
 
-    viviatools.log(f"Loaded {len(loaded)} extensions - failed loading {len(failed)}.")
     viviatools.loaded_extensions = loaded
     viviatools.failed_extensions = failed
+    viviatools.log(f"Loaded {len(loaded)} extensions - failed loading {len(failed)}.")
+    
     viviatools.log("Vivia is all ready!")
 
 @tasks.loop(hours=1)
