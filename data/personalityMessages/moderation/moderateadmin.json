@@ -2,6 +2,8 @@
     "messages": [
         "You can't {action} an administrator, silly.",
         "You can't {action} an administrator.",
-        "Administrators are immnune to a {action}."
+        "Administrators are immnune to a {action}.",
+        "I'm sorry, but you can't {action} an administrator.",
+        "That's an admin, you can't {action} them..."
     ]
 }
