@@ -1,0 +1,10 @@
+{
+    "messages": [
+        "The moderators of {server} have asked me to say that you've been banned!",
+        "A moderator in {server} has asked me to say that you've been banned!",
+        "{server}'s moderators have asked me to say that you've been banned!",
+        "I've been informed that {server} has banned you!",
+        "You've been banned from {server}.",
+        "A ban has been issued to you in {server}."
+    ]
+}
