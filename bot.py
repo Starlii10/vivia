@@ -412,12 +412,9 @@ while True:
     except discord.errors.LoginFailure:
         viviatools.log("Unable to start Vivia. Is the token in token.env correct?", logging.ERROR)
         sys.exit(1)
-    except KeyboardInterrupt:
-        viviatools.log("Stopping.", logging.INFO)
-        sys.exit(0)
     except RuntimeError as e:
         if "Session is closed" in str(e):
-            viviatools.log("Stopping.", logging.INFO)
+            viviatools.log("KeyboardInterrupt recieved - stopping.", logging.INFO) # Technically it's not a KeyboardInterrupt but it's caused by the same conditions so it counts
             sys.exit(0)
     except Exception as e:
         viviatools.log(f"A severe error has occurred and Vivia has crashed!", logging.FATAL)
