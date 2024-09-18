@@ -415,6 +415,10 @@ while True:
     except KeyboardInterrupt:
         viviatools.log("Stopping.", logging.INFO)
         sys.exit(0)
+    except RuntimeError as e:
+        if "Session is closed" in str(e):
+            viviatools.log("Stopping.", logging.INFO)
+            sys.exit(0)
     except Exception as e:
         viviatools.log(f"A severe error has occurred and Vivia has crashed!", logging.FATAL)
         viviatools.log(f"{type(e)}: {str(e)}", severity=logging.FATAL)
