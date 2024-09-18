@@ -193,7 +193,7 @@ def personalityMessage(type: str):
     
     ## Notes:
         - In debug mode, this will log the message to the console and also return the message type at the end of the string.
-        - Types in folders within the personalityMessages folder are valid (such as "extension1\messages").
+        - Types in folders within the personalityMessages folder are valid (such as "extension1/messages").
     """
     try:
         with open(f'data/personalityMessages/{type}.json') as f:
