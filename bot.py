@@ -417,6 +417,6 @@ while True:
             viviatools.log("KeyboardInterrupt recieved - stopping.", logging.INFO) # Technically it's not a KeyboardInterrupt but it's caused by the same conditions so it counts
             sys.exit(0)
     except Exception as e:
-        viviatools.log(f"A severe error has occurred and Vivia has crashed!", logging.FATAL)
+        viviatools.log(f"Vivia has crashed... oh no...", logging.FATAL)
         viviatools.log(f"{type(e)}: {str(e)}", severity=logging.FATAL)
-        viviatools.log("Vivia will automatically restart. Please report this on GitHub.", logging.FATAL)
+        viviatools.log("Don't worry, she will automatically restart. I would appreciate if you would report this on GitHub, please.", logging.FATAL)
