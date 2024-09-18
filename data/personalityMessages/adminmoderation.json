@@ -1,0 +1,7 @@
+{
+    "messages": [
+        "You can't {action} an administrator, silly.",
+        "You can't {action} an administrator.",
+        "Administrators are immnune to a {action}."
+    ]
+}

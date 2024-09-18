@@ -388,8 +388,8 @@ async def extensions(ctx: commands.Context):
         - Only the bot owner can use this command.
     """
     if await bot.is_owner(ctx.author):
-        await ctx.send("Available extensions: " + ", ".join(viviatools.loaded_extensions), ephemeral=True)
-        await ctx.send("Extensions that failed to load: " + ", ".join(viviatools.failed_extensions), ephemeral=True)
+        await ctx.send("Available extensions: " + (", ".join(viviatools.loaded_extensions)) if len(viviatools.loaded_extensions) > 0 else "None... wait, what?", ephemeral=True)
+        await ctx.send("Extensions that failed to load: " + (", ".join(viviatools.failed_extensions)) if len(viviatools.failed_extensions) > 0 else "None!", ephemeral=True)
     else:
         await ctx.send("That's for the bot owner, not random users...", ephemeral=True)
 

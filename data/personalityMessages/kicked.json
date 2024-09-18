@@ -1,0 +1,10 @@
+{
+    "messages": [
+        "I apologize, but a moderator in {server} has kicked you from {server}.",
+        "I'm sorry, but a moderator in {server} has kicked you from {server}.",
+        "{server}'s moderators have kicked you.",
+        "I must apologize, but a moderator in {server} has kicked you from {server}.",
+        "I've been informed that {server} has kicked you.",
+        "You've been kicked from {server}."
+    ]
+}

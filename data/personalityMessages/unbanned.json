@@ -1,0 +1,9 @@
+{
+    "messages": [
+        "The moderators of {server} have asked me to say that you've been unbanned!",
+        "A moderator in {server} has asked me to say that you've been unbanned!",
+        "{server}'s moderators have asked me to say that you've been unbanned!",
+        "{server}'s moderators have unbanned you!",
+        "I've been informed that {server} has unbanned you!"
+    ]
+}

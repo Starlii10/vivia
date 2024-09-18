@@ -1,0 +1,11 @@
+{
+    "messages": [
+        "Okay. {user} has been {action}.",
+        "Got it! I've {action} {user}.",
+        "{user} was {action}.",
+        "I've {action} {user}.",
+        "{user} has been {action}.",
+        "No problem. I've {action} {user}.",
+        "Bye bye, {user}. I've {action} them."
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "messages": [
+        "I've unbanned {user}.",
+        "{user} was unbanned.",
+        "{user} has been unbanned.",
+        "{user} is back!"
+    ]
+}
