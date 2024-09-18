@@ -409,6 +409,12 @@ while True:
     except TypeError:
         viviatools.log("Unable to start Vivia. Is the token in token.env correct?", logging.ERROR)
         sys.exit(1)
+    except discord.errors.LoginFailure:
+        viviatools.log("Unable to start Vivia. Is the token in token.env correct?", logging.ERROR)
+        sys.exit(1)
+    except KeyboardInterrupt:
+        viviatools.log("Stopping.", logging.INFO)
+        sys.exit(0)
     except Exception as e:
         viviatools.log(f"A severe error has occurred and Vivia has crashed!", logging.FATAL)
         viviatools.log(f"{type(e)}: {str(e)}", severity=logging.FATAL)

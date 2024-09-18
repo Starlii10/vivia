@@ -103,27 +103,27 @@ def generate_name(type, gender):
             case "first":
                 match gender:
                     case "male":
-                        random = names['first']['male'][random.randint(0, len(names['first']['male']) - 1)]
+                        random_msg = names['first']['male'][random.randint(0, len(names['first']['male']) - 1)]
                     case "female":
-                        random = names['first']['female'][random.randint(0, len(names['first']['female']) - 1)]
+                        random_msg = names['first']['female'][random.randint(0, len(names['first']['female']) - 1)]
                     case _:
-                        random = all_names[random.randint(0, len(all_names) - 1)]
+                        random_msg = all_names[random.randint(0, len(all_names) - 1)]
             case "middle":
-                random = names['middle'][random.randint(0, len(names['middle']) - 1)]
+                random_msg = names['middle'][random.randint(0, len(names['middle']) - 1)]
             case "last":
-                random = names['last'][random.randint(0, len(names['last']) - 1)]
+                random_msg = names['last'][random.randint(0, len(names['last']) - 1)]
             case "full":
                 match gender:
                     case "male":
-                        random = names['first']['male'][random.randint(0, len(names['first']['male']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
+                        random_msg = names['first']['male'][random.randint(0, len(names['first']['male']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
                     case "female":
-                        random = names['first']['female'][random.randint(0, len(names['first']['female']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
+                        random_msg = names['first']['female'][random.randint(0, len(names['first']['female']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
                     case _:
-                        random = all_names[random.randint(0, len(all_names) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
+                        random_msg = all_names[random.randint(0, len(all_names) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
             
         if config["General"]["Debug"]:
-            log(f"Generated name: {random}", logging.DEBUG)
-        return random
+            log(f"Generated name: {random_msg}", logging.DEBUG)
+        return random_msg
 
 def has_bot_permissions(user: discord.Member, server: discord.Guild):
     """
@@ -197,12 +197,12 @@ def personalityMessage(type: str):
     try:
         with open(f'data/personalityMessages/{type}.json') as f:
             messages = json.load(f)
-            random = messages["messages"][random.randint(0, len(messages["messages"]) - 1)]
+            random_msg = messages["messages"][random.randint(0, len(messages["messages"]) - 1)]
             if config["General"]["Debug"]:
-                log(f"Got a random {type} message: {random}", logging.DEBUG)
-                return random + f" (Message type: {type})"
+                log(f"Got a random {type} message: {random_msg}", logging.DEBUG)
+                return random_msg + f" (Message type: {type})"
             else:
-                return random
+                return random_msg
     except FileNotFoundError:
         log(f"Couldn't find personality message database for type {type}. Does it even exist?", logging.ERROR)
         return ""
