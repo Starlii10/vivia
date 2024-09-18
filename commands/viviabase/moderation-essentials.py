@@ -45,12 +45,12 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No re
         await ctx.send(personalityMessage("moderatevivia").replace("{action}", "warn"), ephemeral=True)
         return
     
-    if user.guild_permissions.administrator:
-        await ctx.send(personalityMessage("moderateadmin").replace("{user}", user.name).replace("{action}", "warn"), ephemeral=True)
-        return
-    
     if user == ctx.author:
         await ctx.send(personalityMessage("moderateself").replace("{action}", "warn"), ephemeral=True)
+        return
+    
+    if user.guild_permissions.administrator:
+        await ctx.send(personalityMessage("moderateadmin").replace("{user}", user.name).replace("{action}", "warn"), ephemeral=True)
         return
     
     if user.top_role >= ctx.author.top_role:
@@ -88,12 +88,12 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
         await ctx.send(personalityMessage("moderatevivia").replace("{action}", "unwarn"), ephemeral=True)
         return
     
-    if user.guild_permissions.administrator:
-        await ctx.send(personalityMessage("moderateadmin").replace("{user}", user.name).replace("{action}", "unwarn"), ephemeral=True)
-        return
-    
     if user == ctx.author:
         await ctx.send(personalityMessage("moderateself").replace("{action}", "unwarn"), ephemeral=True)
+        return
+    
+    if user.guild_permissions.administrator:
+        await ctx.send(personalityMessage("moderateadmin").replace("{user}", user.name).replace("{action}", "unwarn"), ephemeral=True)
         return
     
     if user.top_role >= ctx.author.top_role:
@@ -132,12 +132,12 @@ async def kick(ctx: commands.Context, user: discord.Member, reason: str = "No re
         await ctx.send(personalityMessage("moderatevivia").replace("{action}", "kick"), ephemeral=True)
         return
     
-    if user.guild_permissions.administrator:
-        await ctx.send(personalityMessage("moderateadmin").replace("{user}", user.name).replace("{action}", "kick"), ephemeral=True)
-        return
-    
     if user == ctx.author:
         await ctx.send(personalityMessage("moderateself").replace("{action}", "kick"), ephemeral=True)
+        return
+    
+    if user.guild_permissions.administrator:
+        await ctx.send(personalityMessage("moderateadmin").replace("{user}", user.name).replace("{action}", "kick"), ephemeral=True)
         return
     
     if user.top_role >= ctx.author.top_role:
@@ -170,12 +170,12 @@ async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No rea
         await ctx.send(personalityMessage("moderatevivia").replace("{action}", "ban"), ephemeral=True)
         return
     
-    if user.guild_permissions.administrator:
-        await ctx.send(personalityMessage("moderateadmin").replace("{user}", user.name).replace("{action}", "ban"), ephemeral=True)
-        return
-    
     if user == ctx.author:
         await ctx.send(personalityMessage("moderateself").replace("{action}", "ban"), ephemeral=True)
+        return
+    
+    if user.guild_permissions.administrator:
+        await ctx.send(personalityMessage("moderateadmin").replace("{user}", user.name).replace("{action}", "ban"), ephemeral=True)
         return
     
     if user.top_role >= ctx.author.top_role:
@@ -209,12 +209,12 @@ async def unban(ctx: commands.Context, user: discord.User, reason: str = "No rea
         await ctx.send(personalityMessage("moderatevivia").replace("{action}", "unban"), ephemeral=True)
         return
     
-    if user.guild_permissions.administrator:
-        await ctx.send(personalityMessage("moderateadmin").replace("{user}", user.name).replace("{action}", "unban"), ephemeral=True)
-        return
-    
     if user == ctx.author:
         await ctx.send(personalityMessage("moderateself").replace("{action}", "unban"), ephemeral=True)
+        return
+    
+    if user.guild_permissions.administrator:
+        await ctx.send(personalityMessage("moderateadmin").replace("{user}", user.name).replace("{action}", "unban"), ephemeral=True)
         return
     
     if user.top_role >= ctx.author.top_role:
