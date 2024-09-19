@@ -69,7 +69,9 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No re
 
     # add user to warned users
     # TODO: users can be warned multiple times
+    viviatools.log([reason, ctx.message.created_at, ctx.author.id])
     viviatools.warns(ctx.guild.id)[user.id] = [reason, ctx.message.created_at, ctx.author.id]
+    
     viviatools.log(f"{ctx.author.name} warned {user} in {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
     # messages
@@ -278,7 +280,7 @@ async def unban(ctx: commands.Context, user: discord.User, reason: str = "No rea
         await ctx.send(personalityMessage("moderation/moderatehigher").replace("{user}", user.name).replace("{action}", "unban"), ephemeral=True)
         return
 
-    await ctx.guild.unban(user)
+    await ctx.guild.unban(user, reason=f"Unbanned by {ctx.author}: {reason}")
     await ctx.send(personalityMessage("moderation/unban").replace("{user}", user.mention), ephemeral=True)
     try:
         await user.send(f"# You've been unbanned from {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/unbanned").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
