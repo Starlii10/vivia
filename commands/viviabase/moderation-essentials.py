@@ -17,12 +17,12 @@ from discord import app_commands
 from extras import viviatools
 from extras.viviatools import personalityMessage
 
-async def setup(bot: commands.Bot): # for extension loading
-    bot.add_command(warn) # type: ignore
-    bot.add_command(unwarn) # type: ignore
-    bot.add_command(kick) # type: ignore
-    bot.add_command(ban) # type: ignore
-    bot.add_command(unban) # type: ignore
+async def setup(bot: commands.Bot):
+    bot.add_command(warn)
+    bot.add_command(unwarn)
+    bot.add_command(kick)
+    bot.add_command(ban)
+    bot.add_command(unban)
 
 
 @commands.hybrid_command(
@@ -40,6 +40,10 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No re
         - user (discord.User): The user to warn.
         - reason (str): The reason for the warning.
     """
+
+    if user == None:
+        await ctx.send(personalityMessage("moderation/targetnone"), ephemeral=True)
+        return
 
     if user == ctx.me:
         await ctx.send(personalityMessage("moderation/moderatevivia").replace("{action}", "warn"), ephemeral=True)
@@ -84,6 +88,11 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
         - user (discord.User): The user to unwarn.
         - reason (str): The reason for the unwarning.
     """
+
+    if user == None:
+        await ctx.send(personalityMessage("moderation/targetnone"), ephemeral=True)
+        return
+    
     if user == ctx.me:
         await ctx.send(personalityMessage("moderation/moderatevivia").replace("{action}", "unwarn"), ephemeral=True)
         return
@@ -128,6 +137,11 @@ async def kick(ctx: commands.Context, user: discord.Member, reason: str = "No re
         - user (discord.User): The user to kick.
         - reason (str): The reason for the kick.
     """
+
+    if user == None:
+        await ctx.send(personalityMessage("moderation/targetnone"), ephemeral=True)
+        return
+    
     if user == ctx.me:
         await ctx.send(personalityMessage("moderation/moderatevivia").replace("{action}", "kick"), ephemeral=True)
         return
@@ -166,6 +180,11 @@ async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No rea
         - user (discord.User): The user to ban.
         - reason (str): The reason for the ban.
     """
+
+    if user == None:
+        await ctx.send(personalityMessage("moderation/targetnone"), ephemeral=True)
+        return
+    
     if user == ctx.me:
         await ctx.send(personalityMessage("moderation/moderatevivia").replace("{action}", "ban"), ephemeral=True)
         return
@@ -205,6 +224,10 @@ async def unban(ctx: commands.Context, user: discord.User, reason: str = "No rea
         - reason (str): The reason for the unban.
     """
     
+    if user == None:
+        await ctx.send(personalityMessage("moderation/targetnone"), ephemeral=True)
+        return
+
     if user == ctx.me:
         await ctx.send(personalityMessage("moderation/moderatevivia").replace("{action}", "unban"), ephemeral=True)
         return

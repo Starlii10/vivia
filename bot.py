@@ -93,7 +93,7 @@ async def on_ready():
             viviatools.log(f"Loaded base extension {file[:-3]}")
     
     # viviabase beta
-    if config["General"]["BetaExtensions"]:
+    if config["General"]["betaextensions"]:
         viviatools.log("Loading beta extensions.")
         for file in os.listdir("commands/viviabase-beta"):
             if file.endswith(".py"):

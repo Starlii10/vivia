@@ -1,0 +1,10 @@
+{
+    "messages": [
+        "I'm not sure who that is. Are they in this server?",
+        "I don't know who that is. Are they in this server?",
+        "Not sure who that is. Are they in this server? Maybe you misspelt the name?",
+        "I'm unsure of who that is. Did you misspell their name?",
+        "I don't know who that is. Are they here?",
+        "I can't find that person in this server. Maybe you misspelt their name?"
+    ]
+}
