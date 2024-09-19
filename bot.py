@@ -35,7 +35,7 @@ from discord.ext.commands import errors
 
 # Vivia's extra scripts
 import extras.viviatools as viviatools
-from extras.viviatools import config, serverConfig, handler, personalityMessage
+from extras.viviatools import config, serverConfig, personalityMessage
 import extras.viviallama as Llama
 
 # Variables
@@ -412,7 +412,7 @@ tree.add_command(add_custom_quote)
 # Run
 while True:
     try:
-        bot.run(dotenv.get_key("token.env", "token"), log_handler=handler)
+        bot.run(dotenv.get_key("token.env", "token"), log_handler=None)
     except TypeError:
         viviatools.log("Unable to start Vivia. Is the token in token.env correct?", logging.ERROR)
         sys.exit(1)
