@@ -11,6 +11,7 @@
 """
 
 from email.policy import HTTP
+import json
 import logging
 from math import e
 import discord
@@ -69,8 +70,8 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No re
 
     # add user to warned users
     # TODO: users can be warned multiple times
-    viviatools.log([reason, ctx.message.created_at, ctx.author.id])
-    viviatools.warns(ctx.guild.id)[user.id] = [reason, ctx.message.created_at, ctx.author.id]
+    viviatools.log(json.dumps([reason, ctx.message.created_at.strftime('%Y-%m-%d %H:%M:%S'), ctx.author.id]))
+    viviatools.warns(ctx.guild.id)[user.id] = [reason, ctx.message.created_at.strftime('%Y-%m-%d %H:%M:%S'), ctx.author.id]
     
     viviatools.log(f"{ctx.author.name} warned {user} in {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
