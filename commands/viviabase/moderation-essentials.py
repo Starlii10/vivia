@@ -10,10 +10,8 @@
     Have a great time using Vivia!
 """
 
-from email.policy import HTTP
 import json
 import logging
-from math import e
 import discord
 from discord.ext import commands
 from discord import HTTPException, app_commands
@@ -26,7 +24,6 @@ async def setup(bot: commands.Bot):
     bot.add_command(kick)
     bot.add_command(ban)
     bot.add_command(unban)
-
 
 @commands.hybrid_command(
     name = "warn"
@@ -129,7 +126,16 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
 
     # remove user from warned users
     # TODO: users can be warned multiple times
-    del viviatools.warns(ctx.guild.id)[user.id]
+    with open(f"data/servers/{ctx.guild.id}/warns.json", "rw") as f:
+        warns = json.load(f)
+        if user.id in warns:
+            del warns[user.id]
+        else:
+            await ctx.send(personalityMessage("moderation/notwarned").replace("{user}", user.mention), ephemeral=True)
+            return
+        with open(f"data/servers/{ctx.guild.id}/warns.json", "w") as f:
+            json.dump(warns, f)
+
     viviatools.log(f"{ctx.author.name} unwarned {user} in {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
     # messages
