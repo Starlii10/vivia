@@ -159,7 +159,7 @@ async def on_guild_join(guild: discord.Guild):
     """
 
     viviatools.log(f"Bot joined {guild.name} ({guild.id})")
-    if config["Advanced"]["Debug"]:
+    if config["Advanced"]["Debug"] == "True":
         viviatools.log(f"Setting up custom quotes, config file, and Vivia admin role for {guild.name} ({guild.id})", logging.DEBUG)
     with open(f'data/servers/{guild.id}/quotes.json', 'w') as f:
         json.dump({'quotes': []}, f)
@@ -170,7 +170,7 @@ async def on_guild_join(guild: discord.Guild):
         if member.guild_permissions.administrator:
             await member.add_roles(discord.utils.find(lambda r: r.name == "Vivia Admin", guild.roles), reason="Vivia setup: This user has administrative permissions and was automatically assigned to the Vivia Admin role.")
             viviatools.log(f"User {member.name} ({member.id}) was automatically assigned the Vivia Admin role in {guild.name} ({guild.id}).", logging.DEBUG)
-    if config["Advanced"]["Debug"]:
+    if config["Advanced"]["Debug"] == "True":
         viviatools.log(f"Setup complete for {guild.name} ({guild.id})", logging.DEBUG)    
 
 @bot.event

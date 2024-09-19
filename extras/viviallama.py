@@ -174,7 +174,7 @@ async def processAttachment(attachment, internal_name):
                     noise_reduced = cv2.fastNlMeansDenoising(thresh, None, 10, 7, 21)
                     
                     # DEBUG - Save image
-                    if config["Advanced"]["debug"].lower() == "true":
+                    if config["Advanced"]["Debug"] == "True":
                         cv2.imwrite(f"extras/ocr/{attachment.filename}", noise_reduced)
                         viviatools.log(f"Debug: Saved image {attachment.filename} to extras/ocr", logging.DEBUG)
                     

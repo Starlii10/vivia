@@ -19,7 +19,6 @@ import logging
 import os
 import random
 import sys
-import traceback
 import colorlog
 
 import discord
@@ -121,7 +120,7 @@ def generate_name(type, gender):
                     case _:
                         random_msg = all_names[random.randint(0, len(all_names) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
             
-        if config["Advanced"]["Debug"]:
+        if config["Advanced"]["Debug"] == "True":
             log(f"Generated name: {random_msg}", logging.DEBUG)
         return random_msg
 
@@ -178,7 +177,7 @@ def add_custom_quote(quote: str, serverID: int):
     quotes["quotes"].append(quote)
     with open(f"data/servers/{serverID}/quotes.json", "w") as f:
         json.dump(quotes, f)
-    if config["Advanced"]["Debug"]:
+    if config["Advanced"]["Debug"] == "True":
         log(f"Added custom quote for {serverID}: {quote}", logging.DEBUG)
 
 def personalityMessage(type: str):
@@ -199,7 +198,7 @@ def personalityMessage(type: str):
         with open(f'data/personalityMessages/{type}.json') as f:
             messages = json.load(f)
             random_msg = messages["messages"][random.randint(0, len(messages["messages"]) - 1)]
-            if config["Advanced"]["Debug"]:
+            if config["Advanced"]["Debug"] == "True":
                 log(f"Got a random {type} message: {random_msg}", logging.DEBUG)
                 return random_msg + f" (Message type: {type})"
             else:
