@@ -71,7 +71,7 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No re
     # add user to warned users
     # TODO: users can be warned multiple times
     viviatools.log(json.dumps([reason, ctx.message.created_at.strftime('%Y-%m-%d %H:%M:%S'), ctx.author.id]))
-    with open(f"data/servers/{ctx.guild.id}/warns.json", "r") as f:
+    with open(f"data/servers/{ctx.guild.id}/warns.json", "w") as f:
         json.dump({user.id: [reason, ctx.message.created_at.strftime('%Y-%m-%d %H:%M:%S'), ctx.author.id]}, f)
     
     viviatools.log(f"{ctx.author.name} warned {user} in {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
