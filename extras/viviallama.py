@@ -41,6 +41,7 @@ if __name__ == "__main__":
     sys.exit(1)
 
 from extras import viviatools
+from extras.viviatools import personalityMessage
 
 viviatools.log("Attempting to load LLaMa - this may take a moment", logging.INFO)
 
@@ -142,7 +143,7 @@ async def createResponse(
     else:
         # Return an error message if LLaMa failed to load
         viviatools.log(f"Ignoring generation request by {internal_name} ({username}) due to previous errors while loading LLaMa", logging.WARNING)
-        return("Something's wrong with my programming, so I can't respond. Sorry.")
+        return(personalityMessage("cannotrespond"))
 
 async def processAttachment(attachment, internal_name):
     # Download attachment
