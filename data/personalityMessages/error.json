@@ -9,6 +9,7 @@
         "I'm sorry, something went wrong. Maybe try again?",
         "Your request could not be processed. Please try again.",
         "Something bad happened. Try again, maybe?",
-        "...did something go wrong? I guess you can do it again, maybe that will work."
+        "...did something go wrong? I guess you can do it again, maybe that will work.",
+        "Ow... an error occurred. That doesn't feel good. Try again, please..."
     ]
 }

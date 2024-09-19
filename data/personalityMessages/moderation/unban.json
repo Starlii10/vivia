@@ -3,6 +3,7 @@
         "I've unbanned {user}.",
         "{user} was unbanned.",
         "{user} has been unbanned.",
-        "{user} is back!"
+        "{user} is back! *(Wait, they don't automatically join the server again...)*",
+        "Fetching {user} out of the void of being banned."
     ]
 }

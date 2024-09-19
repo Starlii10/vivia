@@ -10,6 +10,7 @@
         "Erased chat history.",
         "Chat history deleted from database.",
         "Cleared your chat history.",
-        "History wiped from memory banks."
+        "History wiped from memory banks.",
+        "Formatted chat history."
     ]
 }

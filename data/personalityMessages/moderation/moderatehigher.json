@@ -4,6 +4,13 @@
         "I'm sorry, but you can't {action} {user}. They're higher in the role hierarchy than you.",
         "You can't {action} {user}. They're higher in the role hierarchy than you.",
         "{user} is higher in the role hierarchy than you. I can't allow you to {action} them.",
-        "{user} is higher in the role hierarchy than you. You can't {action} them."
+        "{user} is higher in the role hierarchy than you. You can't {action} them.",
+        "Sorry, but {user} has a higher role than you. I cannot permit you to {action} them.",
+        "Sorry, but {user} has a higher role than you. You cannot {action} them.",
+        "I can't {action} {user}. They have a higher role than you.",
+        "I'm sorry, but you can't {action} {user}. They have a higher role than you.",
+        "You can't {action} {user}. They have a higher role than you.",
+        "{user} has a higher role than you. I can't allow you to {action} them.",
+        "{user} has a higher role than you. You can't {action} them."
     ]
 }

@@ -6,6 +6,7 @@
         "I've {action} {user}.",
         "{user} has been {action}.",
         "No problem. I've {action} {user}.",
-        "Bye bye, {user}. I've {action} them."
+        "Bye bye, {user}. I've {action} them.",
+        "Looks like {user} won't be a problem anymore. I've {action} them."
     ]
 }

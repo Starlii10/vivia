@@ -4,6 +4,7 @@
         "You can't {action} an administrator.",
         "Administrators are immnune to a {action}.",
         "I'm sorry, but you can't {action} an administrator.",
-        "That's an admin, you can't {action} them..."
+        "That's an admin, you can't {action} them...",
+        "...you know you can't just {action} an admin, right?"
     ]
 }

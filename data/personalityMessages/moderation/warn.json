@@ -7,6 +7,7 @@
         "No worry, I warned {user}.",
         "{user} was warned.",
         "{user} has been politely warned.",
-        "{user} has been warned."
+        "{user} has been warned.",
+        "No worries. {user} is warned now."
     ]
 }

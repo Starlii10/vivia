@@ -6,6 +6,9 @@
         "{user} was unwarned.",
         "I've unwarned {user}.",
         "I removed {user}'s warning.",
-        "{user}'s warning has been removed."
+        "{user}'s warning has been removed.",
+        "Unwarned {user}.",
+        "I've unwarned {user}.",
+        "{user} no longer has a warning."
     ]
 }
