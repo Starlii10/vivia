@@ -80,7 +80,7 @@ else:
     except Exception as e:
         viviatools.log(f"Couldn't load LLaMa model. This can be caused by an invalid model path, no supported devices to run LLaMa on, or an error in the model.", logging.ERROR)
         viviatools.log("This is not a fatal error, however Vivia will not be able to generate responses unless it is installed.", logging.ERROR)
-        viviatools.log(f"{type(e)}: {str(e)}", logging.ERROR)
+        viviatools.log(f"{str(type(e))}: {str(e)}", logging.ERROR)
         aiDisabled = True
 
 # Load pytesseract
@@ -151,8 +151,8 @@ async def processAttachment(attachment, internal_name):
         viviatools.log(f"Downloading {attachment.filename}", logging.DEBUG)
         await attachment.save(f"data/tempchats/{internal_name}/{attachment.filename}")
     except Exception as e:
-        viviatools.log(f"Error downloading {attachment.filename}. Ignoring.\n{type(e)}: {e}", logging.WARNING)
-        return {"role": "user", "content": f"An attachment that failed to download."}
+        viviatools.log(f"Error downloading {attachment.filename}. Ignoring.\n{str(type(e))}: {e}", logging.WARNING)
+        return {"role": "user", "content": f"An attachment that failed to download: {attachment.filename}"}
 
     # Check if the attachment is text
     match mimetypes.guess_type(f"data/tempchats/{internal_name}/{attachment.filename}")[0].split("/")[0]:
@@ -165,29 +165,38 @@ async def processAttachment(attachment, internal_name):
             if not imageReadingDisabled:
                 viviatools.log(f"Attachment {attachment.filename} is not text. Attempting OCR...", logging.DEBUG)
                 try:
+                    # Load image
                     img = np.array(Image.open(f"data/tempchats/{internal_name}/{attachment.filename}"))
+                    
                     # Process image
                     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                     thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
                     noise_reduced = cv2.fastNlMeansDenoising(thresh, None, 10, 7, 21)
+                    
                     # DEBUG - Save image
                     if config["Advanced"]["debug"].lower() == "true":
                         cv2.imwrite(f"extras/ocr/{attachment.filename}", noise_reduced)
                         viviatools.log(f"Debug: Saved image {attachment.filename} to extras/ocr", logging.DEBUG)
+                    
+                    # Perform OCR
                     text = pytesseract.image_to_string(noise_reduced)
                     if text:
                         viviatools.log(f"Found text in {attachment.filename}: {text}", logging.DEBUG)
                         return {"role": "user", "content": "An attached image with the text: " + text}
                     else:
+                        # OCR returned no text
                         viviatools.log(f"Couldn't find text in {attachment.filename}. Skipping.", logging.DEBUG)
                         return {"role": "user", "content": f"An image that couldn't be read: {attachment.filename}"}
                 except Exception as e:
-                    viviatools.log(f"Error performing OCR on {attachment.filename}. Skipping.\n{type(e)}: {e}", logging.ERROR)
+                    # OCR failed
+                    viviatools.log(f"Error performing OCR on {attachment.filename}. Skipping.\n{str(type(e))}: {e}", logging.ERROR)
                     return {"role": "user", "content": f"An image that couldn't be read due to errors: {attachment.filename}"}
             else:
+                # Pytesseract didn't load, skip
                 viviatools.log(f"Attachment {attachment.filename} is not text. Skipping OCR due to previous errors loading pytesseract.", logging.WARNING)
                 return {"role": "user", "content": f"An image that couldn't be read due to errors: {attachment.filename}"}
         case _:
+            # Unrecognized attachment type
             viviatools.log(f"Attachment {attachment.filename} is unrecognized. Skipping.", logging.WARNING)
             return {"role": "user", "content": f"An unrecognized attachment: {attachment.filename}"}
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-    This script is part of Vivia.
+    This script contains functions for Vivia and her extensions.
 
     Vivia is licensed under the MIT License. For more information, see the LICENSE file.
     TL:DR: you can use Vivia's code as long as you keep the original license intact.
@@ -46,7 +46,7 @@ else:
             config.write(configfile)
     except Exception as e:
         print("I couldn't create a config file. Is something wrong with config.ini.example?")
-        print(f"{type(e)}: {e}\n{traceback.format_exc()}")
+        print(f"{str(type(e))}: {e}")
         sys.exit(1)
     
 # Create log folder if it doesn't exist

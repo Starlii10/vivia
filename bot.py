@@ -20,7 +20,6 @@ import shutil
 import sys
 import json
 import threading
-import traceback
 import dotenv
 import random
 import os
@@ -69,7 +68,10 @@ async def on_ready():
     with open("data/statuses.json", "r") as f:
         statuses = json.load(f)
     await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=random.choice(statuses["statuses"])))
-    statusChanges.start()
+    try:
+        statusChanges.start()
+    except RuntimeError:
+        pass # already started
 
     # Load extensions
     viviatools.log("Loading extensions!")
@@ -84,11 +86,27 @@ async def on_ready():
                 loaded += [f"viviabase.{file[:-3]}"]
             except Exception as e:
                 viviatools.log(f"Failed to load base extension {file[:-3]}", logging.ERROR)
-                viviatools.log(f"{type(e)}: {e}", logging.ERROR)
+                viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
                 viviatools.log("Functionality may be limited. Please report this on GitHub.", logging.ERROR)
                 failed += [f"viviabase.{file[:-3]}"]
                 continue
             viviatools.log(f"Loaded base extension {file[:-3]}")
+    
+    # viviabase beta
+    if config["General"]["BetaExtensions"]:
+        viviatools.log("Loading beta extensions.")
+        for file in os.listdir("commands/viviabase-beta"):
+            if file.endswith(".py"):
+                try:
+                    await bot.load_extension(f"commands.viviabase-beta.{file[:-3]}")
+                    loaded += [f"viviabase-beta.{file[:-3]}"]
+                except Exception as e:
+                    viviatools.log(f"Failed to load beta extension {file[:-3]}", logging.ERROR)
+                    viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
+                    viviatools.log("Functionality may be limited.", logging.ERROR)
+                    failed += [f"viviabase-beta.{file[:-3]}"]
+                    continue
+                viviatools.log(f"Loaded BETA extension {file[:-3]}")
 
     # Custom extensions
     for file in os.listdir("commands"):
@@ -104,7 +122,7 @@ async def on_ready():
                 continue
             except Exception as e:
                 viviatools.log(f"Failed to load custom extension {file[:-3]}")
-                viviatools.log(f"{type(e)}: {e}")
+                viviatools.log(f"{str(type(e))}: {e}")
                 viviatools.log("Functionality may be limited. Ensure the extension contains no errors.", logging.ERROR)
                 failed += [f"{file[:-3]}"]
                 continue
@@ -166,7 +184,7 @@ async def on_message(message: discord.Message):
         return
     
     # Ignore DMs
-    # TODO: Should Vivia LLaMa trigger in DMs?
+    # TODO: Vivia LLaMa triggers in DMs
     if message.guild == None:
         return
 
@@ -345,8 +363,8 @@ async def setting(ctx: commands.Context, option: str, value: bool):
         except Exception as e:
             await ctx.send(personalityMessage("error"), ephemeral=True)
             if serverConfig(ctx.guild.id)['verboseErrors']:
-                await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
-            viviatools.log(f"Error while changing config for {ctx.guild.name} ({str(ctx.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
+                await ctx.send(f"{str(type(e))}: {e}\n-# To disable these messages, run /config verboseErrors false")
+            viviatools.log(f"Error while changing config for {ctx.guild.name} ({str(ctx.guild.id)}): {str(type(e))}: {str(e)}", severity=logging.ERROR)
     else:
         await ctx.send("That's for authorized users, not you...", ephemeral=True)
 
@@ -363,10 +381,10 @@ async def reboot(ctx: commands.Context, pull_git: bool = False):
                                    Defaults to False. May increase reboot time by a few seconds. Also updates dependencies.
     ## Notes:
         - Only the bot owner can use this command.
-        - Because this command replaces the running bot script with another one, any changes made to the script will take effect after this command is run.
+        - Because this command replaces the running Vivia script with another one, any changes made to Vivia will take effect after this command is run.
         - `pull_git` requires `git` to be installed on your system, but you probably already have it if you're running Vivia anyway, don't you?
         - `pull_git` will also run `pip install -r requirements.txt` in the root to install any new dependencies.
-        - `pull_git` will OVERRIDE LOCAL CHANGES TO THE SCRIPT! Be careful!
+        - `pull_git` will OVERRIDE LOCAL CHANGES TO VIVIA! Be careful!
     """
     if await bot.is_owner(ctx.author):
         await ctx.send("Rebooting...")
@@ -377,8 +395,9 @@ async def reboot(ctx: commands.Context, pull_git: bool = False):
                 os.system("git pull")
                 viviatools.log("Pulled git repository.", logging.DEBUG)
                 os.system("pip install -r requirements.txt")
+                viviatools.log("Installed new dependencies.", logging.DEBUG)
             except Exception as e:
-                viviatools.log(f"Failed to pull git repository: {type(e)}: {str(e)}", logging.ERROR)
+                viviatools.log(f"Failed to pull git repository: {str(type(e))}: {str(e)}", logging.ERROR)
         os.execl(sys.executable, sys.executable, *sys.argv)
     else:
         await ctx.send("That's for the bot owner, not random users...", ephemeral=True)
@@ -393,6 +412,7 @@ async def extensions(ctx: commands.Context):
 
     ## Notes:
         - Only the bot owner can use this command.
+        - TODO: Should everyone be able to use this command?
     """
     if await bot.is_owner(ctx.author):
         await ctx.send("Available extensions: \n- " + ("\n- ".join(viviatools.loaded_extensions)) if len(viviatools.loaded_extensions) > 0 else "No extensions loaded? Wait, what?!", ephemeral=True)
@@ -425,5 +445,5 @@ while True:
             sys.exit(0)
     except Exception as e:
         viviatools.log(f"Vivia has crashed... oh no...", logging.FATAL)
-        viviatools.log(f"{type(e)}: {str(e)}", severity=logging.FATAL)
+        viviatools.log(f"{str(type(e))}: {str(e)}", severity=logging.FATAL)
         viviatools.log("Don't worry, she will automatically restart. I would appreciate if you would report this on GitHub, please.", logging.FATAL)

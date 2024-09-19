@@ -1,5 +1,6 @@
 [General]
-# The status message for the bot. This will be shown in the terminal when running the bot as well.
+# The message to display in the terminal.
+# If you'd like to modify the statuses Vivia displays when online, see data/statuses.json.
 statusmessage = Statuses have moved to data/statuses.json
 # The command prefix for the bot.
 prefix = v!
@@ -8,3 +9,6 @@ prefix = v!
 # Shows more verbose information about Vivia in the terminal/logs, as well as in some messages.
 # This should usually be set to False, however this may help finding issues in some extensions.
 debug = False
+# Enable loading extensions from the viviabase-beta folder.
+# These extensions may not be stable - run at your own risk!
+betaextensions = False
