@@ -6,6 +6,8 @@
         "Can't {action} yourself.",
         "Why would you want to {action} yourself?",
         "What?! You want to {action} yourself?! I can't just let you do that!",
-        "...you do realize that you can't {action} yourself, right?"
+        "...you do realize that you can't {action} yourself, right?",
+        "I can't let you {action} yourself.",
+        "Why are you trying to {action} yourself?"
     ]
 }

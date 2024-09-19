@@ -5,6 +5,7 @@
         "{server}'s moderators have asked me to say that you've been warned.",
         "I must apologize, but a moderator in {server} has asked me to say that you've been warned.",
         "You've been warned in {server}.",
-        "A warning has been issued to you in {server}."
+        "A warning has been issued to you in {server}.",
+        "You were warned in {server}."
     ]
 }

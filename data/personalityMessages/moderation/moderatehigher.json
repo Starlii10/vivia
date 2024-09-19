@@ -11,6 +11,8 @@
         "I'm sorry, but you can't {action} {user}. They have a higher role than you.",
         "You can't {action} {user}. They have a higher role than you.",
         "{user} has a higher role than you. I can't allow you to {action} them.",
-        "{user} has a higher role than you. You can't {action} them."
+        "{user} has a higher role than you. You can't {action} them.",
+        "I thought you would try to {action} {user}. Sadly, {user} has a higher role than you. Can't let you do that.",
+        "I'm sorry, but {user} has a higher role than you. You cannot {action} them."
     ]
 }

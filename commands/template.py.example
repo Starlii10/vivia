@@ -8,17 +8,21 @@
     If you'd like to contribute, please check out the GitHub repository at https://github.com/starlii10/vivia.
 
     Note that any files made with this template are not subject to Vivia's license, however the template itself is.
-    You may redistribute any Vivia-compatible commands under any license you wish, open-source or proprietary.
+    You may redistribute any Vivia-compatible commands under any license you wish.
 
     Have a great time using Vivia!
 """
+
+# You'll need the discord.py library, of course - suggested imports:
 import discord
 from discord.ext import commands
 from discord import app_commands
 # Add any additional imports you may need in here
+# ex: from extras.viviatools import personalityMessage
 
-async def setup(bot: commands.Bot): # for extension loading
-    bot.add_command(command) # type: ignore
+async def setup(bot: commands.Bot): # Add your commands here
+    await bot.add_cog("cog_name")
+    await bot.add_command(commandFunction) # type: ignore
 
 """
     Commands must have the following structure:
@@ -26,13 +30,26 @@ async def setup(bot: commands.Bot): # for extension loading
     @commands.hybrid_command(
         name = "command name"
     ) # or another Command subtype. hybrid_command is used here since it creates both a slash and text command
-    async def command(ctx: commands.Context): # as well as any arguments you will use
-        ...
+
+    # the actual command function itself:
+    async def command(ctx: commands.Context, [args or params]):
+        await ctx.send("Your command response!")
     
     # with optional decorators:
 
-    @app_commands.describe(
+    @app_commands.describe( # gives a description for each parameter
         param1 = "param1 description",
         param2 = "param2 description"
     )
+
+    Example:
+
+    @commands.hybrid_command(
+        name = "say hello",
+    )
+    @app_commands.describe(
+        user = "The user to say hi to."
+    )
+    async def command(ctx: commands.Context, user: discord.User):
+        await ctx.send(f"Hello {user.display_name}!")
 """

@@ -1,15 +1,16 @@
 {
     "messages": [
         "Uh, I don't see anything to clear in here.",
-        "There isn't anything in my memory banks for you. Looks like it's already been cleared!",
+        "There isn't anything in my memory banks for you. Did you already clear it?",
         "Your chat history is already cleared!",
         "There isn't any messages in your chat history to clear.",
         "You haven't chatted with me yet, so there's nothing to clear!",
         "No history to clear.",
         "Doesn't look like there's anything to clear!",
-        "Nothing to clear.",
-        "Looks like there isn't anything in here to clear.",
+        "Nothing to clear, it looks like.",
+        "Looks like there isn't anything in your messages to clear.",
         "See? It's empty. No chat history in here!",
-        "Nothing in here to clear."
+        "Nothing in here to clear.",
+        "It appears your chat history is blank..."
     ]
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-    This script contains functions for Vivia and her extensions.
+    This is ViviaTools, a helper script for Vivia that contains commonly used functions.
 
     Vivia is licensed under the MIT License. For more information, see the LICENSE file.
     TL:DR: you can use Vivia's code as long as you keep the original license intact.
