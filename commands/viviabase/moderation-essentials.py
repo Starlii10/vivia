@@ -128,7 +128,7 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
     # TODO: users can be warned multiple times
     with open(f"data/servers/{ctx.guild.id}/warns.json", "r") as f:
         warns = json.load(f)
-        if user.id in warns:
+        if warns[user.id]:
             del warns[user.id]
         else:
             await ctx.send(personalityMessage("moderation/notwarned").replace("{user}", user.mention), ephemeral=True)
