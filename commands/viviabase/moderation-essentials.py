@@ -68,7 +68,7 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No re
     # add user to warned users
     # TODO: users can be warned multiple times
     viviatools.warns(ctx.guild.id)[user.id] = [reason, ctx.message.created_at, ctx.author.id]
-    viviatools.log(f"{ctx.user} warned {user} in {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
+    viviatools.log(f"{ctx.author.name} warned {user} in {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
     # messages
     await ctx.send(personalityMessage("moderation/warn").replace("{user}", user.mention), ephemeral=True)
@@ -120,7 +120,7 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
     # remove user from warned users
     # TODO: users can be warned multiple times
     del viviatools.warns(ctx.guild.id)[user.id]
-    viviatools.log(f"{ctx.author} unwarned {user} in {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
+    viviatools.log(f"{ctx.author.name} unwarned {user} in {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
     # messages
     await ctx.send(personalityMessage("moderation/unwarn").replace("{user}", user.mention), ephemeral=True)
@@ -176,7 +176,7 @@ async def kick(ctx: commands.Context, user: discord.Member, reason: str = "No re
                     + "\n" + personalityMessage("moderation/reason").replace("{reason}", "").replace("{action}", "kicking").replace("{reason}", reason)
                     + "\n\n" + personalityMessage("moderation/followrules").replace("{server}", ctx.guild.name)
                     + "\n" + "-# This automated message was sent because a moderator kicked you using Vivia.")
-    viviatools.log(f"{ctx.author} kicked {user} from {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
+    viviatools.log(f"{ctx.author.name} kicked {user} from {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
 @commands.hybrid_command(
     name = "ban"
@@ -223,7 +223,7 @@ async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No rea
                     + "\n" + personalityMessage("moderation/reason").replace("{reason}", "").replace("{action}", "banning").replace("{reason}", reason)
                     + "\n" + personalityMessage("moderation/followrules").replace("{server}", "other servers")
                     + "\n" + "-# This automated message was sent because a moderator banned you using Vivia.")
-    viviatools.log(f"{ctx.author} banned {user} from {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
+    viviatools.log(f"{ctx.author.name} banned {user} from {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
 @commands.hybrid_command(
     name = "unban"
@@ -270,4 +270,4 @@ async def unban(ctx: commands.Context, user: discord.User, reason: str = "No rea
                     + "\n" + personalityMessage("moderation/reason").replace("{reason}", "").replace("{action}", "unbanning").replace("{reason}", "")
                     + "\n" + personalityMessage("moderation/followrules").replace("{server}", ctx.guild.name)
                     + "\n" + "-# This automated message was sent because a moderator unbanned you using Vivia.")
-    viviatools.log(f"{ctx.author} unbanned {user} from {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
+    viviatools.log(f"{ctx.author.name} unbanned {user} from {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
