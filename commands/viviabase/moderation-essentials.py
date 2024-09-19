@@ -10,10 +10,12 @@
     Have a great time using Vivia!
 """
 
+from email.policy import HTTP
 import logging
+from math import e
 import discord
 from discord.ext import commands
-from discord import app_commands
+from discord import HTTPException, app_commands
 from extras import viviatools
 from extras.viviatools import personalityMessage
 
@@ -72,10 +74,14 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No re
 
     # messages
     await ctx.send(personalityMessage("moderation/warn").replace("{user}", user.mention), ephemeral=True)
-    await user.send(f"# You've been warned in {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/warned").replace("{server}", ctx.guild.name).replace("{user}", ctx.author.mention)
-                    + "\n" + personalityMessage("moderation/reason").replace("{reason}", reason).replace("{action}", "warning").replace("{reason}", reason)
-                    + "\n\n" + personalityMessage("moderation/followrules").replace("{server}", ctx.guild.name)
-                    + "\n" + "-# This automated message was sent because a moderator warned you using Vivia.")
+
+    try:
+        await user.send(f"# You've been warned in {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/warned").replace("{server}", ctx.guild.name).replace("{user}", ctx.author.mention)
+                        + "\n" + personalityMessage("moderation/reason").replace("{reason}", reason).replace("{action}", "warning").replace("{reason}", reason)
+                        + "\n\n" + personalityMessage("moderation/followrules").replace("{server}", ctx.guild.name)
+                        + "\n" + "-# This automated message was sent because a moderator warned you using Vivia.")
+    except HTTPException:
+        await ctx.send("I couldn't DM the user.", ephemeral=True)
 
 @commands.hybrid_command(
     name = "unwarn"
@@ -124,11 +130,13 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
 
     # messages
     await ctx.send(personalityMessage("moderation/unwarn").replace("{user}", user.mention), ephemeral=True)
-    await user.send(f"# You've been unwarned in {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/unwarned").replace("{user}", ctx.author.mention)
-                    + "\n" + personalityMessage("moderation/reason").replace("{reason}", reason).replace("{action}", "unwarning").replace("{reason}", reason)
-                    + "\n\n" + personalityMessage("moderation/followrules").replace("{server}", ctx.guild.name)
-                    + "\n" + "-# This automated message was sent because a moderator unwarned you using Vivia.")
-
+    try:
+        await user.send(f"# You've been unwarned in {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/unwarned").replace("{user}", ctx.author.mention)
+                        + "\n" + personalityMessage("moderation/reason").replace("{reason}", reason).replace("{action}", "unwarning").replace("{reason}", reason)
+                        + "\n\n" + personalityMessage("moderation/followrules").replace("{server}", ctx.guild.name)
+                        + "\n" + "-# This automated message was sent because a moderator unwarned you using Vivia.")
+    except HTTPException:
+        await ctx.send("I couldn't DM the user.", ephemeral=True)
 
 @commands.hybrid_command(
     name = "kick"
@@ -172,10 +180,13 @@ async def kick(ctx: commands.Context, user: discord.Member, reason: str = "No re
 
     await user.kick(reason=f"Kicked by {ctx.author}: {reason}")
     await ctx.send(personalityMessage("moderation/moderationactions").replace("{user}", user.mention).replace("{action}", "kicked"), ephemeral=True)
-    await user.send(f"# You've been kicked from {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/kicked").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
-                    + "\n" + personalityMessage("moderation/reason").replace("{reason}", "").replace("{action}", "kicking").replace("{reason}", reason)
-                    + "\n\n" + personalityMessage("moderation/followrules").replace("{server}", ctx.guild.name)
-                    + "\n" + "-# This automated message was sent because a moderator kicked you using Vivia.")
+    try:
+        await user.send(f"# You've been kicked from {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/kicked").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
+                        + "\n" + personalityMessage("moderation/reason").replace("{reason}", "").replace("{action}", "kicking").replace("{reason}", reason)
+                        + "\n\n" + personalityMessage("moderation/followrules").replace("{server}", ctx.guild.name)
+                        + "\n" + "-# This automated message was sent because a moderator kicked you using Vivia.")
+    except HTTPException:
+        await ctx.send("I couldn't DM the user.", ephemeral=True)
     viviatools.log(f"{ctx.author.name} kicked {user} from {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
 @commands.hybrid_command(
@@ -219,10 +230,13 @@ async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No rea
 
     await user.ban(reason=f"Banned by {ctx.author}: {reason}")
     await ctx.send(personalityMessage("moderation/moderationactions").replace("{user}", user.mention).replace("{action}", "banned"), ephemeral=True)
-    await user.send(f"# You've been banned from {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/banned").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
-                    + "\n" + personalityMessage("moderation/reason").replace("{reason}", "").replace("{action}", "banning").replace("{reason}", reason)
-                    + "\n" + personalityMessage("moderation/followrules").replace("{server}", "other servers")
-                    + "\n" + "-# This automated message was sent because a moderator banned you using Vivia.")
+    try:
+        await user.send(f"# You've been banned from {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/banned").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
+                        + "\n" + personalityMessage("moderation/reason").replace("{reason}", "").replace("{action}", "banning").replace("{reason}", reason)
+                        + "\n" + personalityMessage("moderation/followrules").replace("{server}", "other servers")
+                        + "\n" + "-# This automated message was sent because a moderator banned you using Vivia.")
+    except HTTPException:
+        await ctx.send("I couldn't DM the user.", ephemeral=True)
     viviatools.log(f"{ctx.author.name} banned {user} from {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
 @commands.hybrid_command(
@@ -266,8 +280,11 @@ async def unban(ctx: commands.Context, user: discord.User, reason: str = "No rea
 
     await ctx.guild.unban(user)
     await ctx.send(personalityMessage("moderation/unban").replace("{user}", user.mention), ephemeral=True)
-    await user.send(f"# You've been unbanned from {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/unbanned").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
-                    + "\n" + personalityMessage("moderation/reason").replace("{reason}", "").replace("{action}", "unbanning").replace("{reason}", "")
-                    + "\n" + personalityMessage("moderation/followrules").replace("{server}", ctx.guild.name)
-                    + "\n" + "-# This automated message was sent because a moderator unbanned you using Vivia.")
+    try:
+        await user.send(f"# You've been unbanned from {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/unbanned").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
+                        + "\n" + personalityMessage("moderation/reason").replace("{reason}", "").replace("{action}", "unbanning").replace("{reason}", "")
+                        + "\n" + personalityMessage("moderation/followrules").replace("{server}", ctx.guild.name)
+                        + "\n" + "-# This automated message was sent because a moderator unbanned you using Vivia.")
+    except HTTPException:
+        await ctx.send("I couldn't DM the user.", ephemeral=True)
     viviatools.log(f"{ctx.author.name} unbanned {user} from {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
