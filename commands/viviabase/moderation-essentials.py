@@ -126,7 +126,7 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
 
     # remove user from warned users
     # TODO: users can be warned multiple times
-    with open(f"data/servers/{ctx.guild.id}/warns.json", "rw") as f:
+    with open(f"data/servers/{ctx.guild.id}/warns.json", "r") as f:
         warns = json.load(f)
         if user.id in warns:
             del warns[user.id]
