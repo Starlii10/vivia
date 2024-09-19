@@ -250,7 +250,7 @@ async def sync(ctx, guild: int=0):
             await ctx.send(f'The command tree was synced for {guild}, whatever that means.')
             viviatools.log(f"The command tree was synced for {guild}, whatever that means.")
     else:
-        await ctx.send('That\'s for the bot owner, not random users...')
+        await ctx.send(personalityMessage("nopermissions"))
 
 @bot.hybrid_command()
 async def fixconfig(ctx: commands.Context):
@@ -294,7 +294,7 @@ async def fixconfig(ctx: commands.Context):
 
         await ctx.send('Fixed all missing config and quotes files. Check log for more info.')
     else:
-        await ctx.send('That\'s for the bot owner, not random users...')
+        await ctx.send(personalityMessage("nopermissions"))
 
 @bot.hybrid_command(
     name="statuschange",
@@ -311,7 +311,7 @@ async def statuschange(ctx: commands.Context):
         await statusChanges()
         await ctx.send('Status randomized!')
     else:
-        await ctx.send('That\'s for the bot owner, not random users...')
+        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
 
 @bot.hybrid_command(
     name="clearhistory",
@@ -366,7 +366,7 @@ async def setting(ctx: commands.Context, option: str, value: bool):
                 await ctx.send(f"{str(type(e))}: {e}\n-# To disable these messages, run /config verboseErrors false")
             viviatools.log(f"Error while changing config for {ctx.guild.name} ({str(ctx.guild.id)}): {str(type(e))}: {str(e)}", severity=logging.ERROR)
     else:
-        await ctx.send("That's for authorized users, not you...", ephemeral=True)
+        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
 
 @bot.hybrid_command(
     name="reboot",
@@ -400,7 +400,7 @@ async def reboot(ctx: commands.Context, pull_git: bool = False):
                 viviatools.log(f"Failed to pull git repository: {str(type(e))}: {str(e)}", logging.ERROR)
         os.execl(sys.executable, sys.executable, *sys.argv)
     else:
-        await ctx.send("That's for the bot owner, not random users...", ephemeral=True)
+        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
 
 @bot.hybrid_command(
     name="extensions",
@@ -418,7 +418,7 @@ async def extensions(ctx: commands.Context):
         await ctx.send("Available extensions: \n- " + ("\n- ".join(viviatools.loaded_extensions)) if len(viviatools.loaded_extensions) > 0 else "No extensions loaded? Wait, what?!", ephemeral=True)
         await ctx.send("Extensions that failed to load: \n- " + ("\n- ".join(viviatools.failed_extensions)) if len(viviatools.failed_extensions) > 0 else "No extensions failed to load!", ephemeral=True)
     else:
-        await ctx.send("That's for the bot owner, not random users...", ephemeral=True)
+        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
 
 # Context menu commands
 @app_commands.context_menu(name="Add Custom Quote")
@@ -441,7 +441,7 @@ while True:
         sys.exit(1)
     except RuntimeError as e:
         if "Session is closed" in str(e):
-            viviatools.log("KeyboardInterrupt recieved - stopping.", logging.INFO) # Technically it's not a KeyboardInterrupt but it's caused by the same conditions so it counts
+            viviatools.log("Session closed. Vivia is shutting down!", logging.INFO)
             sys.exit(0)
     except Exception as e:
         viviatools.log(f"Vivia has crashed... oh no...", logging.FATAL)

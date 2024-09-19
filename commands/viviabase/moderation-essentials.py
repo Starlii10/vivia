@@ -41,6 +41,10 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No re
         - reason (str): The reason for the warning.
     """
 
+    if not ctx.author.guild_permissions.moderate_members:
+        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+        return
+
     if user == None:
         await ctx.send(personalityMessage("moderation/targetnone"), ephemeral=True)
         return
@@ -52,12 +56,12 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No re
     if user == ctx.author:
         await ctx.send(personalityMessage("moderation/moderateself").replace("{action}", "warn"), ephemeral=True)
         return
-    
+
     if user.guild_permissions.administrator:
         await ctx.send(personalityMessage("moderation/moderateadmin").replace("{user}", user.name).replace("{action}", "warn"), ephemeral=True)
         return
     
-    if user.top_role >= ctx.author.top_role:
+    if user.top_role >= ctx.author.top_role and not ctx.author.guild_permissions.administrator:
         await ctx.send(personalityMessage("moderation/moderatehigher").replace("{user}", user.name).replace("{action}", "warn"), ephemeral=True)
         return
 
@@ -89,6 +93,10 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
         - reason (str): The reason for the unwarning.
     """
 
+    if not ctx.author.guild_permissions.moderate_members:
+        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+        return
+
     if user == None:
         await ctx.send(personalityMessage("moderation/targetnone"), ephemeral=True)
         return
@@ -105,7 +113,7 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
         await ctx.send(personalityMessage("moderation/moderateadmin").replace("{user}", user.name).replace("{action}", "unwarn"), ephemeral=True)
         return
     
-    if user.top_role >= ctx.author.top_role:
+    if user.top_role >= ctx.author.top_role and not ctx.author.guild_permissions.administrator:
         await ctx.send(personalityMessage("moderation/moderatehigher").replace("{user}", user.name).replace("{action}", "unwarn"), ephemeral=True)
         return
 
@@ -137,6 +145,10 @@ async def kick(ctx: commands.Context, user: discord.Member, reason: str = "No re
         - user (discord.User): The user to kick.
         - reason (str): The reason for the kick.
     """
+    
+    if not ctx.author.guild_permissions.kick_members:
+        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+        return
 
     if user == None:
         await ctx.send(personalityMessage("moderation/targetnone"), ephemeral=True)
@@ -154,7 +166,7 @@ async def kick(ctx: commands.Context, user: discord.Member, reason: str = "No re
         await ctx.send(personalityMessage("moderation/moderateadmin").replace("{user}", user.name).replace("{action}", "kick"), ephemeral=True)
         return
     
-    if user.top_role >= ctx.author.top_role:
+    if user.top_role >= ctx.author.top_role and not ctx.author.guild_permissions.administrator:
         await ctx.send(personalityMessage("moderation/moderatehigher").replace("{user}", user.name).replace("{action}", "kick"), ephemeral=True)
         return
 
@@ -181,6 +193,10 @@ async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No rea
         - reason (str): The reason for the ban.
     """
 
+    if not ctx.author.guild_permissions.ban_members:
+        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+        return
+    
     if user == None:
         await ctx.send(personalityMessage("moderation/targetnone"), ephemeral=True)
         return
@@ -197,7 +213,7 @@ async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No rea
         await ctx.send(personalityMessage("moderation/moderateadmin").replace("{user}", user.name).replace("{action}", "ban"), ephemeral=True)
         return
     
-    if user.top_role >= ctx.author.top_role:
+    if user.top_role >= ctx.author.top_role and not ctx.author.guild_permissions.administrator:
         await ctx.send(personalityMessage("moderation/moderatehigher").replace("{user}", user.name).replace("{action}", "ban"), ephemeral=True)
         return
 
@@ -224,6 +240,10 @@ async def unban(ctx: commands.Context, user: discord.User, reason: str = "No rea
         - reason (str): The reason for the unban.
     """
     
+    if not ctx.author.guild_permissions.ban_members:
+        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+        return
+    
     if user == None:
         await ctx.send(personalityMessage("moderation/targetnone"), ephemeral=True)
         return
@@ -240,7 +260,7 @@ async def unban(ctx: commands.Context, user: discord.User, reason: str = "No rea
         await ctx.send(personalityMessage("moderation/moderateadmin").replace("{user}", user.name).replace("{action}", "unban"), ephemeral=True)
         return
     
-    if user.top_role >= ctx.author.top_role:
+    if user.top_role >= ctx.author.top_role and not ctx.author.guild_permissions.administrator:
         await ctx.send(personalityMessage("moderation/moderatehigher").replace("{user}", user.name).replace("{action}", "unban"), ephemeral=True)
         return
 
