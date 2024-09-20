@@ -20,6 +20,8 @@ import shutil
 import sys
 import json
 import threading
+import time
+from aiohttp import ClientConnectorError
 import dotenv
 import random
 import os
@@ -28,13 +30,38 @@ import logging
 
 # Discord
 import discord, discord.ext
-from discord import app_commands
+from discord import GatewayNotFound, HTTPException, LoginFailure, app_commands
 from discord.ext import tasks, commands, commands
 from discord.ext.commands import errors
 
 # Vivia's extra scripts
 import extras.viviatools as viviatools
 from extras.viviatools import config, serverConfig, personalityMessage
+
+# Command line args
+if len(sys.argv) > 1:
+    for arg in sys.argv[1:]:
+        match arg:
+            case "--help" | "-h" | "--h" | "-help" | "/?" | "/h" | "/help":
+                viviatools.log("Usage: python bot.py [--token BOT_TOKEN]", logging.INFO)
+                viviatools.log("For help with Vivia, please check out the GitHub repository at https://github.com/starlii10/vivia.", logging.INFO)
+                sys.exit(0)
+            case "--version" | "-v" | "--v" | "-version" | "-version" | "/v" | "/version":
+                viviatools.log(f"Version {__VERSION__}", logging.INFO)
+                sys.exit(0)
+            case "--clearlogs" | "-cl" | "--cl" | "-clearlogs" | "-clearlogs" | "/cl" | "/clearlogs":
+                for file in os.listdir("data/logs"):
+                    try:
+                        os.remove(f"logs/{file}")
+                    except OSError:
+                        pass # probably the active log file
+                viviatools.log("Cleared logs", logging.INFO)
+                sys.exit(0)
+            case _:
+                viviatools.log("Unknown argument: " + arg, logging.ERROR)
+                sys.exit(1)
+
+# LLaMa
 import extras.viviallama as Llama
 
 # Variables
@@ -435,6 +462,7 @@ while True:
         bot.run(dotenv.get_key("token.env", "token"), log_handler=None)
     except TypeError:
         viviatools.log("Unable to start Vivia. Is the token in token.env correct?", logging.ERROR)
+        viviatools.log("If token.env doesn't exist, create it and place your bot token inside.", logging.ERROR)
         sys.exit(1)
     except discord.errors.LoginFailure:
         viviatools.log("Unable to start Vivia. Is the token in token.env correct?", logging.ERROR)
@@ -443,7 +471,14 @@ while True:
         if "Session is closed" in str(e):
             viviatools.log("Session closed. Vivia is shutting down!", logging.INFO)
             sys.exit(0)
+    except ClientConnectorError or GatewayNotFound or HTTPException or LoginFailure:
+        viviatools.log("Vivia can't connect to Discord. Is your internet connection working, or is Discord's API down?", logging.ERROR)
+        viviatools.log("Perhaps the token in token.env is invalid? There's a lot of reasons this could happen.", logging.ERROR)
+        viviatools.log("Vivia will retry in 5 seconds.", logging.ERROR)
+        time.sleep(5)
     except Exception as e:
         viviatools.log(f"Vivia has crashed... oh no...", logging.FATAL)
         viviatools.log(f"{str(type(e))}: {str(e)}", severity=logging.FATAL)
-        viviatools.log("Don't worry, she will automatically restart. I would appreciate if you would report this on GitHub, please.", logging.FATAL)
+        viviatools.log("Don't worry, she will automatically restart in 5 seconds.", logging.FATAL)
+        viviatools.log("I would appreciate if you would report this on GitHub, please.", logging.FATAL)
+        time.sleep(5)
