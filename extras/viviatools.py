@@ -20,7 +20,6 @@ import os
 import random
 import sys
 import colorlog
-
 import discord
 
 if __name__ == "__main__":
@@ -73,7 +72,7 @@ logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
 # File logging
-handler = logging.FileHandler(f'data/logs/{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}.log')
+handler = logging.FileHandler(f'data/logs/{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log')
 handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s\t %(message)s'))
 logger.addHandler(handler)
 
