@@ -117,10 +117,10 @@ async def on_ready():
                 viviatools.log("Functionality may be limited. Please report this on GitHub.", logging.ERROR)
                 failed += [f"viviabase.{file[:-3]}"]
                 continue
-            viviatools.log(f"Loaded base extension {file[:-3]}")
+            viviatools.log(f"Loaded extension viviabase.{file[:-3]}")
     
     # viviabase beta
-    if config["General"]["betaextensions"]:
+    if config["Advanced"]["betaextensions"]:
         viviatools.log("Loading beta extensions.")
         for file in os.listdir("commands/viviabase-beta"):
             if file.endswith(".py"):
@@ -133,7 +133,7 @@ async def on_ready():
                     viviatools.log("Functionality may be limited.", logging.ERROR)
                     failed += [f"viviabase-beta.{file[:-3]}"]
                     continue
-                viviatools.log(f"Loaded BETA extension {file[:-3]}")
+                viviatools.log(f"Loaded extension viviabase-beta.{file[:-3]}")
 
     # Custom extensions
     for file in os.listdir("commands"):
@@ -143,7 +143,7 @@ async def on_ready():
                 loaded += [f"{file[:-3]}"]
             except discord.ext.commands.NoEntryPointError:
                 viviatools.log(f"Failed to load custom extension {file[:-3]}", logging.ERROR)
-                viviatools.log("No entry point found. Ensure the extension contains a setup(bot) function.", logging.ERROR)
+                viviatools.log("No entry point found. Does the extension contain a setup(bot) function?", logging.ERROR)
                 viviatools.log("Functionality may be limited.", logging.ERROR)
                 failed += [f"{file[:-3]}"]
                 continue
