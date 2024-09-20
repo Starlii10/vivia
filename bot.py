@@ -43,19 +43,11 @@ if len(sys.argv) > 1:
     for arg in sys.argv[1:]:
         match arg:
             case "--help" | "-h" | "--h" | "-help" | "/?" | "/h" | "/help":
-                viviatools.log("Usage: python bot.py [--token BOT_TOKEN]", logging.INFO)
+                viviatools.log("Usage: python bot.py", logging.INFO)
                 viviatools.log("For help with Vivia, please check out the GitHub repository at https://github.com/starlii10/vivia.", logging.INFO)
                 sys.exit(0)
             case "--version" | "-v" | "--v" | "-version" | "-version" | "/v" | "/version":
                 viviatools.log(f"Version {__VERSION__}", logging.INFO)
-                sys.exit(0)
-            case "--clearlogs" | "-cl" | "--cl" | "-clearlogs" | "-clearlogs" | "/cl" | "/clearlogs":
-                for file in os.listdir("data/logs"):
-                    try:
-                        os.remove(f"logs/{file}")
-                    except OSError:
-                        pass # probably the active log file
-                viviatools.log("Cleared logs", logging.INFO)
                 sys.exit(0)
             case _:
                 viviatools.log("Unknown argument: " + arg, logging.ERROR)
