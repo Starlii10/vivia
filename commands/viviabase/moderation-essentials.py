@@ -1,5 +1,5 @@
 """
-    This is the moderation essentials command package used in Vivia.
+    This is the moderation essentials extension, part of the ViviaBase package.
 
     Vivia is licensed under the MIT License. For more information, see the LICENSE file.
     TL:DR: you can use Vivia's code as long as you keep the original license intact.

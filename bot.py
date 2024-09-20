@@ -365,10 +365,10 @@ async def clearhistory(ctx: commands.Context):
 ])
 async def setting(ctx: commands.Context, option: str, value: bool):
     """
-    Manages Vivia's configuration.
+    Manages Vivia's configuration for a specific server.
 
     ## Notes:
-        - Only users with bot permissions can use this command.
+        - Only users with Vivia admin permissions can use this command.
     """
     if viviatools.has_bot_permissions(ctx.author, ctx.guild):
         try:
@@ -411,7 +411,7 @@ async def reboot(ctx: commands.Context, pull_git: bool = False):
         - Because this command replaces the running Vivia script with another one, any changes made to Vivia will take effect after this command is run.
         - `pull_git` requires `git` to be installed on your system, but you probably already have it if you're running Vivia anyway, don't you?
         - `pull_git` will also run `pip install -r requirements.txt` in the root to install any new dependencies.
-        - `pull_git` will OVERRIDE LOCAL CHANGES TO VIVIA! Be careful!
+        - `pull_git` will OVERRIDE LOCAL CHANGES TO VIVIA! Be careful! (This does not affect custom extensions.)
     """
     if await bot.is_owner(ctx.author):
         await ctx.send("Rebooting...")

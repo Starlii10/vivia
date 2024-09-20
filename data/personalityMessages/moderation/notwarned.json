@@ -4,6 +4,7 @@
         "I'm sorry, but {user} hasn't been warned yet.",
         "According to my database, {user} hasn't been warned.",
         "{user} hasn't been warned.",
-        "I appreciate the thought, but {user} hasn't been warned."
+        "I appreciate the thought, but {user} hasn't been warned.",
+        "I don't think {user} has actually been warned..."
     ]
 }
