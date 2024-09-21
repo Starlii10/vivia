@@ -1,14 +1,15 @@
 [General]
 # The message to display in the terminal.
 # If you'd like to modify the statuses Vivia displays when online, see data/statuses.json.
+# Deprecated - this option will be removed soon!
 statusmessage = Statuses have moved to data/statuses.json
 # The command prefix for the bot.
 prefix = v!
 
 [Advanced]
-# Shows more verbose information about Vivia in the terminal/logs, as well as in some messages.
+# Shows more verbose information about Vivia in the terminal/logs, as well as in Discord messages.
 # This should usually be set to False, however this may help finding issues in some extensions.
 debug = False
-# Enable loading extensions from the viviabase-beta folder.
-# These extensions may not be stable - run at your own risk!
+# Enable loading extensions from the viviabase-beta folder. These contain base extensions that are still under development.
+# These extensions may not be stable - run at your own risk! 
 betaextensions = False
