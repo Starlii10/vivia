@@ -83,46 +83,6 @@ setupHelpMsg = open("data/help/setup.txt", "r").read()
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Functions
-def generate_name(type, gender):
-    """
-    Generator for names.
-
-    ## Args:
-        type (str): The type of name to generate.
-        gender (str): The gender of the name to generate.
-
-    ## Returns:
-        str: The generated name.
-    """
-    with open('data/names.json') as f:
-        names = json.load(f)
-        all_names = names['first']['male'] + names['first']['female']
-        match type:
-            case "first":
-                match gender:
-                    case "male":
-                        random_msg = names['first']['male'][random.randint(0, len(names['first']['male']) - 1)]
-                    case "female":
-                        random_msg = names['first']['female'][random.randint(0, len(names['first']['female']) - 1)]
-                    case _:
-                        random_msg = all_names[random.randint(0, len(all_names) - 1)]
-            case "middle":
-                random_msg = names['middle'][random.randint(0, len(names['middle']) - 1)]
-            case "last":
-                random_msg = names['last'][random.randint(0, len(names['last']) - 1)]
-            case "full":
-                match gender:
-                    case "male":
-                        random_msg = names['first']['male'][random.randint(0, len(names['first']['male']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
-                    case "female":
-                        random_msg = names['first']['female'][random.randint(0, len(names['first']['female']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
-                    case _:
-                        random_msg = all_names[random.randint(0, len(all_names) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
-            
-        if config["Advanced"]["Debug"] == "True":
-            log(f"Generated name: {random_msg}", logging.DEBUG)
-        return random_msg
-
 def has_bot_permissions(user: discord.Member, server: discord.Guild):
     """
     Checks if the specified user has bot permissions.
@@ -151,7 +111,7 @@ def serverConfig(serverID: int):
         - serverID (int): The ID of the server to get the config file of.
 
     ## Returns:
-        - dict: The configuration of the server as loaded JSON.
+        - dict: The configuration of the server as a dictionary (JSON object).
     """
     with open(f"data/servers/{serverID}/config.json", "r") as f:
         return json.load(f)
@@ -205,3 +165,25 @@ def personalityMessage(type: str):
     except FileNotFoundError:
         log(f"Couldn't find personality message database for type {type}. Does it even exist?", logging.ERROR)
         return ""
+    
+def perServerFile(serverID: int, filename: str):
+    """
+    Gets a file from the per-server folder.
+
+    ## Args:
+        - serverID (int): The ID of the server to get the file from.
+        - filename (str): The name of the file to get.
+
+    ## Returns:
+        - TextIOWrapper[_WrappedBuffer]: The opened file.
+
+    ## Notes:
+        - This will automatically create the file if it doesn't exist.
+        - This will create the per-server folder if it doesn't exist.
+        - This only opens the file. You'll need to manage reading and writing to it yourself.
+    """
+    os.makedirs(f"data/servers/{serverID}", exist_ok=True)
+    if not os.path.exists(f"data/servers/{serverID}/{filename}"):
+        with open(f"data/servers/{serverID}/{filename}", "w") as f:
+            f.write("")
+    return open(f"data/servers/{serverID}/{filename}", "r")

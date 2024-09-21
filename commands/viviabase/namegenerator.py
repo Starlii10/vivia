@@ -10,9 +10,12 @@
     Have a great time using Vivia!
 """
 
+import json
+import logging
+import random
 from discord.ext import commands
 from discord import app_commands
-from extras.viviatools import generate_name, personalityMessage
+from extras.viviatools import log, personalityMessage, config
 
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(namegenerator)
@@ -39,5 +42,31 @@ async def namegenerator(ctx: commands.Context, type: str="first", gender: str="n
     """
     Generator for names.
     """
-    name = generate_name(type, gender)
+    with open('data/names.json') as f:
+        names = json.load(f)
+        all_names = names['first']['male'] + names['first']['female']
+        match type:
+            case "first":
+                match gender:
+                    case "male":
+                        name = names['first']['male'][random.randint(0, len(names['first']['male']) - 1)]
+                    case "female":
+                        name = names['first']['female'][random.randint(0, len(names['first']['female']) - 1)]
+                    case _:
+                        name = all_names[random.randint(0, len(all_names) - 1)]
+            case "middle":
+                name = names['middle'][random.randint(0, len(names['middle']) - 1)]
+            case "last":
+                name = names['last'][random.randint(0, len(names['last']) - 1)]
+            case "full":
+                match gender:
+                    case "male":
+                        name = names['first']['male'][random.randint(0, len(names['first']['male']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
+                    case "female":
+                        name = names['first']['female'][random.randint(0, len(names['first']['female']) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
+                    case _:
+                        name = all_names[random.randint(0, len(all_names) - 1)] + " "+ names['middle'][random.randint(0, len(names['middle']) - 1)] + " " + names['last'][random.randint(0, len(names['last']) - 1)]
+            
+        if config["Advanced"]["Debug"] == "True":
+            log(f"Generated name: {name}", logging.DEBUG)
     await ctx.send(personalityMessage("namegeneration").replace("{name}", name))
