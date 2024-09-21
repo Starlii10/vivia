@@ -58,6 +58,7 @@ import extras.viviallama as Llama
 
 # Variables
 current_status = "Vivia is powering up..."
+running = False
 
 # Terminal title. VSCode will scream at you that one of these is unreachable, ignore it
 if sys.platform == 'win32':
@@ -80,6 +81,11 @@ async def on_ready():
     """
     Function called when Vivia starts up.
     """
+
+    # skip if Vivia is already running
+    if running:
+        viviatools.log("Vivia is already running. Skipping initialization process.")
+        return
     
     viviatools.log("Vivia is powering up...")
     
@@ -103,6 +109,8 @@ async def on_ready():
             try:
                 await bot.load_extension(f"commands.viviabase.{file[:-3]}")
                 loaded += [f"viviabase.{file[:-3]}"]
+            except errors.ExtensionAlreadyLoaded:
+                viviatools.log(f"Extension viviabase.{file[:-3]} was already loaded.")
             except Exception as e:
                 viviatools.log(f"Failed to load base extension {file[:-3]}", logging.ERROR)
                 viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
@@ -119,6 +127,8 @@ async def on_ready():
                 try:
                     await bot.load_extension(f"commands.viviabase-beta.{file[:-3]}")
                     loaded += [f"viviabase-beta.{file[:-3]}"]
+                except errors.ExtensionAlreadyLoaded:
+                    viviatools.log(f"Extension viviabase-beta.{file[:-3]} was already loaded.")
                 except Exception as e:
                     viviatools.log(f"Failed to load beta extension {file[:-3]}", logging.ERROR)
                     viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
@@ -133,6 +143,8 @@ async def on_ready():
             try:
                 await bot.load_extension(f"commands.{file[:-3]}")
                 loaded += [f"{file[:-3]}"]
+            except errors.ExtensionAlreadyLoaded:
+                viviatools.log(f"Extension {file[:-3]} was already loaded.")
             except discord.ext.commands.NoEntryPointError:
                 viviatools.log(f"Failed to load custom extension {file[:-3]}", logging.ERROR)
                 viviatools.log("No entry point found. Does the extension contain a setup(bot) function?", logging.ERROR)
@@ -152,6 +164,7 @@ async def on_ready():
     viviatools.log(f"Loaded {len(loaded)} extensions - failed loading {len(failed)}.")
     
     viviatools.log("Vivia is all ready!")
+    running = True
 
 @tasks.loop(hours=1)
 async def statusChanges():
