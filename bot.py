@@ -111,6 +111,7 @@ async def on_ready():
                 loaded += [f"viviabase.{file[:-3]}"]
             except errors.ExtensionAlreadyLoaded:
                 viviatools.log(f"Extension viviabase.{file[:-3]} was already loaded.")
+                loaded += [f"viviabase.{file[:-3]}"]
             except Exception as e:
                 viviatools.log(f"Failed to load base extension {file[:-3]}", logging.ERROR)
                 viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
@@ -129,6 +130,7 @@ async def on_ready():
                     loaded += [f"viviabase-beta.{file[:-3]}"]
                 except errors.ExtensionAlreadyLoaded:
                     viviatools.log(f"Extension viviabase-beta.{file[:-3]} was already loaded.")
+                    loaded += [f"viviabase-beta.{file[:-3]}"]
                 except Exception as e:
                     viviatools.log(f"Failed to load beta extension {file[:-3]}", logging.ERROR)
                     viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
@@ -145,6 +147,7 @@ async def on_ready():
                 loaded += [f"{file[:-3]}"]
             except errors.ExtensionAlreadyLoaded:
                 viviatools.log(f"Extension {file[:-3]} was already loaded.")
+                loaded += [f"{file[:-3]}"]
             except discord.ext.commands.NoEntryPointError:
                 viviatools.log(f"Failed to load custom extension {file[:-3]}", logging.ERROR)
                 viviatools.log("No entry point found. Does the extension contain a setup(bot) function?", logging.ERROR)
