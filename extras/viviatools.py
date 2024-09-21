@@ -31,6 +31,7 @@ if __name__ == "__main__":
 # Variables
 loaded_extensions = set(str())
 failed_extensions = set(str())
+running = False
 
 # Config loading
 config = configparser.ConfigParser()

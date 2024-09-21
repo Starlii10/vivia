@@ -58,7 +58,6 @@ import extras.viviallama as Llama
 
 # Variables
 current_status = "Vivia is powering up..."
-running = False
 
 # Terminal title. VSCode will scream at you that one of these is unreachable, ignore it
 if sys.platform == 'win32':
@@ -83,7 +82,7 @@ async def on_ready():
     """
 
     # skip if Vivia is already running
-    if running:
+    if viviatools.running:
         viviatools.log("Vivia is already running. Skipping initialization process.")
         return
     
@@ -167,7 +166,7 @@ async def on_ready():
     viviatools.log(f"Loaded {len(loaded)} extensions - failed loading {len(failed)}.")
     
     viviatools.log("Vivia is all ready!")
-    running = True
+    viviatools.running = True
 
 @tasks.loop(hours=1)
 async def statusChanges():
