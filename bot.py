@@ -88,17 +88,10 @@ async def on_ready():
     
     viviatools.log("Vivia is powering up...")
     
-    # Statuses
-    with open("data/statuses.json", "r") as f:
-        statuses = json.load(f)
-    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=random.choice(statuses["statuses"])))
-    try:
-        statusChanges.start()
-    except RuntimeError:
-        pass # already started
-
     # Load extensions
     viviatools.log("Loading extensions!")
+    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name="POWERING UP - Loading extensions..."))
+
     loaded = []
     failed = []
 
@@ -165,6 +158,14 @@ async def on_ready():
     viviatools.failed_extensions = failed
     viviatools.log(f"Loaded {len(loaded)} extensions - failed loading {len(failed)}.")
     
+    # Statuses
+    with open("data/statuses.json", "r") as f:
+        statuses = json.load(f)
+    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=random.choice(statuses["statuses"])))
+    try:
+        statusChanges.start()
+    except RuntimeError:
+        pass # already started
     viviatools.log("Vivia is all ready!")
     viviatools.running = True
 
@@ -466,6 +467,7 @@ tree.add_command(add_custom_quote)
 # Run
 while True:
     try:
+        bot.activity = discord.CustomActivity(name="POWERING UP - Connecting to Discord gateway...")
         bot.run(dotenv.get_key("token.env", "token"), log_handler=None)
     except TypeError:
         viviatools.log("Unable to start Vivia. Is the token in token.env correct?", logging.ERROR)
