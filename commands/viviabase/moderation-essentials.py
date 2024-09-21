@@ -34,7 +34,7 @@ async def setup(bot: commands.Bot):
 )
 async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No reason provided."):
     """
-    Warns the user.
+    Warns a user.
 
     Args:
         - user (discord.User): The user to warn.
@@ -93,7 +93,7 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No re
 )
 async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No reason provided."):
     """
-    Unwarns the user.
+    Unwarns a user.
 
     Args:
         - user (discord.User): The user to unwarn.
@@ -157,7 +157,7 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
 )
 async def kick(ctx: commands.Context, user: discord.Member, reason: str = "No reason provided."):
     """
-    Kicks the user.
+    Kicks a user.
 
     Args:
         - user (discord.User): The user to kick.
@@ -207,7 +207,7 @@ async def kick(ctx: commands.Context, user: discord.Member, reason: str = "No re
 )
 async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No reason provided."):
     """
-    Bans the user.
+    Bans a user.
 
     Args:
         - user (discord.User): The user to ban.
@@ -257,7 +257,7 @@ async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No rea
 )
 async def unban(ctx: commands.Context, user: discord.User, reason: str = "No reason provided."):
     """
-    Unbans the user.
+    Unbans a user.
 
     Args:
         - user (discord.User): The user to unban.
