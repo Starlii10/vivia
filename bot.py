@@ -89,19 +89,19 @@ async def setup_hook():
     viviatools.log("Searching for VSC extensions...")
 
     # Load VSCs
-    for root, dirs, files in os.walk("commands"):
+    for root, dirs, files in os.path.walk("commands"):
         for file in files:
-            if file.endswith(".vsc"):
+            if file.endswith(".vse"):
                 try:
-                    viviatools.extractVSC(os.path.join(root, file))
+                    viviatools.extractVSE(os.path.join(root, file))
                 except Exception as e:
-                    viviatools.log(f"Failed to extract VSC extension {file}", logging.ERROR)
+                    viviatools.log(f"Failed to extract VSE extension {file}", logging.ERROR)
                     viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
-                    viviatools.log("VSC extension will not be loaded - functionality may be limited.", logging.ERROR)
+                    viviatools.log("VSE extension will not be loaded - functionality may be limited.", logging.ERROR)
                 else:
-                    viviatools.log(f"VSC extension {file} extracted", logging.DEBUG)
+                    viviatools.log(f"VSE extension {file} extracted", logging.DEBUG)
 
-    viviatools.log("VSC extensions extracted.")
+    viviatools.log("VSE extensions extracted.")
 
 @bot.event
 async def on_ready():

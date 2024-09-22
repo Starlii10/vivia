@@ -96,12 +96,8 @@ def extractVSE(file: str):
         - None.
 
     ## Notes:
-        - 
+        - VSEs are zipped files that contain multiple files, specifically a Python script and data files.
     """
-    
-    # VSEs are zipped files that contain multiple files.
-    # They contain a single python file and potentially other files (help text, personality messages, a requirements.txt for the python script, etc.)
-    # We need to unzip the VSE into a temporary folder (data/temp/extracted/{name of the VSE file}) and then copy files from there into respective folders
 
     # find the name of the VSE file
     filename = os.path.basename(file)
