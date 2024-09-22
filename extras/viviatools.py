@@ -21,6 +21,7 @@ import random
 import sys
 import colorlog
 import discord
+import zipfile
 
 from discord.ext import commands
 
@@ -86,6 +87,64 @@ setupHelpMsg = open("data/help/setup.txt", "r").read()
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Functions
+def extractVSC(file: str):
+    """
+    Extracts a self-contained extension (VSC) file.
+
+    ## Args:
+        - file (str): The path to the VSC file to extract.
+
+    ## Returns:
+        - None.
+
+    ## Notes:
+        - 
+    """
+    
+    # VSCs are zipped files that contain multiple files.
+    # They contain a single python file and potentially other files (help text, personality messages, a requirements.txt for the python script, etc.)
+    # We need to unzip the VSC into a temporary folder (data/temp/extracted/{name of the VSC file}) and then copy files from there into respective folders
+
+    # find the name of the VSC file
+    filename = os.path.basename(file)
+
+    # Create the data/temp/extracted folder if it doesn't exist
+    os.makedirs("data/temp/extracted", exist_ok=True)
+
+    # Create the data/temp/extracted/{vsc file name} folder
+    os.makedirs(f"data/temp/extracted/{filename}", exist_ok=True)
+
+    # Unzip the VSC
+    zipfile.ZipFile(file).extractall(f"data/temp/extracted/{filename}")
+
+    # python file
+    for f in os.listdir("data/temp/extracted"):
+        if f.endswith(".py"):
+            os.rename(f"data/temp/extracted/{filename}/{f}", f"commands/{filename}.py")
+            break
+    
+    # help text
+    for f in os.listdir("data/temp/extracted"):
+        if f.endswith(".txt") and "help" in f:
+            os.rename(f"data/temp/extracted/{filename}/{f}", f"data/help/{f}")
+
+    # personality messages
+    for f in os.listdir("data/temp/extracted/personalityMessages"):
+        if f.endswith(".json"):
+            os.rename(f"data/temp/extracted/{filename}/{f}", f"data/personalityMessages/{f}")
+    
+    # requirements.txt
+    for f in os.listdir("data/temp/extracted"):
+        if f.endswith(".txt") and "requirements" in f:
+            os.rename(f"data/temp/extracted/{filename}/{f}", f"requirements.txt")
+            break
+
+    # TODO: Find and copy any other files (if any)
+
+    # Remove the temporary folder
+    os.rmdir(f"data/temp/extracted/{filename}")
+
+    
 def has_bot_permissions(user: discord.Member, server: discord.Guild):
     """
     Checks if the specified user has bot permissions.

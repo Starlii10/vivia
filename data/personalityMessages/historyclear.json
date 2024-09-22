@@ -12,6 +12,6 @@
         "Cleared your chat history.",
         "History wiped from memory banks.",
         "Formatted chat history.",
-        "`rm -rf /home/vivia/data/chathistory`"
+        "`rm -rf /home/vivia/data/chathistory` returned 0."
     ]
 }

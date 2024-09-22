@@ -76,6 +76,34 @@ tree = bot.tree
 
 # Events
 @bot.event
+async def setup_hook():
+    """
+    Function called early in Vivia's initialization process.
+    """
+
+    # skip if Vivia is already running
+    if viviatools.running:
+        viviatools.log("Vivia is already running. Skipping early initialization process", logging.DEBUG)
+        return
+
+    viviatools.log("Searching for VSC extensions...")
+
+    # Load VSCs
+    for root, dirs, files in os.path.walk("commands"):
+        for file in files:
+            if file.endswith(".vsc"):
+                try:
+                    viviatools.extractVSC(os.path.join(root, file))
+                except Exception as e:
+                    viviatools.log(f"Failed to extract VSC extension {file}", logging.ERROR)
+                    viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
+                    viviatools.log("VSC extension will not be loaded - functionality may be limited.", logging.ERROR)
+                else:
+                    viviatools.log(f"VSC extension {file} extracted", logging.DEBUG)
+
+    viviatools.log("VSC extensions extracted.")
+
+@bot.event
 async def on_ready():
     """
     Function called when Vivia starts up.
@@ -83,10 +111,10 @@ async def on_ready():
 
     # skip if Vivia is already running
     if viviatools.running:
-        viviatools.log("Vivia is already running. Skipping initialization process.")
+        viviatools.log("Vivia is already running. Skipping initialization process", logging.DEBUG)
         return
     
-    viviatools.log("Vivia is powering up...")
+    viviatools.log("Connected to websocket - powering on!")
     
     # Load extensions
     viviatools.log("Loading extensions!")
