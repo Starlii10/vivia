@@ -18,4 +18,4 @@ A channelmaker JSON configuration looks like this:
 You can also define the type of channels you want to create with the `type` argument.
 - "text" makes text channels.
 - "voice" makes voice channels.
-- "forum" makes forum channels, but only in servers where it's supported.
+- "forum" makes forum channels, but only in servers where it's supported (non-community servers usually can't make forum channels).

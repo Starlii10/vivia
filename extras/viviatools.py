@@ -80,19 +80,14 @@ handler = logging.FileHandler(f'data/logs/{datetime.datetime.now().strftime("%Y-
 handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s\t %(message)s'))
 logger.addHandler(handler)
 
-# Help messages
-helpMsg = open("data/help/general.txt", "r").read()
-channelmakerHelpMsg = open("data/help/channelmaker.txt", "r").read()
-setupHelpMsg = open("data/help/setup.txt", "r").read()
-
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Functions
-def extractVSC(file: str):
+def extractVSE(file: str):
     """
-    Extracts a self-contained extension (VSC) file.
+    Extracts a self-contained extension (VSE) file.
 
     ## Args:
-        - file (str): The path to the VSC file to extract.
+        - file (str): The path to the VSE file to extract.
 
     ## Returns:
         - None.
@@ -101,20 +96,20 @@ def extractVSC(file: str):
         - 
     """
     
-    # VSCs are zipped files that contain multiple files.
+    # VSEs are zipped files that contain multiple files.
     # They contain a single python file and potentially other files (help text, personality messages, a requirements.txt for the python script, etc.)
-    # We need to unzip the VSC into a temporary folder (data/temp/extracted/{name of the VSC file}) and then copy files from there into respective folders
+    # We need to unzip the VSE into a temporary folder (data/temp/extracted/{name of the VSE file}) and then copy files from there into respective folders
 
-    # find the name of the VSC file
+    # find the name of the VSE file
     filename = os.path.basename(file)
 
     # Create the data/temp/extracted folder if it doesn't exist
     os.makedirs("data/temp/extracted", exist_ok=True)
 
-    # Create the data/temp/extracted/{vsc file name} folder
+    # Create the data/temp/extracted/{vse file name} folder
     os.makedirs(f"data/temp/extracted/{filename}", exist_ok=True)
 
-    # Unzip the VSC
+    # Unzip the VSE
     zipfile.ZipFile(file).extractall(f"data/temp/extracted/{filename}")
 
     # python file
@@ -262,3 +257,16 @@ async def setCustomPresence(message: str, bot: commands.Bot):
         - This will always set the bot's status to online.
     """
     await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=message))
+
+def helpMsg(extension: str):
+    """
+    Gets the help message for the specified extension.
+
+    ## Args:
+        - extension (str): The name of the extension to get the help message for.
+
+    ## Returns:
+        - str: The help message for the specified extension.
+    """
+    with open(f"data/extensions/{extension}/help.txt", "r") as f:
+        return f.read()

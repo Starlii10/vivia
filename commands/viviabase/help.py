@@ -12,28 +12,21 @@
 
 from discord.ext import commands
 from discord import app_commands
-from extras.viviatools import helpMsg, channelmakerHelpMsg, setupHelpMsg, personalityMessage
+from extras.viviatools import helpMsg,personalityMessage, loaded_extensions, failed_extensions
 
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(help)
 
-@commands.hybrid_command(
-    name="help",
+@commands.hybrid_command()
+@app_commands.describe(
+    extension="The name of the extension you want help with. "
 )
-@app_commands.choices(message=[
-    app_commands.Choice(name="general", value="general"),
-    app_commands.Choice(name="channelmaker", value="channelmaker"),
-    app_commands.Choice(name="setup", value="setup"),
-])
-@app_commands.describe(message="The message to send to the user.")
-async def help(ctx: commands.Context, message: str="general"):
-    match message:
-        case "general":
-            await ctx.author.send(helpMsg)
-        case "channelmaker":
-            await ctx.author.send(channelmakerHelpMsg)
-        case "setup":
-            await ctx.author.send(setupHelpMsg)
-        case _:
-            await ctx.author.send(helpMsg)
-    await ctx.send(personalityMessage("helpsent").replace("{user}", ctx.author.mention), ephemeral=True)
+async def help(ctx: commands.Context, extension: str):
+    """
+        Help command.
+    """
+    # we need to account for custom extensions too
+    if extension in loaded_extensions or extension in failed_extensions:
+        await ctx.send(helpMsg(extension))
+    else:
+        await ctx.send(personalityMessage("extensionnotloaded"))

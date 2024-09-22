@@ -1,0 +1,10 @@
+{
+    "messages": [
+        "I'm sorry, but that extension isn't loaded.",
+        "I'm sorry, that extension isn't loaded.",
+        "Doesn't look like that extension is loaded.",
+        "My extension list doesn't contain that one...",
+        "Extension not loaded.",
+        "It doesn't appear that I have that extension loaded."
+    ]
+}
