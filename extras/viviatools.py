@@ -22,6 +22,8 @@ import sys
 import colorlog
 import discord
 
+from discord.ext import commands
+
 if __name__ == "__main__":
     print("This is a helper script for Vivia that should not be run directly.", file=sys.stderr)
     print("To run Vivia, please use \"python bot.py\" in the root directory.", file=sys.stderr)
@@ -188,3 +190,16 @@ def perServerFile(serverID: int, filename: str):
         with open(f"data/servers/{serverID}/{filename}", "w") as f:
             f.write("")
     return open(f"data/servers/{serverID}/{filename}", "r")
+
+async def setCustomPresence(message: str, bot: commands.Bot):
+    """
+    Sets the bot's presence to the specified message.
+
+    ## Args:
+        - message (str): The message to set the presence to.
+        - bot (commands.Bot): A reference to the bot.
+
+    ## Notes:
+        - This will always set the bot's status to online.
+    """
+    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=message))

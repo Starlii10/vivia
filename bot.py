@@ -90,7 +90,7 @@ async def on_ready():
     
     # Load extensions
     viviatools.log("Loading extensions!")
-    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name="POWERING UP - Loading extensions..."))
+    await viviatools.setCustomPresence("POWERING UP - Loading extensions...", bot)
 
     loaded = []
     failed = []
@@ -161,7 +161,7 @@ async def on_ready():
     # Statuses
     with open("data/statuses.json", "r") as f:
         statuses = json.load(f)
-    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=random.choice(statuses["statuses"])))
+    await viviatools.setCustomPresence(random.choice(statuses["statuses"]), bot)
     try:
         statusChanges.start()
     except RuntimeError:
@@ -177,7 +177,7 @@ async def statusChanges():
     with open("data/statuses.json", "r") as f:
         statuses = json.load(f)
     status = random.choice(statuses["statuses"])
-    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=status))
+    await viviatools.setCustomPresence(status, bot)
     current_status = status
     viviatools.log(f"Status changed to {status}", logging.DEBUG)
 
