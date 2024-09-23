@@ -100,7 +100,7 @@ def extractVSE(file: str):
     """
 
     # find the name of the VSE file
-    filename = os.path.basename(file)
+    filename = os.path.basename(file).removesuffix(".vse")
 
     # Create the data/temp/extracted folder if it doesn't exist
     os.makedirs("data/temp/extracted", exist_ok=True)
@@ -125,7 +125,7 @@ def extractVSE(file: str):
     # personality messages
     for f in os.listdir(f"data/temp/extracted/{filename}/personalityMessages"):
         if f.endswith(".json"):
-            os.rename(f"data/temp/extracted/{filename}/{f}", f"data/personalityMessages/{f}")
+            os.rename(f"data/temp/extracted/{filename}/personalityMessages/{f}", f"data/personalityMessages/{f}")
     
     # requirements.txt
     for f in os.listdir(f"data/temp/extracted/{filename}"):
