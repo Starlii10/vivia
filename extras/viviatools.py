@@ -18,6 +18,7 @@ import json
 import logging
 import os
 import random
+import shutil
 import sys
 import colorlog
 import discord
@@ -136,7 +137,7 @@ def extractVSE(file: str):
     # TODO: Find and copy any other files (if any)
 
     # Remove the temporary folder
-    os.rmdir(f"data/temp/extracted/{filename}")
+    shutil.rmtree(f"data/temp/extracted/{filename}")
 
     
 def has_bot_permissions(user: discord.Member, server: discord.Guild):
