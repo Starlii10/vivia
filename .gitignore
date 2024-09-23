@@ -22,3 +22,8 @@ __pycache__/
 # LLaMa models
 models
 *.gguf
+
+# extensions outside of ViviaBase
+commands/**/*
+!commands/viviabase/**
+!commands/viviabase-beta/**
