@@ -84,6 +84,7 @@ async def on_ready():
     # skip if Vivia is already running
     if viviatools.running:
         viviatools.log("Vivia is already running. Skipping initialization process.")
+        await viviatools.setCustomPresence(random.choice(statuses["statuses"]), bot)
         return
     
     viviatools.log("Vivia is powering up...")
