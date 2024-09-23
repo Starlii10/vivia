@@ -89,7 +89,7 @@ async def setup_hook():
     viviatools.log("Searching for VSC extensions...")
 
     # Load VSCs
-    for root, dirs, files in os.path.walk("commands"):
+    for root, dirs, files in os.walk("commands"):
         for file in files:
             if file.endswith(".vse"):
                 try:
