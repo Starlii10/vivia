@@ -177,8 +177,8 @@ async def on_ready():
                 failed += [f"{file[:-3]}"]
                 continue
             except Exception as e:
-                viviatools.log(f"Failed to load custom extension {file[:-3]}")
-                viviatools.log(f"{str(type(e))}: {e}")
+                viviatools.log(f"Failed to load custom extension {file[:-3]}", logging.ERROR)
+                viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
                 viviatools.log("Functionality may be limited. Ensure the extension contains no errors.", logging.ERROR)
                 failed += [f"{file[:-3]}"]
                 continue
