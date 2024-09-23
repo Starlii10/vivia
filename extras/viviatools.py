@@ -112,23 +112,23 @@ def extractVSE(file: str):
     zipfile.ZipFile(file).extractall(f"data/temp/extracted/{filename}")
 
     # python file
-    for f in os.listdir("data/temp/extracted"):
+    for f in os.listdir("data/temp/extracted/{filename}"):
         if f.endswith(".py"):
             os.rename(f"data/temp/extracted/{filename}/{f}", f"commands/{filename}.py")
             break
     
     # help text
-    for f in os.listdir("data/temp/extracted"):
+    for f in os.listdir("data/temp/extracted/{filename}"):
         if f.endswith(".txt") and "help" in f:
             os.rename(f"data/temp/extracted/{filename}/{f}", f"data/help/{f}")
 
     # personality messages
-    for f in os.listdir("data/temp/extracted/personalityMessages"):
+    for f in os.listdir(f"data/temp/extracted/{filename}/personalityMessages"):
         if f.endswith(".json"):
             os.rename(f"data/temp/extracted/{filename}/{f}", f"data/personalityMessages/{f}")
     
     # requirements.txt
-    for f in os.listdir("data/temp/extracted"):
+    for f in os.listdir("data/temp/extracted/{filename}"):
         if f.endswith(".txt") and "requirements" in f:
             os.rename(f"data/temp/extracted/{filename}/{f}", f"requirements.txt")
             break
