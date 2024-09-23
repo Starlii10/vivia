@@ -98,6 +98,8 @@ async def setup_hook():
                     viviatools.log(f"Failed to extract VSE extension {file}", logging.ERROR)
                     viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
                     viviatools.log("VSE extension will not be loaded - functionality may be limited.", logging.ERROR)
+                    if config['Advanced']['Debug'] != "True":
+                        os.remove("data/temp/extracted/")
                 else:
                     viviatools.log(f"VSE extension {file} extracted", logging.DEBUG)
 
