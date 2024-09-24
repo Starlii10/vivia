@@ -177,7 +177,7 @@ def perServerFile(serverID: int, filename: str, template: str | None = None):
         - serverID (int): The ID of the server to get the file from.
         - filename (str): The name of the file to get.
         - template (str | None, optional): The template to use if the file doesn't exist. Defaults to a blank string, or "{}" for JSON files.
-
+        
     ## Returns:
         - TextIOWrapper[_WrappedBuffer]: The opened file.
 
@@ -196,7 +196,7 @@ def perServerFile(serverID: int, filename: str, template: str | None = None):
                     f.write("")
             else:
                 f.write(template)
-    return open(f"data/servers/{serverID}/{filename}", "r")
+    return open(f"data/servers/{serverID}/{filename}", "r+")
 
 async def setCustomPresence(message: str, bot: commands.Bot):
     """
