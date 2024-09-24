@@ -189,7 +189,7 @@ def perServerFile(serverID: int, filename: str, template: str | None = None):
     os.makedirs(f"data/servers/{serverID}", exist_ok=True)
     if not os.path.exists(f"data/servers/{serverID}/{filename}"):
         with open(f"data/servers/{serverID}/{filename}", "w") as f:
-            if template is not None:
+            if template is None:
                 if filename.endswith(".json"):
                     f.write("{}")
                 else:
