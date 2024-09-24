@@ -21,8 +21,8 @@ from discord import app_commands
 # ex: from extras.viviatools import personalityMessage
 
 async def setup(bot: commands.Bot): # Add your commands here
-    await bot.add_cog("cog_name")
-    await bot.add_command(commandFunction) # type: ignore
+    bot.add_cog("cog_name")
+    bot.add_command(commandFunction) # type: ignore
 
 """
     Commands must have the following structure:

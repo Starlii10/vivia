@@ -76,6 +76,36 @@ tree = bot.tree
 
 # Events
 @bot.event
+async def setup_hook():
+    """
+    Function called early in Vivia's initialization process.
+    """
+
+    # skip if Vivia is already running
+    if viviatools.running:
+        viviatools.log("Vivia is already running. Skipping early initialization process", logging.DEBUG)
+        return
+
+    viviatools.log("Searching for VSC extensions...")
+
+    # Load VSCs
+    for root, dirs, files in os.walk("commands"):
+        for file in files:
+            if file.endswith(".vse"):
+                try:
+                    viviatools.extractVSE(os.path.join(root, file))
+                except Exception as e:
+                    viviatools.log(f"Failed to extract VSE extension {file}", logging.ERROR)
+                    viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
+                    viviatools.log("VSE extension will not be loaded - functionality may be limited.", logging.ERROR)
+                    if config['Advanced']['Debug'] != "True":
+                        os.remove("data/temp/extracted/")
+                else:
+                    viviatools.log(f"VSE extension {file} extracted", logging.DEBUG)
+
+    viviatools.log("VSE extensions extracted.")
+
+@bot.event
 async def on_ready():
     """
     Function called when Vivia starts up.
@@ -87,7 +117,7 @@ async def on_ready():
         await viviatools.setCustomPresence(random.choice(statuses["statuses"]), bot)
         return
     
-    viviatools.log("Vivia is powering up...")
+    viviatools.log("Connected to websocket - powering on!")
     
     # Load extensions
     viviatools.log("Loading extensions!")
@@ -148,8 +178,8 @@ async def on_ready():
                 failed += [f"{file[:-3]}"]
                 continue
             except Exception as e:
-                viviatools.log(f"Failed to load custom extension {file[:-3]}")
-                viviatools.log(f"{str(type(e))}: {e}")
+                viviatools.log(f"Failed to load custom extension {file[:-3]}", logging.ERROR)
+                viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
                 viviatools.log("Functionality may be limited. Ensure the extension contains no errors.", logging.ERROR)
                 failed += [f"{file[:-3]}"]
                 continue

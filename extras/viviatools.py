@@ -18,9 +18,11 @@ import json
 import logging
 import os
 import random
+import shutil
 import sys
 import colorlog
 import discord
+import zipfile
 
 from discord.ext import commands
 
@@ -72,20 +74,72 @@ handler.setFormatter(colorlog.ColoredFormatter(
 
 logger = logging.getLogger()
 logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+if config["Advanced"]["Debug"] == "True":
+    logger.setLevel(logging.DEBUG)
+else:
+    logger.setLevel(logging.INFO)
 
 # File logging
 handler = logging.FileHandler(f'data/logs/{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log')
 handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s\t %(message)s'))
 logger.addHandler(handler)
 
-# Help messages
-helpMsg = open("data/help/general.txt", "r").read()
-channelmakerHelpMsg = open("data/help/channelmaker.txt", "r").read()
-setupHelpMsg = open("data/help/setup.txt", "r").read()
-
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Functions
+def extractVSE(file: str):
+    """
+    Extracts a self-contained extension (VSE) file.
+
+    ## Args:
+        - file (str): The path to the VSE file to extract.
+
+    ## Returns:
+        - None.
+
+    ## Notes:
+        - VSEs are zipped files that contain multiple files, specifically a Python script and data files.
+    """
+
+    # find the name of the VSE file
+    filename = os.path.basename(file).removesuffix(".vse")
+
+    # Create the data/temp/extracted folder if it doesn't exist
+    os.makedirs("data/temp/extracted", exist_ok=True)
+
+    # Create the data/temp/extracted/{vse file name} folder
+    os.makedirs(f"data/temp/extracted/{filename}", exist_ok=True)
+
+    # Unzip the VSE
+    zipfile.ZipFile(file).extractall(f"data/temp/extracted/{filename}")
+
+    # python file
+    for f in os.listdir(f"data/temp/extracted/{filename}"):
+        if f.endswith(".py"):
+            os.rename(f"data/temp/extracted/{filename}/{f}", f"commands/{filename}.py")
+            break
+    
+    # help text
+    for f in os.listdir(f"data/temp/extracted/{filename}"):
+        if f.endswith(".txt") and "help" in f:
+            os.rename(f"data/temp/extracted/{filename}/{f}", f"data/help/{f}")
+
+    # personality messages
+    for f in os.listdir(f"data/temp/extracted/{filename}/personalityMessages"):
+        if f.endswith(".json"):
+            os.rename(f"data/temp/extracted/{filename}/personalityMessages/{f}", f"data/personalityMessages/{f}")
+    
+    # requirements.txt
+    for f in os.listdir(f"data/temp/extracted/{filename}"):
+        if f.endswith(".txt") and "requirements" in f:
+            os.rename(f"data/temp/extracted/{filename}/{f}", f"requirements.txt")
+            break
+
+    # TODO: Find and copy any other files (if any)
+
+    # Remove the temporary folder
+    shutil.rmtree(f"data/temp/extracted/{filename}")
+
+    
 def has_bot_permissions(user: discord.Member, server: discord.Guild):
     """
     Checks if the specified user has bot permissions.
@@ -210,3 +264,16 @@ async def setCustomPresence(message: str, bot: commands.Bot):
         - This will always set the bot's status to online.
     """
     await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=message))
+
+def helpMsg(extension: str):
+    """
+    Gets the help message for the specified extension.
+
+    ## Args:
+        - extension (str): The name of the extension to get the help message for.
+
+    ## Returns:
+        - str: The help message for the specified extension.
+    """
+    with open(f"data/extensions/{extension}/help.txt", "r") as f:
+        return f.read()
