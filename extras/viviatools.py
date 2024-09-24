@@ -169,29 +169,33 @@ def personalityMessage(type: str):
         log(f"Couldn't find personality message database for type {type}. Does it even exist?", logging.ERROR)
         return ""
     
-def perServerFile(serverID: int, filename: str):
+def perServerFile(serverID: int, filename: str, template: str | None = None):
     """
     Gets a file from the per-server folder.
 
     ## Args:
         - serverID (int): The ID of the server to get the file from.
         - filename (str): The name of the file to get.
+        - template (str | None, optional): The template to use if the file doesn't exist. Defaults to a blank string, or "{}" for JSON files.
 
     ## Returns:
         - TextIOWrapper[_WrappedBuffer]: The opened file.
 
     ## Notes:
-        - This will automatically create the file if it doesn't exist.
+        - This will automatically create the file using `template` if it doesn't exist.
         - This will create the per-server folder if it doesn't exist.
         - This only opens the file. You'll need to manage reading and writing to it yourself.
     """
     os.makedirs(f"data/servers/{serverID}", exist_ok=True)
     if not os.path.exists(f"data/servers/{serverID}/{filename}"):
         with open(f"data/servers/{serverID}/{filename}", "w") as f:
-            if filename.endswith(".json"):
-                f.write("{}")
+            if template is not None:
+                if filename.endswith(".json"):
+                    f.write("{}")
+                else:
+                    f.write("")
             else:
-                f.write("")
+                f.write(template)
     return open(f"data/servers/{serverID}/{filename}", "r")
 
 async def setCustomPresence(message: str, bot: commands.Bot):
