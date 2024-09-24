@@ -86,7 +86,7 @@ async def setup_hook():
         viviatools.log("Vivia is already running. Skipping early initialization process", logging.DEBUG)
         return
 
-    viviatools.log("Searching for VSC extensions...")
+    viviatools.log("Searching for VSE extensions...")
 
     # Load VSCs
     for root, dirs, files in os.walk("commands"):

@@ -6,6 +6,10 @@ statusmessage = Statuses have moved to data/statuses.json
 # The command prefix for the bot.
 prefix = v!
 
+[Extensions]
+# Remove VSEs after extraction.
+vseclear = True
+
 [Advanced]
 # Shows more verbose information about Vivia in the terminal/logs, as well as in Discord messages.
 # This should usually be set to False, however this may help finding issues in some extensions.

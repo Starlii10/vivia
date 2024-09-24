@@ -86,6 +86,13 @@ logger.addHandler(handler)
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Functions
+def log(message: str, severity: int=logging.INFO):
+    """
+    Logs a message to the console.
+    """
+
+    logging.log(severity, message)
+
 def extractVSE(file: str):
     """
     Extracts a self-contained extension (VSE) file.
@@ -137,7 +144,12 @@ def extractVSE(file: str):
     # TODO: Find and copy any other files (if any)
 
     # Remove the temporary folder
-    shutil.rmtree(f"data/temp/extracted/{filename}")
+    shutil.rmtree(f"data/temp/extracted/{filename}")\
+    
+    # Remove the VSE if configured
+    if config["Extensions"]["VSEClear"] == "True":
+        log(f"Removing extracted VSE file: {file}", logging.DEBUG)
+        os.remove(file)
 
     
 def has_bot_permissions(user: discord.Member, server: discord.Guild):
@@ -173,12 +185,6 @@ def serverConfig(serverID: int):
     with open(f"data/servers/{serverID}/config.json", "r") as f:
         return json.load(f)
     
-def log(message: str, severity: int=logging.INFO):
-    """
-    Logs a message to the console.
-    """
-
-    logging.log(severity, message)
 
 def add_custom_quote(quote: str, serverID: int):
     """
