@@ -113,7 +113,8 @@ async def on_ready():
 
     # skip if Vivia is already running
     if viviatools.running:
-        viviatools.log("Vivia is already running. Skipping initialization process", logging.DEBUG)
+        viviatools.log("Vivia is already running. Skipping initialization process.")
+        await viviatools.setCustomPresence(random.choice(statuses["statuses"]), bot)
         return
     
     viviatools.log("Connected to websocket - powering on!")
@@ -389,7 +390,7 @@ async def clearhistory(ctx: commands.Context):
     if os.path.exists(f"data/tempchats/{str(ctx.author.name)}"):
         shutil.rmtree(f"data/tempchats/{str(ctx.author.name)}")
         await ctx.send(personalityMessage("historyclear"), ephemeral=True)
-        viviatools.log(f"{ctx.user} cleared their chat history", logging.DEBUG)
+        viviatools.log(f"{ctx.author.name} cleared their chat history", logging.DEBUG)
     else:
         await ctx.send(personalityMessage("nohistory"), ephemeral=True)
     
