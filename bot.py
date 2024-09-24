@@ -360,7 +360,7 @@ async def clearhistory(ctx: commands.Context):
     if os.path.exists(f"data/tempchats/{str(ctx.author.name)}"):
         shutil.rmtree(f"data/tempchats/{str(ctx.author.name)}")
         await ctx.send(personalityMessage("historyclear"), ephemeral=True)
-        viviatools.log(f"{ctx.user} cleared their chat history", logging.DEBUG)
+        viviatools.log(f"{ctx.author.name} cleared their chat history", logging.DEBUG)
     else:
         await ctx.send(personalityMessage("nohistory"), ephemeral=True)
     

@@ -188,7 +188,10 @@ def perServerFile(serverID: int, filename: str):
     os.makedirs(f"data/servers/{serverID}", exist_ok=True)
     if not os.path.exists(f"data/servers/{serverID}/{filename}"):
         with open(f"data/servers/{serverID}/{filename}", "w") as f:
-            f.write("")
+            if filename.endswith(".json"):
+                f.write("{}")
+            else:
+                f.write("")
     return open(f"data/servers/{serverID}/{filename}", "r")
 
 async def setCustomPresence(message: str, bot: commands.Bot):
