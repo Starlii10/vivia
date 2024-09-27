@@ -5,6 +5,8 @@
 statusmessage = Statuses have moved to data/statuses.json
 # The command prefix for the bot.
 prefix = v!
+# Whether or not to use personality messages.
+usepersonalitymessages = True
 
 [Extensions]
 # Remove VSEs after extraction.

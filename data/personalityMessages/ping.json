@@ -1,0 +1,10 @@
+{
+    "messages": [
+        "My current connection to Discord's servers has a ping of {ping}.",
+        "The current ping is {ping}.",
+        "I'm connected to Discord with a ping of {ping}.",
+        "My current ping is {ping}.",
+        "I'm currently connected to Discord with a ping of {ping}.",
+        "I am connected to Discord with {ping} ping."
+    ]
+}

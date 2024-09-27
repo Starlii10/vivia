@@ -36,6 +36,7 @@ if __name__ == "__main__":
 loaded_extensions = set(str())
 failed_extensions = set(str())
 running = False
+bot_ref = commands.Bot()
 
 # Config loading
 config = configparser.ConfigParser()
@@ -150,7 +151,6 @@ def extractVSE(file: str):
     if config["Extensions"]["VSEClear"] == "True":
         log(f"Removing extracted VSE file: {file}", logging.DEBUG)
         os.remove(file)
-
     
 def has_bot_permissions(user: discord.Member, server: discord.Guild):
     """
