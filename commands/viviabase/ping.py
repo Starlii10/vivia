@@ -14,7 +14,7 @@ from discord.ext import commands
 from extras.viviatools import personalityMessage, bot_ref
 
 async def setup(bot: commands.Bot):
-    await bot.add_command(ping)
+    bot.add_command(ping)
 
 @commands.hybrid_command(
     name="ping",
