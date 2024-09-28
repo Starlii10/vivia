@@ -36,7 +36,7 @@ if __name__ == "__main__":
 loaded_extensions = set(str())
 failed_extensions = set(str())
 running = False
-bot_ref = commands.Bot()
+bot_ref = commands.Bot("")
 
 # Config loading
 config = configparser.ConfigParser()
