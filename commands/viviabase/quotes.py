@@ -13,6 +13,7 @@
 import json
 import logging
 import random
+import discord
 from discord.ext import commands
 from discord import app_commands
 from extras.viviatools import has_bot_permissions, log, config, add_custom_quote, personalityMessage, serverConfig
@@ -22,6 +23,7 @@ async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(removequote)
     bot.add_command(quote)
     bot.add_command(listquotes)
+    bot.tree.add_command(contextmenu_addquote)
 
 @commands.hybrid_command(
     name="addquote",
@@ -146,3 +148,8 @@ async def removequote(ctx: commands.Context, quote: str):
         await log(f"{ctx.author} removed \"{quote}\" from the list for server {ctx.guild.name} ({ctx.guild.id})", severity=logging.DEBUG)
     else:
         await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+
+@app_commands.context_menu(name="Add Custom Quote")
+async def contextmenu_addquote(interaction: discord.Interaction, message: discord.Message):
+    add_custom_quote(f"\"{message.content}\" - {message.author.display_name}, {message.created_at.strftime('%Y-%m-%d')}", interaction.guild.id)
+    await interaction.response.send_message(f"\"{message.content}\" - {message.author.display_name}, {message.created_at.strftime('%Y-%m-%d')} was added to the list.", ephemeral=True)
