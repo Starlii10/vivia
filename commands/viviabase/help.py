@@ -21,7 +21,7 @@ async def setup(bot: commands.Bot): # for extension loading
 @app_commands.describe(
     extension="The name of the extension you want help with. "
 )
-async def help(ctx: commands.Context, extension: str):
+async def help(ctx: commands.Context, extension: str = "core"):
     """
         Help command.
     """

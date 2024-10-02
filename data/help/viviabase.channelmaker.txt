@@ -1,7 +1,13 @@
-# Channel Maker
-The channelmaker tool is a helpful tool to create a bunch of channels from JSON.
+# ViviaBase: `channelmaker`
+The channelmaker tool is a helpful tool to create a bunch of channels from a JSON file.
 
-# How to Use
+Usage: `v!channelmaker <JSON> <channel type>`
+Examples:
+* `v!channelmaker {"categories":{"Text Channels":["general","bot-commands","memes","art"]}}`
+* `v!channelmaker {"categories":{"Voice Channels":["General","Streaming","Games 1","Games 2"]}}`
+* `v!channelmaker {"categories":{"Forums":["starliis-art","character-profiles","vivia-bug-reports"]}}`
+
+## JSON Format
 A channelmaker JSON configuration looks like this:
 ```json
 {
@@ -15,6 +21,7 @@ A channelmaker JSON configuration looks like this:
 - "categories" is where you put in your categories. You can define as many categories as you want!
 - In the example above, we have one category called "category1" and a channel inside called "channel1".
 
+## Channel Type
 You can also define the type of channels you want to create with the `type` argument.
 - "text" makes text channels.
 - "voice" makes voice channels.

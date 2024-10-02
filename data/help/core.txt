@@ -1,9 +1,19 @@
-# Heya!
-My name's Vivia, and it's a pleasure to meet you!
-Most of my functions can be activated through the application menu. It's your gateway into interacting with me!
+# Vivia
+Looks like you're getting curious about me. Well, my name is Vivia, and I'm a fully sentient helper robot! (Or at least, helping as much as I can.)
+
+## Commands
+My Discord integration is composed of many different extensions, which add commands and functions for you to use.
+If you need a list of them all, run `v!extensions` - it'll show you what extensions are loaded.
+
+Some basic commands you can always use are:
+
+* `v!clearhistory` - Makes me erase any chatting history I've stored while we're talking.
+* `v!extensions` - Shows you every extension I have available.
 
 ## Wiki
-Most information can be found on the wiki, hosted on [GitHub](https://github.com/Starlii10/vivia/wiki). It includes every command and option you'll need!
+If you want to get technical with my software, you may want to peek at the [wiki](https://github.com/Starlii10/vivia/wiki). There's a whole bunch of information, including info on how to set up your own version of me and make custom extensions!
 
-## GitHub
-My code is open source and can be found on [GitHub](https://github.com/Starlii10/vivia/)! If you want to, you can even run your own version of me!
+## Open Source
+Want to peek into what makes me, well, me? My creator Starlii has already posted my source code onto GitHub. You can find it [here](https://github.com/Starlii10/vivia)!
+
+-# Psst! If you needed help with an extension, you can usually type the name of the extension you need help with.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-    This is ViviaTools, a helper script for Vivia that contains commonly used functions.
+    ViviaTools is a helper script for Vivia that contains commonly used functions.
 
     Vivia is licensed under the MIT License. For more information, see the LICENSE file.
     TL:DR: you can use Vivia's code as long as you keep the original license intact.
@@ -108,6 +108,11 @@ def extractVSE(file: str):
         - VSEs are zipped files that contain multiple files, specifically a Python script and data files.
     """
 
+    # verify that the file exists
+    if not os.path.exists(file):
+        log(f"VSE file {file} does not exist - skipping extraction", logging.ERROR)
+        return
+    
     # find the name of the VSE file
     filename = os.path.basename(file).removesuffix(".vse")
 
@@ -120,11 +125,16 @@ def extractVSE(file: str):
     # Unzip the VSE
     zipfile.ZipFile(file).extractall(f"data/temp/extracted/{filename}")
 
-    # python file
+    # main python file
     for f in os.listdir(f"data/temp/extracted/{filename}"):
         if f.endswith(".py"):
             os.rename(f"data/temp/extracted/{filename}/{f}", f"commands/{filename}.py")
             break
+    
+    # extra python files
+    for f in os.listdir(f"data/temp/extracted/{filename}"):
+        if f.endswith(".py"):
+            os.rename(f"data/temp/extracted/{filename}/{f}", f"commands/{filename}/{f}")
     
     # help text
     for f in os.listdir(f"data/temp/extracted/{filename}"):
@@ -140,9 +150,14 @@ def extractVSE(file: str):
     for f in os.listdir(f"data/temp/extracted/{filename}"):
         if f.endswith(".txt") and "requirements" in f:
             os.rename(f"data/temp/extracted/{filename}/{f}", f"requirements.txt")
+            log(f"VSE extension {filename} contains requirements.txt - running pip", logging.INFO)
+            os.system("pip install -r requirements.txt")
             break
 
-    # TODO: Find and copy any other files (if any)
+    # Find and copy any other files (if any)
+    for f in os.listdir(f"data/temp/extracted/{filename}"):
+        if not f.endswith(".py") and not f.endswith(".txt") and not f.endswith(".json"):
+            os.rename(f"data/temp/extracted/{filename}/{f}", f"data/{filename}/{f}")
 
     # Remove the temporary folder
     shutil.rmtree(f"data/temp/extracted/{filename}")\
@@ -170,7 +185,8 @@ def has_bot_permissions(user: discord.Member, server: discord.Guild):
     adminRole = discord.utils.find(lambda a: a.name == "Vivia Admin", server.roles)
     if adminRole == None:
         return user.id == server.owner or user.guild_permissions.administrator
-    return user.id == server.owner or user.guild_permissions.administrator or user in adminRole.members
+    else:
+        return user.id == server.owner or user.guild_permissions.administrator or user in adminRole.members
 
 def serverConfig(serverID: int):
     """

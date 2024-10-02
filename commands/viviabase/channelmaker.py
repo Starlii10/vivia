@@ -68,4 +68,4 @@ async def channelmaker(ctx: commands.Context, channel_config: str, type: str="te
                 await ctx.send(str(e) + "\n-# To disable these messages, run /config verboseErrors false")
             await log(f"Error while making channels in server {str(ctx.guild.name)} ({str(ctx.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
     else:
-        await ctx.send("That's for authorized users, not you...", ephemeral=True)
+        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)

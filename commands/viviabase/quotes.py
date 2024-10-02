@@ -18,7 +18,7 @@ from discord.ext import commands
 from discord import app_commands
 from extras.viviatools import has_bot_permissions, log, config, add_custom_quote, personalityMessage, serverConfig
 
-async def setup(bot: commands.Bot): # for extension loading
+async def setup(bot: commands.Bot):
     bot.add_command(addquote)
     bot.add_command(removequote)
     bot.add_command(quote)

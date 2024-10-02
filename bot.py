@@ -13,7 +13,7 @@
 """
 
 # Vivia version
-__VERSION__ = "Vivia 20240918"
+__VERSION__ = "Vivia 20241001-pre"
 
 import asyncio
 import shutil
@@ -115,7 +115,6 @@ async def on_ready():
     # skip if Vivia is already running
     if viviatools.running:
         viviatools.log("Vivia is already running. Skipping initialization process.")
-        await viviatools.setCustomPresence(random.choice(statuses["statuses"]), bot)
         return
     
     viviatools.log("Connected to websocket - powering on!")
@@ -123,77 +122,9 @@ async def on_ready():
     # Load extensions
     viviatools.log("Loading extensions!")
     await viviatools.setCustomPresence("POWERING UP - Loading extensions...", bot)
-
-    loaded = []
-    failed = []
-
-    # viviabase
-    for file in os.listdir("commands/viviabase"):
-        if file.endswith(".py"):
-            try:
-                await bot.load_extension(f"commands.viviabase.{file[:-3]}")
-                loaded += [f"viviabase.{file[:-3]}"]
-            except errors.ExtensionAlreadyLoaded:
-                viviatools.log(f"Extension viviabase.{file[:-3]} was already loaded.")
-                loaded += [f"viviabase.{file[:-3]}"]
-            except Exception as e:
-                viviatools.log(f"Failed to load base extension {file[:-3]}", logging.ERROR)
-                viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
-                viviatools.log("Functionality may be limited. Please report this on GitHub.", logging.ERROR)
-                failed += [f"viviabase.{file[:-3]}"]
-                continue
-            viviatools.log(f"Loaded extension viviabase.{file[:-3]}")
-    
-    # viviabase beta
-    if config["Advanced"]["betaextensions"]:
-        viviatools.log("Loading beta extensions.")
-        for file in os.listdir("commands/viviabase-beta"):
-            if file.endswith(".py"):
-                try:
-                    await bot.load_extension(f"commands.viviabase-beta.{file[:-3]}")
-                    loaded += [f"viviabase-beta.{file[:-3]}"]
-                except errors.ExtensionAlreadyLoaded:
-                    viviatools.log(f"Extension viviabase-beta.{file[:-3]} was already loaded.")
-                    loaded += [f"viviabase-beta.{file[:-3]}"]
-                except Exception as e:
-                    viviatools.log(f"Failed to load beta extension {file[:-3]}", logging.ERROR)
-                    viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
-                    viviatools.log("Functionality may be limited.", logging.ERROR)
-                    failed += [f"viviabase-beta.{file[:-3]}"]
-                    continue
-                viviatools.log(f"Loaded extension viviabase-beta.{file[:-3]}")
-
-    # Custom extensions
-    for file in os.listdir("commands"):
-        if file.endswith(".py"):
-            try:
-                await bot.load_extension(f"commands.{file[:-3]}")
-                loaded += [f"{file[:-3]}"]
-            except errors.ExtensionAlreadyLoaded:
-                viviatools.log(f"Extension {file[:-3]} was already loaded.")
-                loaded += [f"{file[:-3]}"]
-            except discord.ext.commands.NoEntryPointError:
-                viviatools.log(f"Failed to load custom extension {file[:-3]}", logging.ERROR)
-                viviatools.log("No entry point found. Does the extension contain a setup(bot) function?", logging.ERROR)
-                viviatools.log("Functionality may be limited.", logging.ERROR)
-                failed += [f"{file[:-3]}"]
-                continue
-            except Exception as e:
-                viviatools.log(f"Failed to load custom extension {file[:-3]}", logging.ERROR)
-                viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
-                viviatools.log("Functionality may be limited. Ensure the extension contains no errors.", logging.ERROR)
-                failed += [f"{file[:-3]}"]
-                continue
-            viviatools.log(f"Loaded extension {file[:-3]}")
-
-    viviatools.loaded_extensions = loaded
-    viviatools.failed_extensions = failed
-    viviatools.log(f"Loaded {len(loaded)} extensions - failed loading {len(failed)}.")
+    await reload_all_extensions()
     
     # Statuses
-    with open("data/statuses.json", "r") as f:
-        statuses = json.load(f)
-    await viviatools.setCustomPresence(random.choice(statuses["statuses"]), bot)
     try:
         statusChanges.start()
     except RuntimeError:
@@ -294,6 +225,90 @@ def llamaReply(message: discord.Message):
     
     # Send the reply (note that reply is async so we need to use asyncio)
     asyncio.run_coroutine_threadsafe(message.reply(generation), bot.loop) # we don't care about the result
+
+async def reload_all_extensions():
+    """
+        Reloads EVERY extension Vivia can find.
+    """
+
+    # Unload all extensions
+    for extension in viviatools.loaded_extensions:
+        try:
+            await bot.unload_extension(extension)
+            viviatools.log(f"Unloaded extension {extension}")
+        except errors.ExtensionNotLoaded:
+            viviatools.log(f"Extension {extension} was already unloaded.")
+        except Exception as e:
+            viviatools.log(f"Failed to unload extension {extension}", logging.ERROR)
+            viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
+            viviatools.log("This may cause issues during reloading.", logging.ERROR)
+            
+    # Reset list of extensions
+    loaded = ["core"] # Vivia core is always loaded
+    failed = []
+
+    # Load ViviaBase
+    for file in os.listdir("commands/viviabase"):
+        if file.endswith(".py"):
+            try:
+                await bot.load_extension(f"commands.viviabase.{file[:-3]}")
+                loaded += [f"viviabase.{file[:-3]}"]
+            except errors.ExtensionAlreadyLoaded:
+                viviatools.log(f"Extension viviabase.{file[:-3]} was already loaded.")
+                loaded += [f"viviabase.{file[:-3]}"]
+            except Exception as e:
+                viviatools.log(f"Failed to load base extension {file[:-3]}", logging.ERROR)
+                viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
+                viviatools.log("Functionality may be limited. Please report this on GitHub.", logging.ERROR)
+                failed += [f"viviabase.{file[:-3]}"]
+                continue
+            viviatools.log(f"Loaded extension viviabase.{file[:-3]}")
+    
+    # Load ViviaBase beta
+    if config["Advanced"]["betaextensions"]:
+        viviatools.log("Loading beta extensions.")
+        for file in os.listdir("commands/viviabase-beta"):
+            if file.endswith(".py"):
+                try:
+                    await bot.load_extension(f"commands.viviabase-beta.{file[:-3]}")
+                    loaded += [f"viviabase-beta.{file[:-3]}"]
+                except errors.ExtensionAlreadyLoaded:
+                    viviatools.log(f"Extension viviabase-beta.{file[:-3]} was already loaded.")
+                    loaded += [f"viviabase-beta.{file[:-3]}"]
+                except Exception as e:
+                    viviatools.log(f"Failed to load beta extension {file[:-3]}", logging.ERROR)
+                    viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
+                    viviatools.log("Functionality may be limited.", logging.ERROR)
+                    failed += [f"viviabase-beta.{file[:-3]}"]
+                    continue
+                viviatools.log(f"Loaded extension viviabase-beta.{file[:-3]}")
+
+    # Load custom extensions
+    for file in os.listdir("commands"):
+        if file.endswith(".py"):
+            try:
+                await bot.load_extension(f"commands.{file[:-3]}")
+                loaded += [f"{file[:-3]}"]
+            except errors.ExtensionAlreadyLoaded:
+                viviatools.log(f"Extension {file[:-3]} was already loaded.")
+                loaded += [f"{file[:-3]}"]
+            except discord.ext.commands.NoEntryPointError:
+                viviatools.log(f"Failed to load custom extension {file[:-3]}", logging.ERROR)
+                viviatools.log("No entry point found. Does the extension contain a setup(bot) function?", logging.ERROR)
+                viviatools.log("Functionality may be limited.", logging.ERROR)
+                failed += [f"{file[:-3]}"]
+                continue
+            except Exception as e:
+                viviatools.log(f"Failed to load custom extension {file[:-3]}", logging.ERROR)
+                viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
+                viviatools.log("Functionality may be limited. Ensure the extension contains no errors.", logging.ERROR)
+                failed += [f"{file[:-3]}"]
+                continue
+            viviatools.log(f"Loaded extension {file[:-3]}")
+
+    viviatools.loaded_extensions = loaded
+    viviatools.failed_extensions = failed
+    viviatools.log(f"Loaded {len(loaded)} extensions - failed loading {len(failed)}.")
 
 # Core commands
 # These commands are always available
@@ -444,8 +459,8 @@ async def reboot(ctx: commands.Context, pull_git: bool = False):
     Performs a full reboot of Vivia.
 
     ## Args:
-        pull_git (bool, optional): Whether to pull the git repository before rebooting to automatically update Vivia.
-                                   Defaults to False. May increase reboot time by a few seconds. Also updates dependencies.
+        pull_git (bool): Whether to pull the git repository before rebooting to automatically update Vivia.
+                         Defaults to False. May increase reboot time by a few seconds. Also updates dependencies.
     ## Notes:
         - Only the bot owner can use this command.
         - Because this command replaces the running Vivia script with another one, any changes made to Vivia will take effect after this command is run.
@@ -514,3 +529,4 @@ while True:
         viviatools.log("Don't worry, she will automatically restart in 5 seconds.", logging.FATAL)
         viviatools.log("I would appreciate if you would report this on GitHub, please.", logging.FATAL)
         time.sleep(5)
+        os.execl(sys.executable, sys.executable, *sys.argv)

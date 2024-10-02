@@ -1,6 +1,6 @@
 {
     "messages": [
-        "The reason for this {action} is: {reason}",
+        "The reason for this {action} is: \n`{reason}`",
         "The moderators have described the reason for this {action} as: \n`{reason}`",
         "The reason for this {action} is: \n`{reason}`",
         "The attached reason for this {action} is: \n`{reason}`"
