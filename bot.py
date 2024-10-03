@@ -491,16 +491,9 @@ async def reboot(ctx: commands.Context, pull_git: bool = False):
 async def extensions(ctx: commands.Context):
     """
     Displays Vivia's available extensions.
-
-    ## Notes:
-        - Only the bot owner can use this command.
-        - TODO: Should everyone be able to use this command?
     """
-    if await bot.is_owner(ctx.author):
-        await ctx.send("Available extensions: \n- " + ("\n- ".join(viviatools.loaded_extensions)) if len(viviatools.loaded_extensions) > 0 else "No extensions loaded? Wait, what?!", ephemeral=True)
-        await ctx.send("Extensions that failed to load: \n- " + ("\n- ".join(viviatools.failed_extensions)) if len(viviatools.failed_extensions) > 0 else "No extensions failed to load!", ephemeral=True)
-    else:
-        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+    await ctx.send("Available extensions: \n- " + ("\n- ".join(viviatools.loaded_extensions)) if len(viviatools.loaded_extensions) > 0 else "No extensions loaded? Wait, what?!", ephemeral=True)
+    await ctx.send("Extensions that failed to load: \n- " + ("\n- ".join(viviatools.failed_extensions)) if len(viviatools.failed_extensions) > 0 else "No extensions failed to load!", ephemeral=True)
 
 # Run
 while True:

@@ -29,6 +29,7 @@ import json
 import logging
 import mimetypes
 import os
+import shutil
 import sys
 from PIL import Image
 import cv2
@@ -56,11 +57,7 @@ config.read("config.ini")
 
 # Delete tempchats folder if it exists
 if os.path.exists("data/tempchats"):
-    # Just like the terminal title, VSCode hates when I do it like this. Too bad, I can't write cross-platform code very well
-    if sys.platform == "win32":
-        os.system("rmdir /S /Q data/tempchats")  # Windows
-    else:
-        os.system("rm -rf data/tempchats")  # Linux/Unix/Mac/Insert-Non-Windows-OS-Here
+    shutil.rmtree("data/tempchats")
     viviatools.log("Deleted temporary chat files", logging.DEBUG)
 
 # Load LLaMa
