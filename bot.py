@@ -13,7 +13,7 @@
 """
 
 # Vivia version
-__VERSION__ = "Vivia 20241001-pre"
+__VERSION__ = "Vivia 20241003"
 
 import asyncio
 import shutil
