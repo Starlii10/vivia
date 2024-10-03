@@ -16,4 +16,4 @@ If you want to get technical with my software, you may want to peek at the [wiki
 ## Open Source
 Want to peek into what makes me, well, me? My creator Starlii has already posted my source code onto GitHub. You can find it [here](https://github.com/Starlii10/vivia)!
 
--# Psst! If you needed help with an extension, you can usually type the name of the extension you need help with.
+-# Psst! If you needed help with an extension, you can usually type the name of the extension you need help with. Try `v!help viviabase`!

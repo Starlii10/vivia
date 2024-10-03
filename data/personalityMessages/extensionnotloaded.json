@@ -6,6 +6,7 @@
         "My extension list doesn't contain that one...",
         "Extension not loaded.",
         "It doesn't appear that I have that extension loaded.",
-        "That extension isn't loaded."
+        "That extension isn't loaded.",
+        "Uhh... don't have that extension."
     ]
 }

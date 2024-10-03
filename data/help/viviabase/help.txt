@@ -1,0 +1,14 @@
+# ViviaBase (extension package)
+
+ViviaBase is the default extension package for Vivia. It's officially supported and comes packaged with Vivia.
+
+## Extensions
+
+- `channelmaker` - A tool to quickly make categories and channels from JSON.
+- `help` - A simple help command that works with custom extensions.
+- `moderation-essentials` - A basic set of moderation commands (such as warning and banning users).
+- `namegenerator` - A way to quickly make random names.
+- `ping` - A simple command to get Vivia's ping.
+- `quotes` - A fun command set to make and send quoted messages.
+
+For more info on any of these, run `v!help viviabase.<extension name>`.

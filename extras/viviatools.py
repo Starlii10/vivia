@@ -139,7 +139,7 @@ def extractVSE(file: str):
     # help text
     for f in os.listdir(f"data/temp/extracted/{filename}"):
         if f.endswith(".txt") and "help" in f:
-            os.rename(f"data/temp/extracted/{filename}/{f}", f"data/help/{f}")
+            os.rename(f"data/temp/extracted/{filename}/{f}", f"data/help/{filename}/help.txt")
 
     # personality messages
     for f in os.listdir(f"data/temp/extracted/{filename}/personalityMessages"):
@@ -297,5 +297,5 @@ def helpMsg(extension: str):
     ## Returns:
         - str: The help message for the specified extension.
     """
-    with open(f"data/extensions/{extension}/help.txt", "r") as f:
+    with open(f'data/help/{extension.replace(".", "/")}/help.txt', 'r') as f:
         return f.read()
