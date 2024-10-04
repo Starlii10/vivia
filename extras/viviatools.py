@@ -238,7 +238,7 @@ def personalityMessage(type: str):
             random_msg = messages["messages"][random.randint(0, len(messages["messages"]) - 1)]
             if config["Advanced"]["Debug"] == "True":
                 log(f"Got a random {type} message: {random_msg}", logging.DEBUG)
-                return random_msg + f" (Message type: {type})"
+                return random_msg + f"\n#- (Message type: {type})"
             else:
                 return random_msg
     except FileNotFoundError:
