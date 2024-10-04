@@ -274,18 +274,16 @@ def perServerFile(serverID: int, filename: str, template: str | None = None):
                 f.write(template)
     return open(f"data/servers/{serverID}/{filename}", "r+")
 
-async def setCustomPresence(message: str, bot: commands.Bot):
+async def setCustomPresence(message: str, bot: commands.Bot, status: str = "online"):
     """
     Sets the bot's presence to the specified message.
 
     ## Args:
         - message (str): The message to set the presence to.
+        - status (str, optional): The status to set the bot to. Can be "online", "idle", or "dnd". Defaults to "online".
         - bot (commands.Bot): A reference to the bot.
-
-    ## Notes:
-        - This will always set the bot's status to online.
     """
-    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=message))
+    await bot.change_presence(status=discord.Status[status], activity=discord.CustomActivity(name=message))
 
 def helpMsg(extension: str):
     """

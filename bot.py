@@ -141,7 +141,6 @@ async def statusChanges():
         statuses = json.load(f)
     status = random.choice(statuses["statuses"])
     await viviatools.setCustomPresence(status, bot)
-    current_status = status
     viviatools.log(f"Status changed to {status}", logging.DEBUG)
 
 @bot.event
@@ -521,5 +520,6 @@ while True:
         viviatools.log(f"{str(type(e))}: {str(e)}", severity=logging.FATAL)
         viviatools.log("Don't worry, she will automatically restart in 5 seconds.", logging.FATAL)
         viviatools.log("I would appreciate if you would report this on GitHub, please.", logging.FATAL)
+        viviatools.setCustomPresence("!! I'm literally in the middle of crashing", "dnd", bot)
         time.sleep(5)
         os.execl(sys.executable, sys.executable, *sys.argv)
