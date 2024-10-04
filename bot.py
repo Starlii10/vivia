@@ -16,14 +16,12 @@
 __VERSION__ = "Vivia 20241003"
 
 import asyncio
-import shutil
 import sys
 import json
 import threading
 import time
 from aiohttp import ClientConnectorError
 import dotenv
-import random
 import os
 from os import system
 import logging
@@ -31,7 +29,7 @@ import logging
 # Discord
 import discord, discord.ext
 from discord import GatewayNotFound, HTTPException, LoginFailure, app_commands
-from discord.ext import tasks, commands, commands
+from discord.ext import commands, commands
 from discord.ext.commands import errors
 
 # Vivia's extra scripts
@@ -124,25 +122,8 @@ async def on_ready():
     await viviatools.setCustomPresence("POWERING UP - Loading extensions...", bot)
     await reload_all_extensions()
     
-    # Statuses
-    try:
-        statusChanges.start()
-    except RuntimeError:
-        pass # already started
     viviatools.log("Vivia is all ready!")
     viviatools.running = True
-
-@tasks.loop(hours=1)
-async def statusChanges():
-    """
-    Changes the bot's status every hour.
-    """
-    with open("data/statuses.json", "r") as f:
-        statuses = json.load(f)
-    status = random.choice(statuses["statuses"])
-    await viviatools.setCustomPresence(status, bot)
-    current_status = status
-    viviatools.log(f"Status changed to {status}", logging.DEBUG)
 
 @bot.event
 async def on_member_join(member):
@@ -259,6 +240,8 @@ async def reload_all_extensions():
         await viviatools.setCustomPresence("An error has occurred - Vivia is rebooting", bot)
         time.sleep(5)
         os.execl(sys.executable, sys.executable, *sys.argv)
+    else:
+        viviatools.log("Vivia core loaded.")
 
     # Load ViviaBase
     for file in os.listdir("commands/viviabase"):
