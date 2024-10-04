@@ -224,13 +224,13 @@ class viviacore_functions(commands.Cog):
     def __init__(self, bot): self.bot = bot
 
     @tasks.loop(hours=1)
-    async def statusChanges(self):
+    async def statusChanges():
         """
         Changes the bot's status every hour.
         """
         with open("data/statuses.json", "r") as f:
             statuses = json.load(f)
         status = random.choice(statuses["statuses"])
-        await viviatools.setCustomPresence(status, self.bot)
+        await viviatools.setCustomPresence(status, bot_ref)
         current_status = status
         viviatools.log(f"Status changed to {status}", logging.DEBUG)
