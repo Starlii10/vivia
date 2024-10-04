@@ -16,12 +16,14 @@
 __VERSION__ = "Vivia 20241003"
 
 import asyncio
+import shutil
 import sys
 import json
 import threading
 import time
 from aiohttp import ClientConnectorError
 import dotenv
+import random
 import os
 from os import system
 import logging
@@ -29,7 +31,7 @@ import logging
 # Discord
 import discord, discord.ext
 from discord import GatewayNotFound, HTTPException, LoginFailure, app_commands
-from discord.ext import commands, commands
+from discord.ext import tasks, commands, commands
 from discord.ext.commands import errors
 
 # Vivia's extra scripts
@@ -122,8 +124,25 @@ async def on_ready():
     await viviatools.setCustomPresence("POWERING UP - Loading extensions...", bot)
     await reload_all_extensions()
     
+    # Statuses
+    try:
+        statusChanges.start()
+    except RuntimeError:
+        pass # already started
     viviatools.log("Vivia is all ready!")
     viviatools.running = True
+
+@tasks.loop(hours=1)
+async def statusChanges():
+    """
+    Changes the bot's status every hour.
+    """
+    with open("data/statuses.json", "r") as f:
+        statuses = json.load(f)
+    status = random.choice(statuses["statuses"])
+    await viviatools.setCustomPresence(status, bot)
+    current_status = status
+    viviatools.log(f"Status changed to {status}", logging.DEBUG)
 
 @bot.event
 async def on_member_join(member):
@@ -225,23 +244,8 @@ async def reload_all_extensions():
             viviatools.log("This may cause issues during reloading.", logging.ERROR)
             
     # Reset list of extensions
-    loaded = []
+    loaded = ["core"] # Vivia core is always loaded
     failed = []
-
-    # Load core
-    try:
-        await bot.load_extension("commands.core")
-        loaded += ["core"]
-    except Exception as e:
-        viviatools.log(f"Vivia core failed to load", logging.FATAL)
-        viviatools.log(f"{str(type(e))}: {e}", logging.FATAL)
-        viviatools.log("Please report this on GitHub.", logging.FATAL)
-        viviatools.log("Vivia will restart in 5 seconds.", logging.FATAL)
-        await viviatools.setCustomPresence("An error has occurred - Vivia is rebooting", bot)
-        time.sleep(5)
-        os.execl(sys.executable, sys.executable, *sys.argv)
-    else:
-        viviatools.log("Vivia core loaded.")
 
     # Load ViviaBase
     for file in os.listdir("commands/viviabase"):
@@ -305,6 +309,191 @@ async def reload_all_extensions():
     viviatools.loaded_extensions = loaded
     viviatools.failed_extensions = failed
     viviatools.log(f"Loaded {len(loaded)} extensions - failed loading {len(failed)}.")
+
+# Core commands
+# These commands are always available
+
+@bot.hybrid_command()
+async def sync(ctx, guild: int=0):
+    """
+    Syncs the command tree.
+
+    ## Notes:
+        - Only the bot owner can use this command.
+        - If you want to sync the entire bot, use "v!sync 0" or "v!sync". Otherwise specify the ID of the guild you want to sync.
+    """
+    if await bot.is_owner(ctx.author):
+        if guild == 0:
+            await bot.tree.sync()
+            await ctx.send('The command tree was synced, whatever that means.')
+            viviatools.log("The command tree was synced, whatever that means.")
+        else:
+            await bot.tree.sync(guild=discord.utils.get(bot.guilds, id=guild))
+            await ctx.send(f'The command tree was synced for {guild}, whatever that means.')
+            viviatools.log(f"The command tree was synced for {guild}, whatever that means.")
+    else:
+        await ctx.send(personalityMessage("nopermissions"))
+
+@bot.hybrid_command()
+async def fixconfig(ctx: commands.Context):
+    """
+    Regenerates server files for servers where they are missing.
+
+    ## Notes:
+        - Only the bot owner can use this command.
+    """
+    if await bot.is_owner(ctx.author):
+        viviatools.log(f"Regenerating missing data files for all servers...", logging.DEBUG)
+        for guild in bot.guilds:
+            # Regenerate server data path if it doesn't exist
+            if not os.path.exists(f'data/servers/{guild.id}'):
+                os.mkdir(f'data/servers/{guild.id}')
+            viviatools.log(f'Data path for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
+
+            # Regenerate configuration if guild config is missing
+            try:
+                with open(f'data/servers/{guild.id}/config.json', 'x') as f, open(f'data/config.json.example', 'r') as g:
+                    json.dump(obj=json.load(g), fp=f)
+                viviatools.log(f'Config file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
+            except FileExistsError:
+                pass # Most likely there was nothing wrong with it
+
+            # Regenerate quotes if guild quotes is missing
+            try:
+                with open(f'data/servers/{guild.id}/quotes.json', 'x') as f:
+                    json.dump({'quotes': []}, f)
+                viviatools.log(f'Custom quote file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
+            except FileExistsError:
+                pass # Most likely there was nothing wrong with it
+
+            # Regenerate warns if guild warns is missing
+            try:
+                with open(f'data/servers/{guild.id}/warns.json', 'x') as f:
+                    json.dump({'warns': []}, f)
+                viviatools.log(f'Warn file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
+            except FileExistsError:
+                pass # Most likely there was nothing wrong with it
+
+        await ctx.send('Fixed all missing config and quotes files. Check log for more info.')
+    else:
+        await ctx.send(personalityMessage("nopermissions"))
+
+@bot.hybrid_command(
+    name="statuschange",
+    description="Manually randomizes the current status of the bot."
+)
+async def statuschange(ctx: commands.Context):
+    """
+    Manually randomizes the current status of the bot.
+
+    ## Notes:
+        - Only the bot owner can use this command.
+    """
+    if await bot.is_owner(ctx.author):
+        await statusChanges()
+        await ctx.send('Status randomized!')
+    else:
+        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+
+@bot.hybrid_command(
+    name="clearhistory",
+    description="Clears your recent chat history with me."
+)
+async def clearhistory(ctx: commands.Context):
+    """
+    Clears a user's recent chat history with Vivia.
+    """
+    if os.path.exists(f"data/tempchats/{str(ctx.author.name)}"):
+        shutil.rmtree(f"data/tempchats/{str(ctx.author.name)}")
+        await ctx.send(personalityMessage("historyclear"), ephemeral=True)
+        viviatools.log(f"{ctx.author.name} cleared their chat history", logging.DEBUG)
+    else:
+        await ctx.send(personalityMessage("nohistory"), ephemeral=True)
+    
+@bot.hybrid_command(
+    name="setting",
+    description="Manages Vivia's configuration."
+)
+@app_commands.choices(option=[
+    app_commands.Choice(name="AI Enabled",value="aiEnabled"),
+    app_commands.Choice(name="Verbose Errors",value="verboseErrors"),
+])
+async def setting(ctx: commands.Context, option: str, value: bool):
+    """
+    Manages Vivia's configuration for a specific server.
+
+    ## Notes:
+        - Only users with Vivia admin permissions can use this command.
+    """
+    if viviatools.has_bot_permissions(ctx.author, ctx.guild):
+        try:
+            match(option):
+                case "aiEnabled":
+                    changed = serverConfig(ctx.guild.id)
+                    changed['aiEnabled'] = value
+                    with open(f"data/servers/{ctx.guild.id}/config.json", "w") as f:
+                        json.dump(changed, f)
+                case "verboseErrors":
+                    changed = serverConfig(ctx.guild.id)
+                    changed['verboseErrors'] = value
+                    with open(f"data/servers/{ctx.guild.id}/config.json", "w") as f:
+                        json.dump(changed, f)
+                case _:
+                    await ctx.send("That option doesn't seem to exist...", ephemeral=True)
+                    return
+            await ctx.send(f"Done! `{option}` is now `{value}`.", ephemeral=True)
+        except Exception as e:
+            await ctx.send(personalityMessage("error"), ephemeral=True)
+            if serverConfig(ctx.guild.id)['verboseErrors']:
+                await ctx.send(f"{str(type(e))}: {e}\n-# To disable these messages, run /config verboseErrors false")
+            viviatools.log(f"Error while changing config for {ctx.guild.name} ({str(ctx.guild.id)}): {str(type(e))}: {str(e)}", severity=logging.ERROR)
+    else:
+        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+
+@bot.hybrid_command(
+    name="reboot",
+    description="Performs a full reboot of Vivia."
+)
+async def reboot(ctx: commands.Context, pull_git: bool = False):
+    """
+    Performs a full reboot of Vivia.
+
+    ## Args:
+        pull_git (bool): Whether to pull the git repository before rebooting to automatically update Vivia.
+                         Defaults to False. May increase reboot time by a few seconds. Also updates dependencies.
+    ## Notes:
+        - Only the bot owner can use this command.
+        - Because this command replaces the running Vivia script with another one, any changes made to Vivia will take effect after this command is run.
+        - `pull_git` requires `git` to be installed on your system, but you probably already have it if you're running Vivia anyway, don't you?
+        - `pull_git` will also run `pip install -r requirements.txt` in the root to install any new dependencies.
+        - `pull_git` will OVERRIDE LOCAL CHANGES TO VIVIA! Be careful! (This does not affect custom extensions.)
+    """
+    if await bot.is_owner(ctx.author):
+        await ctx.send("Rebooting...")
+        viviatools.log(f"Rebooting on request of {ctx.author.name} ({str(ctx.author.id)})...")
+        await bot.close()
+        if pull_git:
+            try:
+                os.system("git pull")
+                viviatools.log("Pulled git repository.", logging.DEBUG)
+                os.system("pip install -r requirements.txt")
+                viviatools.log("Installed new dependencies.", logging.DEBUG)
+            except Exception as e:
+                viviatools.log(f"Failed to pull git repository: {str(type(e))}: {str(e)}", logging.ERROR)
+        os.execl(sys.executable, sys.executable, *sys.argv)
+    else:
+        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+
+@bot.hybrid_command(
+    name="extensions",
+    description="Displays Vivia's available extensions."
+)
+async def extensions(ctx: commands.Context):
+    """
+    Displays Vivia's available extensions.
+    """
+    await ctx.send("Available extensions: \n- " + ("\n- ".join(viviatools.loaded_extensions)) if len(viviatools.loaded_extensions) > 0 else "No extensions loaded? Wait, what?!", ephemeral=True)
+    await ctx.send("Extensions that failed to load: \n- " + ("\n- ".join(viviatools.failed_extensions)) if len(viviatools.failed_extensions) > 0 else "No extensions failed to load!", ephemeral=True)
 
 # Run
 while True:
