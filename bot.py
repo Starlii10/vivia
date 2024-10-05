@@ -108,41 +108,22 @@ async def setup_hook():
     viviatools.log("VSE extensions extracted.")
 
 @bot.event
-async def on_error(event, *args, **kwargs):
-    """
-    Function called when an error is raised in Vivia.
-    """
-
-    viviatools.log("error", logging.DEBUG)
-    type, error, traceback = sys.exc_info()
-    match type:
-        case app_commands.CommandNotFound | errors.CommandNotFound | discord.ext.commands.errors.CommandNotFound:
-            viviatools.log(f"Command not found: {args[0]}", logging.WARNING)
-            await args[0].reply("That command doesn't seem to exist... did you spell it correctly?")
-            
-        case _:
-            viviatools.log(f"An error occurred in {event}:", logging.ERROR)
-            viviatools.log(f"{str(type)}: {error}", logging.ERROR)
-            viviatools.log(f"{traceback}", logging.ERROR)
-
-@bot.event
-async def on_command_error(ctx: commands.Context, error):
+async def on_command_error(ctx: commands.Context, error: Exception):
     """
     Function called when a command error is raised in Vivia.
     """
 
     viviatools.log("error", logging.DEBUG)
-    type, error, traceback = sys.exc_info()
+    type = type(error)
     match type:
-        case app_commands.CommandNotFound | errors.CommandNotFound | discord.ext.commands.errors.CommandNotFound:
+        case errors.CommandNotFound:
             viviatools.log(f"Command not found: {ctx.invoked_with}", logging.WARNING)
             await ctx.send("That command doesn't seem to exist... did you spell it correctly?")
             
         case _:
-            viviatools.log(f"An error occurred in {ctx.invoked_with}:", logging.ERROR)
-            viviatools.log(f"{str(type)}: {error}", logging.ERROR)
-            viviatools.log(f"{traceback}", logging.ERROR)
-            viviatools.log(f"Context: {ctx}", logging.DEBUG)
+            viviatools.log(f"An error occurred in 'v!{ctx.invoked_with}':", logging.ERROR)
+            viviatools.log(f"{str(type)}: {error.__str__()}", logging.ERROR)
+            viviatools.log(f"Context: \nGuild: {ctx.guild}\nChannel: {ctx.channel}\nMessage: {ctx.message}\nUser: {ctx.author}", logging.DEBUG)
 
 @bot.event
 async def on_ready():
