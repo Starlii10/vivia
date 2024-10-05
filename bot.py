@@ -114,8 +114,8 @@ async def on_command_error(ctx: commands.Context, error: Exception):
     """
 
     viviatools.log("error", logging.DEBUG)
-    type = type(error)
-    match type:
+    errtype = type(error)
+    match errtype:
         case errors.CommandNotFound:
             viviatools.log(f"Command not found: {ctx.invoked_with}", logging.WARNING)
             await ctx.send("That command doesn't seem to exist... did you spell it correctly?")
