@@ -107,6 +107,23 @@ async def setup_hook():
     viviatools.log("VSE extensions extracted.")
 
 @bot.event
+async def on_error(event, *args, **kwargs):
+    """
+    Function called when an error is raised in Vivia.
+    """
+
+    type, error, traceback = sys.exc_info()
+    match type:
+        case app_commands.CommandNotFound | errors.CommandNotFound:
+            viviatools.log(f"Command not found: {args[0]}", logging.WARNING)
+            await args[0].reply("That command doesn't seem to exist... did you spell it correctly?")
+            
+        case _:
+            viviatools.log(f"An error occurred in {event}:", logging.ERROR)
+            viviatools.log(f"{str(type)}: {error}", logging.ERROR)
+            viviatools.log(f"{traceback}", logging.ERROR)
+
+@bot.event
 async def on_ready():
     """
     Function called when Vivia starts up.
@@ -520,6 +537,6 @@ while True:
         viviatools.log(f"{str(type(e))}: {str(e)}", severity=logging.FATAL)
         viviatools.log("Don't worry, she will automatically restart in 5 seconds.", logging.FATAL)
         viviatools.log("I would appreciate if you would report this on GitHub, please.", logging.FATAL)
-        asyncio.run(viviatools.setCustomPresence("!! I'm literally in the middle of crashing", "dnd", bot))
+        asyncio.run(viviatools.setCustomPresence("!! Vivia has crashed - rebooting! !!", "dnd", bot))
         time.sleep(5)
         os.execl(sys.executable, sys.executable, *sys.argv)
