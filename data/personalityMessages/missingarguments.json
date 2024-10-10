@@ -1,0 +1,9 @@
+{
+    "messages": [
+        "The \"{arg}\" parameter is missing. Did you forget it?",
+        "The \"{arg}\" parameter appears to be missing...",
+        "Wait... where is the \"{arg}\" parameter? I need it for this command!",
+        "I need the \"{arg}\" parameter for this command.",
+        "I need the \"{arg}\" parameter. I can't do this without it."
+    ]
+}

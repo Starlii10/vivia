@@ -113,17 +113,28 @@ async def on_command_error(ctx: commands.Context, error: Exception):
     Function called when a command error is raised in Vivia.
     """
 
-    viviatools.log("error", logging.DEBUG)
     errtype = type(error)
     match errtype:
         case errors.CommandNotFound:
             viviatools.log(f"Command not found: {ctx.invoked_with}", logging.WARNING)
-            await ctx.send("That command doesn't seem to exist... did you spell it correctly?")
-            
+            await ctx.send(personalityMessage("commandnotfound"))
+        case errors.MissingRequiredArgument:
+            viviatools.log(f"Missing required argument(s) in 'v!{ctx.invoked_with}': {error.param.name}", logging.WARNING)
+            await ctx.send(personalityMessage("missingarguments").replace("{arg}", error.param.name))
+        case errors.BadArgument:
+            viviatools.log(f"Bad argument(s) in 'v!{ctx.invoked_with}': {error.param.name}", logging.WARNING)
+            await ctx.send(personalityMessage("badarguments").replace("{arg}", error.param.name))
+        case errors.BotMissingPermissions | errors.MissingPermissions:
+            viviatools.log(f"Missing permissions in 'v!{ctx.invoked_with}': {error.missing_permissions}", logging.WARNING)
+            await ctx.send(personalityMessage("missingpermissions"))
+        case errors.CommandInvokeError:
+            viviatools.log(f"Command invoke error in 'v!{ctx.invoked_with}':", logging.WARNING)
+            viviatools.log(f"{error}", logging.WARNING)
+            await ctx.send(personalityMessage("error"))
         case _:
-            viviatools.log(f"An error occurred in 'v!{ctx.invoked_with}':", logging.ERROR)
-            viviatools.log(f"{str(type)}: {error.__str__()}", logging.ERROR)
-            viviatools.log(f"Context: \nGuild: {ctx.guild}\nChannel: {ctx.channel}\nMessage: {ctx.message}\nUser: {ctx.author}", logging.DEBUG)
+            viviatools.log(f"An unhandled error occurred in 'v!{ctx.invoked_with}':", logging.ERROR)
+            viviatools.log(f"{str(type(error))}: {error.__str__()}", logging.ERROR)
+    viviatools.log(f"Error context: \nGuild: {ctx.guild}\nChannel: {ctx.channel}\nMessage: {ctx.message}\nUser: {ctx.author}", logging.DEBUG)
 
 @bot.event
 async def on_ready():
@@ -134,6 +145,7 @@ async def on_ready():
     # skip if Vivia is already running
     if viviatools.running:
         viviatools.log("Vivia is already running. Skipping initialization process.")
+        await statusChanges() # get rid of temporary "Connecting to websocket" status
         return
     
     viviatools.log("Connected to websocket - powering on!")
