@@ -103,6 +103,10 @@ async def setup_hook():
                         os.remove("data/temp/extracted/")
                 else:
                     viviatools.log(f"VSE extension {file} extracted", logging.DEBUG)
+    
+    # Create server data folder
+    if not os.path.exists("data/servers"):
+        os.makedirs("data/servers")
 
     viviatools.log("VSE extensions extracted.")
 
