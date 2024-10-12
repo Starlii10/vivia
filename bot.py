@@ -62,10 +62,10 @@ current_status = "Vivia is powering up..."
 # Terminal title. VSCode will scream at you that one of these is unreachable, ignore it
 if sys.platform == 'win32':
     # Windows title
-    system(f"title Running {__VERSION__} - {config['General']['StatusMessage']}")
+    system(f"title Running {__VERSION__}")
 else:
     # Linux title (if this doesn't work on your distro please open an issue because I suck at Linux)
-    system(f"echo -ne '\033]0;Running {__VERSION__} - {config['General']['StatusMessage']}\007'")
+    system(f"echo -ne '\033]0;Running {__VERSION__}\007'")
 
 # Get ready to run the bot
 intents = discord.Intents.default()

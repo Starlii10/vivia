@@ -1,8 +1,4 @@
 [General]
-# The message to display in the terminal.
-# If you'd like to modify the statuses Vivia displays when online, see data/statuses.json.
-# Deprecated - this option will be removed soon!
-statusmessage = Statuses have moved to data/statuses.json
 # The command prefix for the bot.
 prefix = v!
 # Whether or not to use personality messages.

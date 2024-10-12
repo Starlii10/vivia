@@ -18,6 +18,7 @@ data/servers
 
 # python things
 __pycache__/
+venv
 
 # LLaMa models
 models
