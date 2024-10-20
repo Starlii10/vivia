@@ -12,6 +12,8 @@
     Have a great time using Vivia!
 """
 
+from asyncio import subprocess
+import asyncio
 import configparser
 import datetime
 import json
@@ -150,8 +152,13 @@ def extractVSE(file: str):
     for f in os.listdir(f"data/temp/extracted/{filename}"):
         if f.endswith(".txt") and "requirements" in f:
             os.rename(f"data/temp/extracted/{filename}/{f}", f"requirements.txt")
-            log(f"VSE extension {filename} contains requirements.txt - running pip", logging.INFO)
-            os.system("pip install -r requirements.txt")
+            log(f"VSE extension {filename} contains a requirements.txt file. Attempting to run pip to install it", logging.WARNING)
+            try:
+                asyncio.run(subprocess.create_subprocess_shell("pip install -r requirements.txt"))
+            except Exception as e:
+                log(f"Failed to install requirements for VSE extension {filename}", logging.ERROR)
+                log(f"{str(type(e))}: {e}", logging.ERROR)
+                log(f"{filename} may not load correctly. Please install the requirements manually", logging.ERROR)
             break
 
     # Find and copy any other files (if any)
@@ -274,16 +281,15 @@ def perServerFile(serverID: int, filename: str, template: str | None = None):
                 f.write(template)
     return open(f"data/servers/{serverID}/{filename}", "r+")
 
-async def setCustomPresence(message: str, bot: commands.Bot, status: str = "online"):
+async def setCustomPresence(message: str, status: str = "online"):
     """
     Sets the bot's presence to the specified message.
 
     ## Args:
         - message (str): The message to set the presence to.
         - status (str, optional): The status to set the bot to. Can be "online", "idle", or "dnd". Defaults to "online".
-        - bot (commands.Bot): A reference to the bot.
     """
-    await bot.change_presence(status=discord.Status[status], activity=discord.CustomActivity(name=message))
+    await bot_ref.change_presence(status=discord.Status[status], activity=discord.CustomActivity(name=message))
 
 def helpMsg(extension: str):
     """
@@ -294,6 +300,13 @@ def helpMsg(extension: str):
 
     ## Returns:
         - str: The help message for the specified extension.
+
+    ## Notes:
+        - Help messages are stored in `data/help/<extension>/help.txt - formatted for a Discord message (Markdown supported!)`.
     """
-    with open(f'data/help/{extension.replace(".", "/")}/help.txt', 'r') as f:
-        return f.read()
+    try:
+        with open(f'data/help/{extension.replace(".", "/")}/help.txt', 'r') as f:
+            return f.read()
+    except FileNotFoundError:
+        log(f"Couldn't find help message for extension {extension}. Does it even exist?", logging.ERROR)
+        return "There was supposed to be a help message here, but it doesn't seem to exist. Sorry about that!"
