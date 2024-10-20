@@ -127,7 +127,7 @@ async def on_error(event, *args, **kwargs):
     Function called when an error is raised in Vivia.
     """
 
-    viviatools.log(f"Error in event {event}!\n{"".join(traceback.format_exception(*sys.exc_info()))}", logging.ERROR)
+    viviatools.log(f"Error in event {event}!\n{''.join(traceback.format_exception(*sys.exc_info()))}", logging.ERROR)
     viviatools.log(f"(Error args: {args} | Error kwargs: {kwargs})", logging.DEBUG)
 
 @bot.event
