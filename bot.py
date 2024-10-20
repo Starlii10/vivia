@@ -30,6 +30,7 @@ import shutil
 import json
 import threading
 import time
+import traceback
 from aiohttp import ClientConnectorError
 import discord.ext.commands
 import dotenv
@@ -126,8 +127,7 @@ async def on_error(event, *args, **kwargs):
     Function called when an error is raised in Vivia.
     """
 
-    viviatools.log(f"Error in {event}: {sys.exc_info()[0]}: {sys.exc_info()[1]}", logging.ERROR)
-    viviatools.log(f"{sys.exc_info()[2]}", logging.ERROR)
+    viviatools.log(f"Error in event {event}!\n{traceback.format_exception(*sys.exc_info())}", logging.ERROR)
     viviatools.log(f"(Error args: {args} | Error kwargs: {kwargs})", logging.DEBUG)
 
 @bot.event
