@@ -67,15 +67,15 @@ handler.setFormatter(colorlog.ColoredFormatter(
     datefmt='%Y-%m-%d %H:%M:%S',
     reset=True,
     log_colors={
-        'DEBUG':    'cyan',
-        'INFO':     'cyan',
-        'WARNING':  'yellow',
-        'ERROR':    'red',
+        'DEBUG'   : 'cyan',
+        'INFO'    : 'cyan',
+        'WARNING' : 'yellow',
+        'ERROR'   : 'red',
         'CRITICAL': 'red',
     }
 ))
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 logger.addHandler(handler)
 if config["Advanced"]["Debug"] == "True":
     logger.setLevel(logging.DEBUG)
