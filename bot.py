@@ -15,13 +15,23 @@
 # Vivia version
 __VERSION__ = "Vivia 20241003"
 
+
+# Imports
+import sys
+
+if __name__ != "__main__": # prevent running as a module, and print ASCII art Vivia!
+    print("              ██▓▓▓▓▓▓▓██                            ██▓▓▓▓▓▓▓██                \n               ███▓▓▓▓██                              ███▓▓▓███                 \n                 ██████                                 █████                   \n                   ████                                ████                     \n                    ███   █████████████████████████    ███                      \n                    ██████████████████████████████████████                      \n                 █████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████                     \n               ██████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████                  \n             █████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████                \n            ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████              \n           ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████             \n         █████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████            \n        ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████           \n        ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓████          \n       ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████████████████████████▓▓▓▓▓▓▓▓▓▓▓████         \n      ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████████████▓▓▓▓▓▓▓▓▓▓███         \n      ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████████████████▓▓▓▓▓▓▓▓████        \n      ███▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████░░░░░▒██████▒█████▓▓▓▓▓▓████        \n      ███▓▓▓▓▓▓▓▓███████████████████████████████▓░░░██████▒████████████         \n      ████▓▓▓████████▓▓████████████████████▒░░▒████████████▒▒▓████████          \n       ███████████▒▒▒▒██████████▒▒▒███████▒░░░░▒███████████▒▒▒▒▒▒▒████          \n         ██████▒▒▒▒▒▒██████████▒░░░░▒▒████▒░░░░▒████████████▒▒▒▒▒▒████          \n           ███▒▒▒▒▒▒▒█████████▒░░░░░░░░▒██▒░░░░▒████████████▒▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒▓████████▒░░░░░░░░░▒██▒░░░░▒█████████████▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒█████████▒░░░░▒▓▒▒▒███▒░░░░▒█████████████▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒▓█████████████████████▒░░░░▓█████████████▒▒▒▒▒▒███          \n           ███▓▒▒▒▒▒▒███████████████████████▓███████████████▒▒▒▒▒▒▒███          \n           ████▒▒▒▒▒▒███████████████████████████████████████▒▒▒▒▒▒████          \n            ███▒▒▒▒▒▒▒█████████████████████████████████████▒▒▒▒▒▒▒███           \n            ████▒▒▒▒▒▒▒███████████▒░░░▒███▒░░░▒███████████▒▒▒▒▒▒▒████           \n             ████▒▒▒▒▒▒▒█████████▓░░░░░░░░░░░░░▓█████████▒▒▒▒▒▒▒████            \n              ████▒▒▒▒▒▒▒█████████▒░░░░░░░░░░▒▓█████████▒▒▒▒▒▒▒▓████            \n               ████▒▒▒▒▒▒▒▒█████████▓▒▒░░▒▒▒██████████▒▒▒▒▒▒▒▒████▓██  ███      \n                ████▒▒▒▒▒▒▒▒▒███████████████████████▒▒▒▒▒▒▒▒▒█████▒▓███▓██      \n                 █████▒▒▒▒▒▒▒▒▒▒█████████████████▒▒▒▒▒▒▒▒▒▒▓███████▒▒▒███       \n                   █████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓████ █████████        \n                    ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██████ ███▓▓▓███         \n                       ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒███████  ███▓▓▓███          \n                       ███████████▓▒▒▒▒▒▒▒▒▒▒▒▓███████████  ███▓▓▓███           \n                      ████▓▓▓███████████████████████▓▓▓████ ██▓▓▓▓███           \n                     ████▓▓▓▓▓▓▓▓▓▓███████████▓▓▓▓▓▓▓▓▓▓████████▓███            \n                  ███████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████             \n               █████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▒▒▒▓████            \n              ████▒▒▒███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▒▒▒▒▒████           \n\"Please don't try to import me as a module... I'm not used to my entire existence being tied to a program I have no control over.\"")
+    print("Psst! If you're looking for helper functions, you probably want ViviaTools (import extras.viviatools).")
+    sys.exit(0)
+
+# Back to imports lol
 import asyncio
 import shutil
-import sys
 import json
 import threading
 import time
 from aiohttp import ClientConnectorError
+import discord.ext.commands
 import dotenv
 import random
 import os
@@ -34,7 +44,7 @@ from discord import GatewayNotFound, HTTPException, LoginFailure, app_commands
 from discord.ext import tasks, commands, commands
 from discord.ext.commands import errors
 
-# Vivia's extra scripts
+# ViviaTools
 import extras.viviatools as viviatools
 from extras.viviatools import config, serverConfig, personalityMessage
 
@@ -111,6 +121,43 @@ async def setup_hook():
     viviatools.log("VSE extensions extracted.")
 
 @bot.event
+async def on_error(event, *args, **kwargs):
+    """
+    Function called when an error is raised in Vivia.
+    """
+
+    viviatools.log(f"Error in {event}: {sys.exc_info()[0]}", logging.ERROR)
+
+@bot.event
+async def on_command_error(ctx: commands.Context, error: Exception):
+    """
+    Function called when a command error is raised in Vivia.
+    """
+
+    errtype = type(error)
+    match errtype:
+        case errors.CommandNotFound:
+            viviatools.log(f"Command not found: {ctx.invoked_with}", logging.WARNING)
+            await ctx.send(personalityMessage("commandnotfound"))
+        case errors.MissingRequiredArgument:
+            viviatools.log(f"Missing required argument(s) in 'v!{ctx.invoked_with}': {error.param.name}", logging.WARNING)
+            await ctx.send(personalityMessage("missingarguments").replace("{arg}", error.param.name))
+        case errors.BadArgument:
+            viviatools.log(f"Bad argument(s) in 'v!{ctx.invoked_with}': {error.param.name}", logging.WARNING)
+            await ctx.send(personalityMessage("badarguments").replace("{arg}", error.param.name))
+        case errors.BotMissingPermissions | errors.MissingPermissions:
+            viviatools.log(f"Missing permissions in 'v!{ctx.invoked_with}': {error.missing_permissions}", logging.WARNING)
+            await ctx.send(personalityMessage("missingpermissions"))
+        case errors.CommandInvokeError:
+            viviatools.log(f"Command invoke error in 'v!{ctx.invoked_with}':", logging.WARNING)
+            viviatools.log(f"{error}", logging.WARNING)
+            await ctx.send(personalityMessage("error"))
+        case _:
+            viviatools.log(f"An unhandled error occurred in 'v!{ctx.invoked_with}':", logging.ERROR)
+            viviatools.log(f"{str(type(error))}: {error.__str__()}", logging.ERROR)
+    viviatools.log(f"Error context: \nGuild: {ctx.guild}\nChannel: {ctx.channel}\nMessage: {ctx.message}\nUser: {ctx.author}", logging.DEBUG)
+
+@bot.event
 async def on_ready():
     """
     Function called when Vivia starts up.
@@ -119,6 +166,7 @@ async def on_ready():
     # skip if Vivia is already running
     if viviatools.running:
         viviatools.log("Vivia is already running. Skipping initialization process.")
+        await statusChanges() # get rid of temporary "Connecting to websocket" status
         return
     
     viviatools.log("Connected to websocket - powering on!")
@@ -519,11 +567,12 @@ while True:
         viviatools.log("Perhaps the token in token.env is invalid? There's a lot of reasons this could happen.", logging.ERROR)
         viviatools.log("Vivia will retry in 5 seconds.", logging.ERROR)
         time.sleep(5)
+        os.execl(sys.executable, sys.executable, *sys.argv)
     except Exception as e:
         viviatools.log(f"Vivia has crashed... oh no...", logging.FATAL)
         viviatools.log(f"{str(type(e))}: {str(e)}", severity=logging.FATAL)
         viviatools.log("Don't worry, she will automatically restart in 5 seconds.", logging.FATAL)
         viviatools.log("I would appreciate if you would report this on GitHub, please.", logging.FATAL)
-        asyncio.run(viviatools.setCustomPresence("!! I'm literally in the middle of crashing", "dnd", bot))
+        asyncio.run(viviatools.setCustomPresence("!! Vivia has crashed - rebooting! !!", "dnd", bot))
         time.sleep(5)
         os.execl(sys.executable, sys.executable, *sys.argv)

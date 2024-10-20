@@ -37,7 +37,7 @@ async def channelmaker(ctx: commands.Context, channel_config: str, type: str="te
     ## Notes:
         - Only users with bot permissions can use this command.
         - The channelmaker JSON configuration looks like this: {"categories":{"test":["test"]}}
-        - For more info, read the channelmakerhelpmsg.txt file or run /help channelmaker when the bot is running.
+        - For more info, read the channelmaker help message.
     """
     if has_bot_permissions(ctx.author, ctx.guild):
         await ctx.send("Making channels! (This may take a moment.)")

@@ -1,0 +1,11 @@
+{
+    "messages": [
+        "The \"{arg}\" parameter appears to be invalid.",
+        "The \"{arg}\" parameter is invalid.",
+        "\"{arg}\" is not a valid parameter.",
+        "The \"{arg}\" parameter is not valid.",
+        "\"{arg}\" is an invalid parameter.",
+        "\"{arg}\" is invalid...",
+        "The \"{arg}\" parameter doesn't make sense..."
+    ]
+}
