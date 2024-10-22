@@ -75,17 +75,18 @@ handler.setFormatter(colorlog.ColoredFormatter(
     }
 ))
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 logger.addHandler(handler)
-if config["Advanced"]["Debug"] == "True":
-    logger.setLevel(logging.DEBUG)
-else:
-    logger.setLevel(logging.INFO)
 
 # File logging
 handler = logging.FileHandler(f'data/logs/{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log')
 handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s\t %(message)s'))
 logger.addHandler(handler)
+
+if config["Advanced"]["Debug"] == "True":
+    logger.setLevel(logging.DEBUG)
+else:
+    logger.setLevel(logging.INFO)
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Functions
