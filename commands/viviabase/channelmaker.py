@@ -14,6 +14,7 @@ import json
 import logging
 from discord.ext import commands
 from discord import app_commands
+from extras import viviatools
 from extras.viviatools import has_bot_permissions, log, personalityMessage, serverConfig
 
 async def setup(bot: commands.Bot): # for extension loading
@@ -27,6 +28,8 @@ async def setup(bot: commands.Bot): # for extension loading
     app_commands.Choice(name="voice",value="voice"),
     app_commands.Choice(name="forum",value="forum"),
 ])
+@viviatools.blockInDMs
+@viviatools.adminOnly
 async def channelmaker(ctx: commands.Context, channel_config: str, type: str="text"):
     """
     Makes a bunch of channels from JSON.
@@ -39,33 +42,31 @@ async def channelmaker(ctx: commands.Context, channel_config: str, type: str="te
         - The channelmaker JSON configuration looks like this: {"categories":{"test":["test"]}}
         - For more info, read the channelmaker help message.
     """
-    if has_bot_permissions(ctx.author, ctx.guild):
-        await ctx.send("Making channels! (This may take a moment.)")
+
+    await ctx.send("Making channels! (This may take a moment.)")
+    try:
         try:
-            try:
-                channels = json.loads(channel_config) # Channels is a list of categories, each category is a list of channels
-            except Exception:
-                await ctx.send(f"I couldn't parse that JSON.\n\nIf you need help with using this command, run /help channelmaker.")
-                return
-            for category in channels['categories']:
-                if not category in ctx.guild.categories:
-                    # Create the category
-                    target = await ctx.guild.create_category(category, reason=f"Created by /channelmaker - run by {ctx.author}")
-                else:
-                    target = ctx.guild.categories.get(category)
-                for channel in channels['categories'][category]:
-                    # Create the channel
-                    match type:
-                        case "text":
-                            await ctx.guild.create_text_channel(channel, category=target, reason=f"Created by /channelmaker - run by {ctx.author}")
-                        case "voice":
-                            await ctx.guild.create_voice_channel(channel, category=target, reason=f"Created by /channelmaker - run by {ctx.author}")
-                        case "forum":
-                            await ctx.guild.create_forum(channel, category=target, reason=f"Created by /channelmaker - run by {ctx.author}")
-        except Exception as e:
-            await ctx.send(personalityMessage("error"))
-            if serverConfig(ctx.guild.id)['verboseErrors']:
-                await ctx.send(str(e) + "\n-# To disable these messages, run /config verboseErrors false")
-            await log(f"Error while making channels in server {str(ctx.guild.name)} ({str(ctx.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
-    else:
-        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+            channels = json.loads(channel_config) # Channels is a list of categories, each category is a list of channels
+        except Exception:
+            await ctx.send(f"I couldn't parse that JSON.\n\nIf you need help with using this command, run /help channelmaker.")
+            return
+        for category in channels['categories']:
+            if not category in ctx.guild.categories:
+                # Create the category
+                target = await ctx.guild.create_category(category, reason=f"Created by /channelmaker - run by {ctx.author}")
+            else:
+                target = ctx.guild.categories.get(category)
+            for channel in channels['categories'][category]:
+                # Create the channel
+                match type:
+                    case "text":
+                        await ctx.guild.create_text_channel(channel, category=target, reason=f"Created by /channelmaker - run by {ctx.author}")
+                    case "voice":
+                        await ctx.guild.create_voice_channel(channel, category=target, reason=f"Created by /channelmaker - run by {ctx.author}")
+                    case "forum":
+                        await ctx.guild.create_forum(channel, category=target, reason=f"Created by /channelmaker - run by {ctx.author}")
+    except Exception as e:
+        await ctx.send(personalityMessage("error"))
+        if serverConfig(ctx.guild.id)['verboseErrors']:
+            await ctx.send(str(e) + "\n-# To disable these messages, run /config verboseErrors false")
+        await log(f"Error while making channels in server {str(ctx.guild.name)} ({str(ctx.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)

@@ -12,6 +12,7 @@
 
 import json
 import logging
+import os
 import random
 from discord.ext import commands
 from discord import app_commands
@@ -42,7 +43,7 @@ async def namegenerator(ctx: commands.Context, type: str="first", gender: str="n
     """
     Generator for names.
     """
-    with open('data/names.json') as f:
+    with open(os.path.join("data", "names.json"), "r") as f:
         names = json.load(f)
         all_names = names['first']['male'] + names['first']['female']
         match type:

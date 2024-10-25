@@ -1,0 +1,10 @@
+{
+    "messages": [
+        "This command can't be used in DMs.",
+        "Can't use this command in DMs.",
+        "This command only works in a server, not in DMs.",
+        "I can't execute this command in private chats.",
+        "You can't use this command in DMs.",
+        "This command doesn't work in DMs."
+    ]
+}

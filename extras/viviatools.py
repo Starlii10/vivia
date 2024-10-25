@@ -16,12 +16,14 @@ from asyncio import subprocess
 import asyncio
 import configparser
 import datetime
+from functools import wraps
 import json
 import logging
 import os
 import random
 import shutil
 import sys
+from typing import Callable
 import colorlog
 import discord
 import zipfile
@@ -312,3 +314,42 @@ def helpMsg(extension: str):
     except FileNotFoundError:
         log(f"Couldn't find help message for extension {extension}. Does it even exist?", logging.ERROR)
         return "There was supposed to be a help message here, but it doesn't seem to exist. Sorry about that!"
+    
+# ------------------------------------------------------------------------------
+# Decorators
+
+def ownerOnly(func: Callable) -> Callable:
+    """
+        Decorator that only allows the bot owner to execute a command.
+    """
+    @wraps(func)
+    async def wrapper(bot: commands.Bot, ctx: commands.Context, *args, **kwargs):
+        if ctx.author.id not in config["Owners"]:
+            await ctx.send(personalityMessage("missingpermissions"))
+            return False
+        return await func(bot, ctx, *args, **kwargs)
+    return wrapper
+
+def adminOnly(func: Callable) -> Callable:
+    """
+        Decorator that only allows Vivia Admins to execute a command.
+    """
+    @wraps(func)
+    async def wrapper(bot: commands.Bot, ctx: commands.Context, *args, **kwargs):
+        if has_bot_permissions(ctx.author, ctx.guild):
+            return await func(bot, ctx, *args, **kwargs)
+        await ctx.send(personalityMessage("missingpermissions"))
+        return False
+    return wrapper
+
+def blockInDMs(func: Callable) -> Callable:
+    """
+        Decorator that blocks commands from being executed in DMs.
+    """
+    @wraps(func)
+    async def wrapper(bot: commands.Bot, ctx: commands.Context, *args, **kwargs):
+        if not ctx.guild:
+            await ctx.send(personalityMessage("nodm"))
+            return False
+        return await func(bot, ctx, *args, **kwargs)
+    return wrapper

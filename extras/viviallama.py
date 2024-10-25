@@ -37,8 +37,8 @@ import discord
 import numpy as np
 
 if __name__ == "__main__":
-    viviatools.log("This is a helper script for Vivia that should not be run directly.", logging.ERROR)
-    viviatools.log("To run Vivia, please use \"python bot.py\" in the root directory.", logging.ERROR)
+    print("This is a helper script for Vivia that should not be run directly.", sys.stderr)
+    print("To run Vivia, please use \"python bot.py\" in the root directory.", sys.stderr)
     sys.exit(1)
 
 from extras import viviatools
@@ -131,11 +131,11 @@ async def createResponse(
                                                   [{"role": "user", "content": prompt}] + [{"role": "user", "content": attachment_messages}])
         response = generation['choices'][0]['message']['content']
         viviatools.log(f"Response generated successfully for user {internal_name} ({username}).", logging.DEBUG)
-
+        
         # Write messages to memory file
         with open(f"data/tempchats/{internal_name}/messages.txt", "w") as file:
             json.dump(additional_messages + [{"role": "user", "content": prompt}] + [{"role": "assistant", "content": f"{response}"}], file)
-        
+
         return response
     else:
         # Return an error message if LLaMa failed to load
@@ -156,7 +156,7 @@ async def processAttachment(attachment, internal_name):
         case "text":
             with open(f"data/tempchats/{internal_name}/{attachment.filename}", "r") as file:
                 viviatools.log(f"Attachment {attachment.filename} read as text", logging.DEBUG)
-                return {"role": "user", "content": "An attached text file: " + file.read()}
+                return {"role": "user", "content": f"An attached text file: {attachment.filename}:\n{file.read()}"}
         case "image":
             # Attempt OCR on the attachment
             if not imageReadingDisabled:
@@ -173,13 +173,13 @@ async def processAttachment(attachment, internal_name):
                     # DEBUG - Save image
                     if config["Advanced"]["Debug"] == "True":
                         cv2.imwrite(f"extras/ocr/{attachment.filename}", noise_reduced)
-                        viviatools.log(f"Debug: Saved image {attachment.filename} to extras/ocr", logging.DEBUG)
+                        viviatools.log(f"Debug: Saved processed image {attachment.filename} to extras/ocr", logging.DEBUG)
                     
                     # Perform OCR
                     text = pytesseract.image_to_string(noise_reduced)
                     if text:
                         viviatools.log(f"Found text in {attachment.filename}: {text}", logging.DEBUG)
-                        return {"role": "user", "content": "An attached image with the text: " + text}
+                        return {"role": "user", "content": f"An attached image ({attachment.filename}) with the text: {text}"}
                     else:
                         # OCR returned no text
                         viviatools.log(f"Couldn't find text in {attachment.filename}. Skipping.", logging.DEBUG)
@@ -187,15 +187,15 @@ async def processAttachment(attachment, internal_name):
                 except Exception as e:
                     # OCR failed
                     viviatools.log(f"Error performing OCR on {attachment.filename}. Skipping.\n{str(type(e))}: {e}", logging.ERROR)
-                    return {"role": "user", "content": f"An image that couldn't be read due to errors: {attachment.filename}"}
+                    return {"role": "user", "content": f"An image ({attachment.filename}) that couldn't be read due to errors"}
             else:
                 # Pytesseract didn't load, skip
                 viviatools.log(f"Attachment {attachment.filename} is not text. Skipping OCR due to previous errors loading pytesseract.", logging.WARNING)
-                return {"role": "user", "content": f"An image that couldn't be read due to errors: {attachment.filename}"}
+                return {"role": "user", "content": f"An image ({attachment.filename}) that couldn't be read due to errors"}
         case _:
             # Unrecognized attachment type
             viviatools.log(f"Attachment {attachment.filename} is unrecognized. Skipping.", logging.WARNING)
-            return {"role": "user", "content": f"An unrecognized attachment: {attachment.filename}"}
+            return {"role": "user", "content": f"An unrecognized attachment ({attachment.filename})"}
 
 def add_info_to_sysprompt(sysprompt, internal_name, username, discord_status_user, status_bot, server_name, channel_name, category_name):
     # This is a TERRIBLE way to do this. I know

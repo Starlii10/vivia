@@ -13,11 +13,12 @@
 """
 
 # Vivia version
-__VERSION__ = "Vivia 20241003"
+__VERSION__ = "Vivia 20241025"
 
 
 # Imports
 import sys
+
 
 if __name__ != "__main__": # prevent running as a module, and print ASCII art Vivia!
     print("              ██▓▓▓▓▓▓▓██                            ██▓▓▓▓▓▓▓██                \n               ███▓▓▓▓██                              ███▓▓▓███                 \n                 ██████                                 █████                   \n                   ████                                ████                     \n                    ███   █████████████████████████    ███                      \n                    ██████████████████████████████████████                      \n                 █████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████                     \n               ██████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████                  \n             █████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████                \n            ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████              \n           ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████             \n         █████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████            \n        ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████           \n        ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓████          \n       ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████████████████████████▓▓▓▓▓▓▓▓▓▓▓████         \n      ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████████████▓▓▓▓▓▓▓▓▓▓███         \n      ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████████████████▓▓▓▓▓▓▓▓████        \n      ███▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████░░░░░▒██████▒█████▓▓▓▓▓▓████        \n      ███▓▓▓▓▓▓▓▓███████████████████████████████▓░░░██████▒████████████         \n      ████▓▓▓████████▓▓████████████████████▒░░▒████████████▒▒▓████████          \n       ███████████▒▒▒▒██████████▒▒▒███████▒░░░░▒███████████▒▒▒▒▒▒▒████          \n         ██████▒▒▒▒▒▒██████████▒░░░░▒▒████▒░░░░▒████████████▒▒▒▒▒▒████          \n           ███▒▒▒▒▒▒▒█████████▒░░░░░░░░▒██▒░░░░▒████████████▒▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒▓████████▒░░░░░░░░░▒██▒░░░░▒█████████████▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒█████████▒░░░░▒▓▒▒▒███▒░░░░▒█████████████▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒▓█████████████████████▒░░░░▓█████████████▒▒▒▒▒▒███          \n           ███▓▒▒▒▒▒▒███████████████████████▓███████████████▒▒▒▒▒▒▒███          \n           ████▒▒▒▒▒▒███████████████████████████████████████▒▒▒▒▒▒████          \n            ███▒▒▒▒▒▒▒█████████████████████████████████████▒▒▒▒▒▒▒███           \n            ████▒▒▒▒▒▒▒███████████▒░░░▒███▒░░░▒███████████▒▒▒▒▒▒▒████           \n             ████▒▒▒▒▒▒▒█████████▓░░░░░░░░░░░░░▓█████████▒▒▒▒▒▒▒████            \n              ████▒▒▒▒▒▒▒█████████▒░░░░░░░░░░▒▓█████████▒▒▒▒▒▒▒▓████            \n               ████▒▒▒▒▒▒▒▒█████████▓▒▒░░▒▒▒██████████▒▒▒▒▒▒▒▒████▓██  ███      \n                ████▒▒▒▒▒▒▒▒▒███████████████████████▒▒▒▒▒▒▒▒▒█████▒▓███▓██      \n                 █████▒▒▒▒▒▒▒▒▒▒█████████████████▒▒▒▒▒▒▒▒▒▒▓███████▒▒▒███       \n                   █████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓████ █████████        \n                    ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██████ ███▓▓▓███         \n                       ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒███████  ███▓▓▓███          \n                       ███████████▓▒▒▒▒▒▒▒▒▒▒▒▓███████████  ███▓▓▓███           \n                      ████▓▓▓███████████████████████▓▓▓████ ██▓▓▓▓███           \n                     ████▓▓▓▓▓▓▓▓▓▓███████████▓▓▓▓▓▓▓▓▓▓████████▓███            \n                  ███████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████             \n               █████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▒▒▒▓████            \n              ████▒▒▒███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▒▒▒▒▒████           \n\"Please don't try to import me as a module... I'm not used to my entire existence being tied to a program I have no control over.\"")
@@ -44,6 +45,7 @@ import discord, discord.ext
 from discord import GatewayNotFound, HTTPException, LoginFailure, app_commands
 from discord.ext import tasks, commands, commands
 from discord.ext.commands import errors
+from discord.ext.commands.errors import CommandError
 
 # ViviaTools
 import extras.viviatools as viviatools
@@ -111,7 +113,7 @@ async def setup_hook():
                     viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
                     viviatools.log("VSE extension will not be loaded - functionality may be limited.", logging.ERROR)
                     if config['Advanced']['Debug'] != "True":
-                        os.remove("data/temp/extracted/")
+                        os.remove(os.path.join(root, file))
                 else:
                     viviatools.log(f"VSE extension {file} extracted", logging.DEBUG)
     
@@ -131,7 +133,7 @@ async def on_error(event, *args, **kwargs):
     viviatools.log(f"(Error args: {args} | Error kwargs: {kwargs})", logging.DEBUG)
 
 @bot.event
-async def on_command_error(ctx: commands.Context, error: Exception):
+async def on_command_error(ctx: commands.Context, error: CommandError):
     """
     Function called when a command error is raised in Vivia.
     """
@@ -240,12 +242,7 @@ async def on_message(message: discord.Message):
         return
 
     # Process commands
-    try:
-        await bot.process_commands(message)
-    except app_commands.CommandNotFound or errors.CommandNotFound:
-        viviatools.log(f"Command not found: {message.content} (requested by {message.author}). Ignoring.", logging.WARNING)
-        await message.reply("That command doesn't seem to exist... did you spell it correctly?")
-        pass
+    await bot.process_commands(message)
 
     # Invoke LLaMa if pinged (this also works for replies)
     # "Starlii when will this be async?" Good question
@@ -301,7 +298,7 @@ async def reload_all_extensions():
     failed = []
 
     # Load ViviaBase
-    for file in os.listdir("commands/viviabase"):
+    for file in os.listdir(os.path.join("commands", "viviabase")):
         if file.endswith(".py"):
             try:
                 await bot.load_extension(f"commands.viviabase.{file[:-3]}")
@@ -320,7 +317,7 @@ async def reload_all_extensions():
     # Load ViviaBase beta
     if config["Advanced"]["betaextensions"]:
         viviatools.log("Loading beta extensions.")
-        for file in os.listdir("commands/viviabase-beta"):
+        for file in os.listdir(os.path.join("commands", "viviabase-beta")):
             if file.endswith(".py"):
                 try:
                     await bot.load_extension(f"commands.viviabase-beta.{file[:-3]}")
@@ -367,6 +364,7 @@ async def reload_all_extensions():
 # These commands are always available
 
 @bot.hybrid_command()
+@viviatools.ownerOnly
 async def sync(ctx, guild: int=0):
     """
     Syncs the command tree.
@@ -375,19 +373,18 @@ async def sync(ctx, guild: int=0):
         - Only the bot owner can use this command.
         - If you want to sync the entire bot, use "v!sync 0" or "v!sync". Otherwise specify the ID of the guild you want to sync.
     """
-    if await bot.is_owner(ctx.author):
-        if guild == 0:
-            await bot.tree.sync()
-            await ctx.send('The command tree was synced, whatever that means.')
-            viviatools.log("The command tree was synced, whatever that means.")
-        else:
-            await bot.tree.sync(guild=discord.utils.get(bot.guilds, id=guild))
-            await ctx.send(f'The command tree was synced for {guild}, whatever that means.')
-            viviatools.log(f"The command tree was synced for {guild}, whatever that means.")
+
+    if guild == 0:
+        await bot.tree.sync()
+        await ctx.send('The command tree was synced, whatever that means.')
+        viviatools.log("The command tree was synced, whatever that means.")
     else:
-        await ctx.send(personalityMessage("nopermissions"))
+        await bot.tree.sync(guild=discord.utils.get(bot.guilds, id=guild))
+        await ctx.send(f'The command tree was synced for {guild}, whatever that means.')
+        viviatools.log(f"The command tree was synced for {guild}, whatever that means.")
 
 @bot.hybrid_command()
+@viviatools.ownerOnly
 async def fixconfig(ctx: commands.Context):
     """
     Regenerates server files for servers where they are missing.
@@ -395,46 +392,45 @@ async def fixconfig(ctx: commands.Context):
     ## Notes:
         - Only the bot owner can use this command.
     """
-    if await bot.is_owner(ctx.author):
-        viviatools.log(f"Regenerating missing data files for all servers...", logging.DEBUG)
-        for guild in bot.guilds:
-            # Regenerate server data path if it doesn't exist
-            if not os.path.exists(f'data/servers/{guild.id}'):
-                os.mkdir(f'data/servers/{guild.id}')
-            viviatools.log(f'Data path for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
 
-            # Regenerate configuration if guild config is missing
-            try:
-                with open(f'data/servers/{guild.id}/config.json', 'x') as f, open(f'data/config.json.example', 'r') as g:
-                    json.dump(obj=json.load(g), fp=f)
-                viviatools.log(f'Config file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
-            except FileExistsError:
-                pass # Most likely there was nothing wrong with it
+    viviatools.log(f"Regenerating missing data files for all servers...", logging.DEBUG)
+    for guild in bot.guilds:
+        # Regenerate server data path if it doesn't exist
+        if not os.path.exists(os.path.join('data', 'servers', str(guild.id))):
+            os.mkdir(os.path.join('data', 'servers', str(guild.id)))
+        viviatools.log(f'Data path for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
 
-            # Regenerate quotes if guild quotes is missing
-            try:
-                with open(f'data/servers/{guild.id}/quotes.json', 'x') as f:
-                    json.dump({'quotes': []}, f)
-                viviatools.log(f'Custom quote file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
-            except FileExistsError:
-                pass # Most likely there was nothing wrong with it
+        # Regenerate configuration if guild config is missing
+        try:
+            with open(os.path.join('data', 'servers', str(guild.id), 'config.json'), 'x') as f, open(f'data/config.json.example', 'r') as g:
+                json.dump(obj=json.load(g), fp=f)
+            viviatools.log(f'Config file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
+        except FileExistsError:
+            pass # Most likely there was nothing wrong with it
 
-            # Regenerate warns if guild warns is missing
-            try:
-                with open(f'data/servers/{guild.id}/warns.json', 'x') as f:
-                    json.dump({'warns': []}, f)
-                viviatools.log(f'Warn file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
-            except FileExistsError:
-                pass # Most likely there was nothing wrong with it
+        # Regenerate quotes if guild quotes is missing
+        try:
+            with open(os.path.join('data', 'servers', str(guild.id), 'quotes.json'), 'x') as f:
+                json.dump({'quotes': []}, f)
+            viviatools.log(f'Custom quote file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
+        except FileExistsError:
+            pass # Most likely there was nothing wrong with it
 
-        await ctx.send('Fixed all missing config and quotes files. Check log for more info.')
-    else:
-        await ctx.send(personalityMessage("nopermissions"))
+        # Regenerate warns if guild warns is missing
+        try:
+            with open(os.path.join('data', 'servers', str(guild.id), 'warns.json'), 'x') as f:
+                json.dump({'warns': []}, f)
+            viviatools.log(f'Warn file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
+        except FileExistsError:
+            pass # Most likely there was nothing wrong with it
+
+    await ctx.send('Fixed all missing config and quotes files. Check log for more info.')
 
 @bot.hybrid_command(
     name="statuschange",
     description="Manually randomizes the current status of the bot."
 )
+@viviatools.ownerOnly
 async def statuschange(ctx: commands.Context):
     """
     Manually randomizes the current status of the bot.
@@ -442,11 +438,9 @@ async def statuschange(ctx: commands.Context):
     ## Notes:
         - Only the bot owner can use this command.
     """
-    if await bot.is_owner(ctx.author):
-        await statusChanges()
-        await ctx.send('Status randomized!')
-    else:
-        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+
+    await statusChanges()
+    await ctx.send('Status randomized!')
 
 @bot.hybrid_command(
     name="clearhistory",
@@ -456,8 +450,8 @@ async def clearhistory(ctx: commands.Context):
     """
     Clears a user's recent chat history with Vivia.
     """
-    if os.path.exists(f"data/tempchats/{str(ctx.author.name)}"):
-        shutil.rmtree(f"data/tempchats/{str(ctx.author.name)}")
+    if os.path.exists(os.path.join("data", "tempchats", str(ctx.author.name))):
+        shutil.rmtree(os.path.join("data", "tempchats", str(ctx.author.name)))
         await ctx.send(personalityMessage("historyclear"), ephemeral=True)
         viviatools.log(f"{ctx.author.name} cleared their chat history", logging.DEBUG)
     else:
@@ -471,6 +465,7 @@ async def clearhistory(ctx: commands.Context):
     app_commands.Choice(name="AI Enabled",value="aiEnabled"),
     app_commands.Choice(name="Verbose Errors",value="verboseErrors"),
 ])
+@viviatools.adminOnly
 async def setting(ctx: commands.Context, option: str, value: bool):
     """
     Manages Vivia's configuration for a specific server.
@@ -478,35 +473,34 @@ async def setting(ctx: commands.Context, option: str, value: bool):
     ## Notes:
         - Only users with Vivia admin permissions can use this command.
     """
-    if viviatools.has_bot_permissions(ctx.author, ctx.guild):
-        try:
-            match(option):
-                case "aiEnabled":
-                    changed = serverConfig(ctx.guild.id)
-                    changed['aiEnabled'] = value
-                    with open(f"data/servers/{ctx.guild.id}/config.json", "w") as f:
-                        json.dump(changed, f)
-                case "verboseErrors":
-                    changed = serverConfig(ctx.guild.id)
-                    changed['verboseErrors'] = value
-                    with open(f"data/servers/{ctx.guild.id}/config.json", "w") as f:
-                        json.dump(changed, f)
-                case _:
-                    await ctx.send("That option doesn't seem to exist...", ephemeral=True)
-                    return
-            await ctx.send(f"Done! `{option}` is now `{value}`.", ephemeral=True)
-        except Exception as e:
-            await ctx.send(personalityMessage("error"), ephemeral=True)
-            if serverConfig(ctx.guild.id)['verboseErrors']:
-                await ctx.send(f"{str(type(e))}: {e}\n-# To disable these messages, run /config verboseErrors false")
-            viviatools.log(f"Error while changing config for {ctx.guild.name} ({str(ctx.guild.id)}): {str(type(e))}: {str(e)}", severity=logging.ERROR)
-    else:
-        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+
+    try:
+        match(option):
+            case "aiEnabled":
+                changed = serverConfig(ctx.guild.id)
+                changed['aiEnabled'] = value
+                with open(f"data/servers/{ctx.guild.id}/config.json", "w") as f:
+                    json.dump(changed, f)
+            case "verboseErrors":
+                changed = serverConfig(ctx.guild.id)
+                changed['verboseErrors'] = value
+                with open(f"data/servers/{ctx.guild.id}/config.json", "w") as f:
+                    json.dump(changed, f)
+            case _:
+                await ctx.send("That option doesn't seem to exist...", ephemeral=True)
+                return
+        await ctx.send(f"Done! `{option}` is now `{value}`.", ephemeral=True)
+    except Exception as e:
+        await ctx.send(personalityMessage("error"), ephemeral=True)
+        if serverConfig(ctx.guild.id)['verboseErrors']:
+            await ctx.send(f"{str(type(e))}: {e}\n-# To disable these messages, run /config verboseErrors false")
+        viviatools.log(f"Error while changing config for {ctx.guild.name} ({str(ctx.guild.id)}): {str(type(e))}: {str(e)}", severity=logging.ERROR)
 
 @bot.hybrid_command(
     name="reboot",
     description="Performs a full reboot of Vivia."
 )
+@viviatools.ownerOnly
 async def reboot(ctx: commands.Context, pull_git: bool = False):
     """
     Performs a full reboot of Vivia.
@@ -521,21 +515,19 @@ async def reboot(ctx: commands.Context, pull_git: bool = False):
         - `pull_git` will also run `pip install -r requirements.txt` in the root to install any new dependencies.
         - `pull_git` will OVERRIDE LOCAL CHANGES TO VIVIA! Be careful! (This does not affect custom extensions.)
     """
-    if await bot.is_owner(ctx.author):
-        await ctx.send("Rebooting...")
-        viviatools.log(f"Rebooting on request of {ctx.author.name} ({str(ctx.author.id)})...")
-        await bot.close()
-        if pull_git:
-            try:
-                os.system("git pull")
-                viviatools.log("Pulled git repository.", logging.DEBUG)
-                os.system("pip install -r requirements.txt")
-                viviatools.log("Installed new dependencies.", logging.DEBUG)
-            except Exception as e:
-                viviatools.log(f"Failed to pull git repository: {str(type(e))}: {str(e)}", logging.ERROR)
-        os.execl(sys.executable, sys.executable, *sys.argv)
-    else:
-        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+
+    await ctx.send("Rebooting...")
+    viviatools.log(f"Rebooting on request of {ctx.author.name} ({str(ctx.author.id)})...")
+    await bot.close()
+    if pull_git:
+        try:
+            os.system("git pull")
+            viviatools.log("Pulled git repository.", logging.DEBUG)
+            os.system("pip install -r requirements.txt")
+            viviatools.log("Installed new dependencies.", logging.DEBUG)
+        except Exception as e:
+            viviatools.log(f"Failed to pull git repository: {str(type(e))}: {str(e)}", logging.ERROR)
+    os.execl(sys.executable, sys.executable, *sys.argv)
 
 @bot.hybrid_command(
     name="extensions",

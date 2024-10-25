@@ -32,6 +32,7 @@ async def setup(bot: commands.Bot):
     user = "The user to warn.",
     reason = "The reason for the warning."
 )
+@viviatools.blockInDMs
 async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No reason provided."):
     """
     Warns a user.
@@ -91,6 +92,7 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No re
     user = "The user to unwarn.",
     reason = "The reason for the unwarning."
 )
+@viviatools.blockInDMs
 async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No reason provided."):
     """
     Unwarns a user.
@@ -155,6 +157,7 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
     user = "The user to kick.",
     reason = "The reason for the kick."
 )
+@viviatools.blockInDMs
 async def kick(ctx: commands.Context, user: discord.Member, reason: str = "No reason provided."):
     """
     Kicks a user.
@@ -205,6 +208,7 @@ async def kick(ctx: commands.Context, user: discord.Member, reason: str = "No re
 @app_commands.describe(
     user = "The user to ban."
 )
+@viviatools.blockInDMs
 async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No reason provided."):
     """
     Bans a user.
@@ -255,6 +259,7 @@ async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No rea
 @app_commands.describe(
     user = "The user to unban."
 )
+@viviatools.blockInDMs
 async def unban(ctx: commands.Context, user: discord.User, reason: str = "No reason provided."):
     """
     Unbans a user.
