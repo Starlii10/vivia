@@ -145,24 +145,23 @@ async def on_command_error(ctx: commands.Context, error: CommandError):
             await ctx.send(personalityMessage("commandnotfound"))
         case errors.MissingRequiredArgument:
             viviatools.log(f"Missing required argument(s) in 'v!{ctx.invoked_with}': {error.param.name}", logging.WARNING)
-            viviatools.log(traceback.format_exc(), logging.WARNING)
+            viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
             await ctx.send(personalityMessage("missingarguments").replace("{arg}", error.param.name))
         case errors.BadArgument:
             viviatools.log(f"Bad argument(s) in 'v!{ctx.invoked_with}': {error.param.name}", logging.WARNING)
-            viviatools.log(traceback.format_exc(), logging.WARNING)
+            viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
             await ctx.send(personalityMessage("badarguments").replace("{arg}", error.param.name))
         case errors.BotMissingPermissions | errors.MissingPermissions:
             viviatools.log(f"Missing permissions in 'v!{ctx.invoked_with}': {error.missing_permissions}", logging.WARNING)
-            viviatools.log(traceback.format_exc(), logging.WARNING)
+            viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
             await ctx.send(personalityMessage("missingpermissions"))
         case errors.CommandInvokeError:
-            viviatools.log(f"Command invoke error in 'v!{ctx.invoked_with}':", logging.WARNING)
-            viviatools.log(traceback.format_exc(), logging.WARNING)
-            viviatools.log(f"{error}", logging.WARNING)
+            viviatools.log(f"Command invoke error in 'v!{ctx.invoked_with}': {error}", logging.WARNING)
+            viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
             await ctx.send(personalityMessage("error"))
         case _:
-            viviatools.log(f"An unhandled error occurred in 'v!{ctx.invoked_with}':", logging.ERROR)
-            viviatools.log(f"{str(type(error))}: {error.__str__()}", logging.ERROR)
+            viviatools.log(f"An unhandled error occurred in 'v!{ctx.invoked_with}': {str(type(error))}: {error.__str__()}", logging.ERROR)
+            viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
     viviatools.log(f"Error context: \nGuild: {ctx.guild}\nChannel: {ctx.channel}\nMessage: {ctx.message}\nUser: {ctx.author}", logging.DEBUG)
 
 @bot.event
