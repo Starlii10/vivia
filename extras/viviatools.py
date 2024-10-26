@@ -323,11 +323,11 @@ def ownerOnly(func: Callable) -> Callable:
         Decorator that only allows the bot owner to execute a command.
     """
     @wraps(func)
-    async def wrapper(bot: commands.Bot, ctx: commands.Context, *args, **kwargs):
+    def wrapper(bot: commands.Bot, ctx: commands.Context, *args, **kwargs):
         if bot.owner_id == ctx.author.id:
-            await ctx.send(personalityMessage("missingpermissions"))
+            asyncio.run(ctx.send(personalityMessage("missingpermissions")))
             return False
-        return await func(bot, ctx, *args, **kwargs)
+        return func(bot, ctx, *args, **kwargs)
     return wrapper
 
 def adminOnly(func: Callable) -> Callable:
@@ -335,10 +335,10 @@ def adminOnly(func: Callable) -> Callable:
         Decorator that only allows Vivia Admins to execute a command.
     """
     @wraps(func)
-    async def wrapper(bot: commands.Bot, ctx: commands.Context, *args, **kwargs):
+    def wrapper(bot: commands.Bot, ctx: commands.Context, *args, **kwargs):
         if has_bot_permissions(ctx.author, ctx.guild):
-            return await func(bot, ctx, *args, **kwargs)
-        await ctx.send(personalityMessage("missingpermissions"))
+            return func(bot, ctx, *args, **kwargs)
+        asyncio.run(ctx.send(personalityMessage("missingpermissions")))
         return False
     return wrapper
 
@@ -347,9 +347,9 @@ def blockInDMs(func: Callable) -> Callable:
         Decorator that blocks commands from being executed in DMs.
     """
     @wraps(func)
-    async def wrapper(bot: commands.Bot, ctx: commands.Context, *args, **kwargs):
+    def wrapper(bot: commands.Bot, ctx: commands.Context, *args, **kwargs):
         if not ctx.guild:
-            await ctx.send(personalityMessage("nodm"))
+            asyncio.run(ctx.send(personalityMessage("nodm")))
             return False
-        return await func(bot, ctx, *args, **kwargs)
+        return func(bot, ctx, *args, **kwargs)
     return wrapper
