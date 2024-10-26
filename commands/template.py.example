@@ -18,7 +18,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 # Add any additional imports you may need in here
-# ex: from extras.viviatools import personalityMessage
+# ex: from extras.viviatools import personalityMessage, blockInDMs
 
 async def setup(bot: commands.Bot): # Add your commands here
     bot.add_cog("cog_name")
@@ -28,7 +28,7 @@ async def setup(bot: commands.Bot): # Add your commands here
     Commands must have the following structure:
 
     @commands.hybrid_command(
-        name = "command name"
+        name = "command_name"
     ) # or another Command subtype. hybrid_command is used here since it creates both a slash and text command
 
     # the actual command function itself:
@@ -45,7 +45,7 @@ async def setup(bot: commands.Bot): # Add your commands here
     Example:
 
     @commands.hybrid_command(
-        name = "say hello",
+        name = "hello",
     )
     @app_commands.describe(
         user = "The user to say hi to."

@@ -104,10 +104,11 @@ async def listquotes(ctx: commands.Context, customonly: bool = False):
             if ctx.guild:
                 with open(f'data/servers/{ctx.guild.id}/quotes.json') as f:
                     quotes = json.load(f)['quotes']
+                    quotes = '\n'.join(quotes)
                     await ctx.send(quotes)
             else:
                 await ctx.send(personalityMessage("error")
-                                + "\n-# This command can only be used in a server.")
+                                + "\n-# `customonly` flag only works in a server.")
                 return
         else:
             with open('data/quotes.json') as f:
@@ -116,9 +117,11 @@ async def listquotes(ctx: commands.Context, customonly: bool = False):
                         default_quotes = json.load(f)
                         custom_quotes = json.load(g)
                         quotes = default_quotes['quotes'] + custom_quotes['quotes']
+                        quotes = '\n'.join(quotes)
                         await ctx.send(quotes)
                 else:
                     quotes = json.load(f)['quotes']
+                    quotes = '\n'.join(quotes)
                     await ctx.send(quotes)
     except Exception as e:
         await ctx.send(personalityMessage("error"))

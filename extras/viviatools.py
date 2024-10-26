@@ -323,11 +323,11 @@ def ownerOnly(func: Callable) -> Callable:
         Decorator that only allows the bot owner to execute a command.
     """
     @wraps(func)
-    async def wrapper(bot: commands.Bot, ctx: commands.Context, *args, **kwargs):
-        if bot.owner_id == ctx.author.id:
-            await ctx.send(personalityMessage("missingpermissions"))
-            return False
-        return await func(bot, ctx, *args, **kwargs)
+    async def wrapper(ctx: commands.Context, bot: commands.Bot, *args, **kwargs):
+        if bot.owner_id == ctx.author.id: # this isn't working and i don't know why
+            return await func(bot, ctx, *args, **kwargs)
+        await ctx.send(personalityMessage("missingpermissions"))
+        return False
     return wrapper
 
 def adminOnly(func: Callable) -> Callable:
