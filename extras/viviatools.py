@@ -40,7 +40,7 @@ if __name__ == "__main__":
 loaded_extensions = set(str())
 failed_extensions = set(str())
 running = False
-bot_ref = commands.Bot("", intents=discord.Intents.default())
+ownerID = 0
 
 # Config loading
 config = configparser.ConfigParser()
@@ -325,7 +325,7 @@ def ownerOnly(func: Callable) -> Callable:
     @wraps(func)
     async def wrapper(ctx: commands.Context, *args, **kwargs):
         log(f"ctx: {type(ctx)}\nargs: {args}\nkwargs: {kwargs}", logging.DEBUG)
-        if ctx.bot.owner_id == ctx.author.id:
+        if ctx.author.id == ownerID:
             return await func(ctx, *args, **kwargs)
         await ctx.send(personalityMessage("missingpermissions"))
         return False
@@ -337,7 +337,7 @@ def adminOnly(func: Callable) -> Callable:
     """
     @wraps(func)
     async def wrapper(ctx: commands.Context, *args, **kwargs):
-        log(f"ctx: {type(ctx)}\nbot: {type(bot)}\nargs: {args}\nkwargs: {kwargs}", logging.DEBUG)
+        log(f"ctx: {type(ctx)}\nargs: {args}\nkwargs: {kwargs}", logging.DEBUG)
         if has_bot_permissions(ctx.author, ctx.guild):
             return await func(ctx, *args, **kwargs)
         await ctx.send(personalityMessage("missingpermissions"))
