@@ -86,6 +86,9 @@ intents.message_content = True # will need to verify at 100 servers
 bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
 bot.remove_command("help") # because we hate the default help command
 tree = bot.tree
+
+# Set viviatools references
+viviatools.bot_ref = bot
 viviatools.ownerID = bot.owner_id
 
 # Events
