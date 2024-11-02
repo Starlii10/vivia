@@ -324,6 +324,7 @@ def ownerOnly(func: Callable) -> Callable:
     """
     @wraps(func)
     async def wrapper(ctx: commands.Context, bot: commands.Bot, *args, **kwargs):
+        log(f"ctx: {type(ctx)}\nbot: {type(bot)}\nargs: {args}\nkwargs: {kwargs}", logging.DEBUG)
         if bot.owner_id == ctx.author.id: # this isn't working and i don't know why
             return await func(bot, ctx, *args, **kwargs)
         await ctx.send(personalityMessage("missingpermissions"))
@@ -336,6 +337,7 @@ def adminOnly(func: Callable) -> Callable:
     """
     @wraps(func)
     async def wrapper(bot: commands.Bot, ctx: commands.Context, *args, **kwargs):
+        log(f"ctx: {type(ctx)}\nbot: {type(bot)}\nargs: {args}\nkwargs: {kwargs}", logging.DEBUG)
         if has_bot_permissions(ctx.author, ctx.guild):
             return await func(bot, ctx, *args, **kwargs)
         await ctx.send(personalityMessage("missingpermissions"))
@@ -348,6 +350,7 @@ def blockInDMs(func: Callable) -> Callable:
     """
     @wraps(func)
     async def wrapper(bot: commands.Bot, ctx: commands.Context, *args, **kwargs):
+        log(f"ctx: {type(ctx)}\nbot: {type(bot)}\nargs: {args}\nkwargs: {kwargs}", logging.DEBUG)
         if not ctx.guild:
             await ctx.send(personalityMessage("nodm"))
             return False
