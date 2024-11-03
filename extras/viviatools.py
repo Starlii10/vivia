@@ -328,7 +328,7 @@ def ownerOnly(func: Callable) -> Callable:
     """
     @wraps(func)
     async def wrapper(ctx: commands.Context, *args, **kwargs):
-        if bot.is_owner(ctx.author):
+        if await bot.is_owner(ctx.author):
             return await func(ctx, *args, **kwargs)
         await ctx.send(personalityMessage("missingpermissions"))
         return False
