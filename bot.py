@@ -80,7 +80,7 @@ else:
     # Linux title (if this doesn't work on your distro please open an issue because I suck at Linux)
     system(f"echo -ne '\033]0;Running {__VERSION__}\007'")
 
-# Get ready to run the bot
+# Configure bot settings
 intents = discord.Intents.default()
 intents.message_content = True # will need to verify at 100 servers
 bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
@@ -88,8 +88,7 @@ bot.remove_command("help") # because we hate the default help command
 tree = bot.tree
 
 # Set viviatools references
-viviatools.bot_ref = bot
-viviatools.ownerID = bot.owner_id
+viviatools.set_refs(bot)
 
 # Events
 @bot.event
@@ -163,8 +162,7 @@ async def on_command_error(ctx: commands.Context, error: CommandError):
             viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
             await ctx.send(personalityMessage("error"))
         case _:
-            viviatools.log(f"An unhandled error occurred in 'v!{ctx.invoked_with}': {str(type(error))}: {error.__str__()}", logging.ERROR)
-            viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
+            viviatools.log(f"An unhandled error occurred in 'v!{ctx.invoked_with}': " + "".join(traceback.format_exception(error)), logging.ERROR)
     viviatools.log(f"Error context: \nGuild: {ctx.guild}\nChannel: {ctx.channel}\nMessage: {ctx.message}\nUser: {ctx.author}", logging.DEBUG)
 
 @bot.event
@@ -570,7 +568,7 @@ while True:
         os.execl(sys.executable, sys.executable, *sys.argv)
     except Exception as e:
         viviatools.log(f"Vivia has crashed... oh no...", logging.FATAL)
-        viviatools.log(f"{str(type(e))}: {str(e)}", severity=logging.FATAL)
+        viviatools.log("".join(traceback.format_exception(sys.exc_info())), severity=logging.FATAL)
         viviatools.log("Don't worry, she will automatically restart in 5 seconds.", logging.FATAL)
         viviatools.log("I would appreciate if you would report this on GitHub, please.", logging.FATAL)
         asyncio.run(viviatools.setCustomPresence("!! Vivia has crashed - rebooting! !!", "dnd", bot))

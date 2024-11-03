@@ -40,8 +40,6 @@ if __name__ == "__main__":
 loaded_extensions = set(str())
 failed_extensions = set(str())
 running = False
-bot_ref = None
-ownerID = 0
 
 # Config loading
 config = configparser.ConfigParser()
@@ -99,6 +97,10 @@ def log(message: str, severity: int=logging.INFO):
     """
 
     logging.log(severity, message)
+
+def set_refs(bot_ref: commands.Bot):
+    global bot
+    bot = bot_ref
 
 def extractVSE(file: str):
     """
@@ -325,8 +327,8 @@ def ownerOnly(func: Callable) -> Callable:
     """
     @wraps(func)
     async def wrapper(ctx: commands.Context, *args, **kwargs):
-        log(ownerID, logging.DEBUG)
-        if ctx.author.id == ownerID:
+        log(bot.owner_id, logging.DEBUG)
+        if ctx.author.id == bot.owner_id:
             return await func(ctx, *args, **kwargs)
         await ctx.send(personalityMessage("missingpermissions"))
         return False
