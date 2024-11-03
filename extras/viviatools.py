@@ -19,6 +19,7 @@ import datetime
 from functools import wraps
 import json
 import logging
+from operator import is_
 import os
 import random
 import shutil
@@ -327,8 +328,7 @@ def ownerOnly(func: Callable) -> Callable:
     """
     @wraps(func)
     async def wrapper(ctx: commands.Context, *args, **kwargs):
-        log(bot.owner_id, logging.DEBUG)
-        if ctx.author.id == bot.owner_id:
+        if bot.is_owner(ctx.author):
             return await func(ctx, *args, **kwargs)
         await ctx.send(personalityMessage("missingpermissions"))
         return False
