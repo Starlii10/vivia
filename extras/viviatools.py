@@ -19,7 +19,6 @@ import datetime
 from functools import wraps
 import json
 import logging
-from operator import is_
 import os
 import random
 import shutil
@@ -123,45 +122,52 @@ def extractVSE(file: str):
         return
     
     # find the name of the VSE file
-    filename = os.path.basename(file).removesuffix(".vse")
+    filename = os.path.splitext(os.path.basename(file))[0]
 
     # Create the data/temp/extracted folder if it doesn't exist
-    os.makedirs("data/temp/extracted", exist_ok=True)
+    os.makedirs(os.path.join("data", "temp", "extracted"), exist_ok=True)
 
     # Create the data/temp/extracted/{vse file name} folder
-    os.makedirs(f"data/temp/extracted/{filename}", exist_ok=True)
+    extract_path = os.path.join("data", "temp", "extracted", filename)
+    os.makedirs(extract_path, exist_ok=True)
 
     # Unzip the VSE
-    zipfile.ZipFile(file).extractall(f"data/temp/extracted/{filename}")
+    with zipfile.ZipFile(file, 'r') as zip_ref:
+        zip_ref.extractall(extract_path)
 
     # main python file
-    for f in os.listdir(f"data/temp/extracted/{filename}"):
+    for f in os.listdir(extract_path):
         if f.endswith(".py"):
-            os.rename(f"data/temp/extracted/{filename}/{f}", f"commands/{filename}.py")
+            os.rename(os.path.join(extract_path, f), os.path.join("commands", f"{filename}.py"))
             break
     
     # extra python files
-    for f in os.listdir(f"data/temp/extracted/{filename}"):
+    for f in os.listdir(extract_path):
         if f.endswith(".py"):
-            os.rename(f"data/temp/extracted/{filename}/{f}", f"commands/{filename}/{f}")
+            os.makedirs(os.path.join("commands", filename), exist_ok=True)
+            os.rename(os.path.join(extract_path, f), os.path.join("commands", filename, f))
     
     # help text
-    for f in os.listdir(f"data/temp/extracted/{filename}"):
+    for f in os.listdir(extract_path):
         if f.endswith(".txt") and "help" in f:
-            os.rename(f"data/temp/extracted/{filename}/{f}", f"data/help/{filename}/help.txt")
+            os.makedirs(os.path.join("data", "help", filename), exist_ok=True)
+            os.rename(os.path.join(extract_path, f), os.path.join("data", "help", filename, "help.txt"))
 
     # personality messages
-    for f in os.listdir(f"data/temp/extracted/{filename}/personalityMessages"):
-        if f.endswith(".json"):
-            os.rename(f"data/temp/extracted/{filename}/personalityMessages/{f}", f"data/personalityMessages/{f}")
+    personality_path = os.path.join(extract_path, "personalityMessages")
+    if os.path.exists(personality_path):
+        for f in os.listdir(personality_path):
+            if f.endswith(".json"):
+                os.makedirs("data/personalityMessages", exist_ok=True)
+                os.rename(os.path.join(personality_path, f), os.path.join("data", "personalityMessages", f))
     
     # requirements.txt
-    for f in os.listdir(f"data/temp/extracted/{filename}"):
+    for f in os.listdir(extract_path):
         if f.endswith(".txt") and "requirements" in f:
-            os.rename(f"data/temp/extracted/{filename}/{f}", f"requirements.txt")
+            os.rename(os.path.join(extract_path, f), "requirements.txt")
             log(f"VSE extension {filename} contains a requirements.txt file. Attempting to run pip to install it", logging.WARNING)
             try:
-                asyncio.run(subprocess.create_subprocess_shell("pip install -r requirements.txt"))
+                asyncio.run(subprocess.create_subprocess_shell("pip install -r requirements.txt", shell=True))
             except Exception as e:
                 log(f"Failed to install requirements for VSE extension {filename}", logging.ERROR)
                 log(f"{str(type(e))}: {e}", logging.ERROR)
@@ -169,12 +175,13 @@ def extractVSE(file: str):
             break
 
     # Find and copy any other files (if any)
-    for f in os.listdir(f"data/temp/extracted/{filename}"):
+    for f in os.listdir(extract_path):
         if not f.endswith(".py") and not f.endswith(".txt") and not f.endswith(".json"):
-            os.rename(f"data/temp/extracted/{filename}/{f}", f"data/{filename}/{f}")
+            os.makedirs(os.path.join("data", filename), exist_ok=True)
+            os.rename(os.path.join(extract_path, f), os.path.join("data", filename, f))
 
     # Remove the temporary folder
-    shutil.rmtree(f"data/temp/extracted/{filename}")\
+    shutil.rmtree(extract_path)
     
     # Remove the VSE if configured
     if config["Extensions"]["VSEClear"] == "True":
@@ -212,7 +219,7 @@ def serverConfig(serverID: int):
     ## Returns:
         - dict: The configuration of the server as a dictionary (JSON object).
     """
-    with open(f"data/servers/{serverID}/config.json", "r") as f:
+    with open(os.path.join("data", "servers", str(serverID), "config.json"), "r") as f:
         return json.load(f)
     
 
@@ -224,10 +231,10 @@ def add_custom_quote(quote: str, serverID: int):
         - quote (str): The quote to add.
         - serverID (int): The ID of the server to add the quote to.
     """
-    with open(f"data/servers/{serverID}/quotes.json", "r") as f:
+    with open(os.path.join("data", "servers", str(serverID), "quotes.json"), "r") as f:
         quotes = json.load(f)
     quotes["quotes"].append(quote)
-    with open(f"data/servers/{serverID}/quotes.json", "w") as f:
+    with open(os.path.join("data", "servers", str(serverID), "quotes.json"), "w") as f:
         json.dump(quotes, f)
     if config["Advanced"]["Debug"] == "True":
         log(f"Added custom quote for {serverID}: {quote}", logging.DEBUG)
@@ -244,10 +251,10 @@ def personalityMessage(type: str):
     
     ## Notes:
         - In debug mode, this will log the message to the console and also return the message type at the end of the string.
-        - Types in folders within the personalityMessages folder are valid (such as "extension1/messages").
+        - Types in folders within the personalityMessages folder are valid (such as "extension1.messages").
     """
     try:
-        with open(f'data/personalityMessages/{type}.json') as f:
+        with open(os.path.join("data", "personalityMessages", f"{type.replace('.', os.path.sep)}.json")) as f:
             messages = json.load(f)
             random_msg = messages["messages"][random.randint(0, len(messages["messages"]) - 1)]
             if config["Advanced"]["Debug"] == "True":
@@ -276,9 +283,10 @@ def perServerFile(serverID: int, filename: str, template: str | None = None):
         - This will create the per-server folder if it doesn't exist.
         - This only opens the file. You'll need to manage reading and writing to it yourself.
     """
+    os.makedirs(os.path.join("data", "servers", str(serverID)), exist_ok=True)
     os.makedirs(f"data/servers/{serverID}", exist_ok=True)
-    if not os.path.exists(f"data/servers/{serverID}/{filename}"):
-        with open(f"data/servers/{serverID}/{filename}", "w") as f:
+    if not os.path.exists(os.path.join("data", "servers", str(serverID), filename)):
+        with open(os.path.join("data", "servers", str(serverID), filename), "w") as f:
             if template is None:
                 if filename.endswith(".json"):
                     f.write("{}")
@@ -310,10 +318,10 @@ def helpMsg(extension: str):
         - str: The help message for the specified extension.
 
     ## Notes:
-        - Help messages are stored in `data/help/<extension>/help.txt - formatted for a Discord message (Markdown supported!)`.
+        - Help messages are stored in `data/help/<extension>/help.txt` - formatted for a Discord message (Markdown supported!).
     """
     try:
-        with open(f'data/help/{extension.replace(".", "/")}/help.txt', 'r') as f:
+        with open(os.path.join('data', 'help', extension.replace(".", os.path.sep), 'help.txt'), 'r') as f:
             return f.read()
     except FileNotFoundError:
         log(f"Couldn't find help message for extension {extension}. Does it even exist?", logging.ERROR)

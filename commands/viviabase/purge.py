@@ -11,7 +11,7 @@
 """
 
 from discord.ext import commands
-from discord import Message, app_commands
+from discord import app_commands
 from extras.viviatools import personalityMessage, adminOnly
 
 async def setup(bot: commands.Bot): # for extension loading

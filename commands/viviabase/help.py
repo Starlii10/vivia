@@ -29,4 +29,4 @@ async def help(ctx: commands.Context, extension: str = "core"):
     if extension in loaded_extensions or extension in failed_extensions:
         await ctx.send(helpMsg(extension))
     else:
-        await ctx.send(personalityMessage("extensionnotloaded"))
+        await ctx.send(personalityMessage("errors.extensionnotloaded"))

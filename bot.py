@@ -19,6 +19,8 @@ __VERSION__ = "Vivia 20241025"
 # Imports
 import sys
 
+import concurrent
+
 
 if __name__ != "__main__": # prevent running as a module, and print ASCII art Vivia!
     print("              ██▓▓▓▓▓▓▓██                            ██▓▓▓▓▓▓▓██                \n               ███▓▓▓▓██                              ███▓▓▓███                 \n                 ██████                                 █████                   \n                   ████                                ████                     \n                    ███   █████████████████████████    ███                      \n                    ██████████████████████████████████████                      \n                 █████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████                     \n               ██████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████                  \n             █████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████                \n            ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████              \n           ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████             \n         █████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████            \n        ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████           \n        ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓████          \n       ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████████████████████████▓▓▓▓▓▓▓▓▓▓▓████         \n      ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████████████▓▓▓▓▓▓▓▓▓▓███         \n      ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████████████████▓▓▓▓▓▓▓▓████        \n      ███▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████░░░░░▒██████▒█████▓▓▓▓▓▓████        \n      ███▓▓▓▓▓▓▓▓███████████████████████████████▓░░░██████▒████████████         \n      ████▓▓▓████████▓▓████████████████████▒░░▒████████████▒▒▓████████          \n       ███████████▒▒▒▒██████████▒▒▒███████▒░░░░▒███████████▒▒▒▒▒▒▒████          \n         ██████▒▒▒▒▒▒██████████▒░░░░▒▒████▒░░░░▒████████████▒▒▒▒▒▒████          \n           ███▒▒▒▒▒▒▒█████████▒░░░░░░░░▒██▒░░░░▒████████████▒▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒▓████████▒░░░░░░░░░▒██▒░░░░▒█████████████▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒█████████▒░░░░▒▓▒▒▒███▒░░░░▒█████████████▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒▓█████████████████████▒░░░░▓█████████████▒▒▒▒▒▒███          \n           ███▓▒▒▒▒▒▒███████████████████████▓███████████████▒▒▒▒▒▒▒███          \n           ████▒▒▒▒▒▒███████████████████████████████████████▒▒▒▒▒▒████          \n            ███▒▒▒▒▒▒▒█████████████████████████████████████▒▒▒▒▒▒▒███           \n            ████▒▒▒▒▒▒▒███████████▒░░░▒███▒░░░▒███████████▒▒▒▒▒▒▒████           \n             ████▒▒▒▒▒▒▒█████████▓░░░░░░░░░░░░░▓█████████▒▒▒▒▒▒▒████            \n              ████▒▒▒▒▒▒▒█████████▒░░░░░░░░░░▒▓█████████▒▒▒▒▒▒▒▓████            \n               ████▒▒▒▒▒▒▒▒█████████▓▒▒░░▒▒▒██████████▒▒▒▒▒▒▒▒████▓██  ███      \n                ████▒▒▒▒▒▒▒▒▒███████████████████████▒▒▒▒▒▒▒▒▒█████▒▓███▓██      \n                 █████▒▒▒▒▒▒▒▒▒▒█████████████████▒▒▒▒▒▒▒▒▒▒▓███████▒▒▒███       \n                   █████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓████ █████████        \n                    ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██████ ███▓▓▓███         \n                       ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒███████  ███▓▓▓███          \n                       ███████████▓▒▒▒▒▒▒▒▒▒▒▒▓███████████  ███▓▓▓███           \n                      ████▓▓▓███████████████████████▓▓▓████ ██▓▓▓▓███           \n                     ████▓▓▓▓▓▓▓▓▓▓███████████▓▓▓▓▓▓▓▓▓▓████████▓███            \n                  ███████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████             \n               █████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▒▒▒▓████            \n              ████▒▒▒███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▒▒▒▒▒████           \n\"Please don't try to import me as a module... I'm not used to my entire existence being tied to a program I have no control over.\"")
@@ -104,25 +106,26 @@ async def setup_hook():
 
     viviatools.log("Searching for VSE extensions...")
 
-    # Load VSCs
-    for root, dirs, files in os.walk("commands"):
-        for file in files:
-            if file.endswith(".vse"):
-                try:
-                    viviatools.extractVSE(os.path.join(root, file))
-                except Exception as e:
-                    viviatools.log(f"Failed to extract VSE extension {file}", logging.ERROR)
-                    viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
-                    viviatools.log("VSE extension will not be loaded - functionality may be limited.", logging.ERROR)
-                    if config['Advanced']['Debug'] != "True":
-                        os.remove(os.path.join(root, file))
-                else:
-                    viviatools.log(f"VSE extension {file} extracted", logging.DEBUG)
+    # Load VSEs
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = []
+        for root, dirs, files in os.walk("commands"):
+            for file in files:
+                if file.endswith(".vse"):
+                    futures.append(executor.submit(viviatools.extractVSE, os.path.join(root, file)))
+        for future in concurrent.futures.as_completed(futures):
+            if future.exception():
+                viviatools.log(f"Failed to extract VSE extension {future.result()[1]}", logging.ERROR)
+                viviatools.log("".join(traceback.format_exception(future.exception())), logging.ERROR)
+                viviatools.log("VSE extension will not be loaded - functionality may be limited.", logging.ERROR)
+                if config['Advanced']['Debug'] != "True":
+                    os.remove(os.path.join(future.result()[0], future.result()[1]))
+            else:
+                viviatools.log(f"VSE extension {future.result()[1]} extracted", logging.DEBUG)
     
     # Create server data folder
-    if not os.path.exists("data/servers"):
-        os.makedirs("data/servers")
-
+    if not os.path.exists(os.path.join("data", "servers")):
+        os.makedirs(os.path.join("data", "servers"))
     viviatools.log("VSE extensions extracted.")
 
 @bot.event
@@ -144,23 +147,23 @@ async def on_command_error(ctx: commands.Context, error: CommandError):
     match errtype:
         case errors.CommandNotFound:
             viviatools.log(f"Command not found: {ctx.invoked_with}", logging.WARNING)
-            await ctx.send(personalityMessage("commandnotfound"))
+            await ctx.send(personalityMessage("errors.commandnotfound"))
         case errors.MissingRequiredArgument:
             viviatools.log(f"Missing required argument(s) in 'v!{ctx.invoked_with}': {error.param.name}", logging.WARNING)
             viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
-            await ctx.send(personalityMessage("missingarguments").replace("{arg}", error.param.name))
+            await ctx.send(personalityMessage("errors.missingarguments").replace("{arg}", error.param.name))
         case errors.BadArgument:
             viviatools.log(f"Bad argument(s) in 'v!{ctx.invoked_with}': {error.param.name}", logging.WARNING)
             viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
-            await ctx.send(personalityMessage("badarguments").replace("{arg}", error.param.name))
+            await ctx.send(personalityMessage("errors.badarguments").replace("{arg}", error.param.name))
         case errors.BotMissingPermissions | errors.MissingPermissions:
             viviatools.log(f"Missing permissions in 'v!{ctx.invoked_with}': {error.missing_permissions}", logging.WARNING)
             viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
-            await ctx.send(personalityMessage("missingpermissions"))
+            await ctx.send(personalityMessage("errors.missingpermissions"))
         case errors.CommandInvokeError:
             viviatools.log(f"Command invoke error in 'v!{ctx.invoked_with}': {error}", logging.WARNING)
             viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
-            await ctx.send(personalityMessage("error"))
+            await ctx.send(personalityMessage("errors.error"))
         case _:
             viviatools.log(f"An unhandled error occurred in 'v!{ctx.invoked_with}': " + "".join(traceback.format_exception(error)), logging.ERROR)
     viviatools.log(f"Error context: \nGuild: {ctx.guild}\nChannel: {ctx.channel}\nMessage: {ctx.message}\nUser: {ctx.author}", logging.DEBUG)
@@ -197,7 +200,7 @@ async def statusChanges():
     """
     Changes the bot's status every hour.
     """
-    with open("data/statuses.json", "r") as f:
+    with open(os.path.join("data", "statuses.json"), "r") as f:
         statuses = json.load(f)
     status = random.choice(statuses["statuses"])
     await viviatools.setCustomPresence(status, bot)
@@ -218,9 +221,9 @@ async def on_guild_join(guild: discord.Guild):
     viviatools.log(f"Bot joined {guild.name} ({guild.id})")
     if config["Advanced"]["Debug"] == "True":
         viviatools.log(f"Setting up custom quotes, config file, and Vivia admin role for {guild.name} ({guild.id})", logging.DEBUG)
-    with open(f'data/servers/{guild.id}/quotes.json', 'w') as f:
+    with open(os.path.join('data', 'servers', str(guild.id), 'quotes.json'), 'w') as f:
         json.dump({'quotes': []}, f)
-    with open(f'data/servers/{guild.id}/config.json', 'w') as f, open(f'data/config.json.example', 'r') as g:
+    with open(os.path.join('data', 'servers', str(guild.id), 'config.json'), 'w') as f, open(f'data/config.json.example', 'r') as g:
         json.dump(g, f)
     await guild.create_role(name="Vivia Admin", reason="Vivia setup: Users with this role have privileges when running Vivia's commands in this server.")
     for member in guild.members:
@@ -456,10 +459,10 @@ async def clearhistory(ctx: commands.Context):
     """
     if os.path.exists(os.path.join("data", "tempchats", str(ctx.author.name))):
         shutil.rmtree(os.path.join("data", "tempchats", str(ctx.author.name)))
-        await ctx.send(personalityMessage("historyclear"), ephemeral=True)
+        await ctx.send(personalityMessage("ai.historyclear"), ephemeral=True)
         viviatools.log(f"{ctx.author.name} cleared their chat history", logging.DEBUG)
     else:
-        await ctx.send(personalityMessage("nohistory"), ephemeral=True)
+        await ctx.send(personalityMessage("ai.nohistory"), ephemeral=True)
     
 @bot.hybrid_command(
     name="setting",
@@ -495,7 +498,7 @@ async def setting(ctx: commands.Context, option: str, value: bool):
                 return
         await ctx.send(f"Done! `{option}` is now `{value}`.", ephemeral=True)
     except Exception as e:
-        await ctx.send(personalityMessage("error"), ephemeral=True)
+        await ctx.send(personalityMessage("errors.error"), ephemeral=True)
         if serverConfig(ctx.guild.id)['verboseErrors']:
             await ctx.send(f"{str(type(e))}: {e}\n-# To disable these messages, run /config verboseErrors false")
         viviatools.log(f"Error while changing config for {ctx.guild.name} ({str(ctx.guild.id)}): {str(type(e))}: {str(e)}", severity=logging.ERROR)
@@ -527,6 +530,7 @@ async def reboot(ctx: commands.Context, pull_git: bool = False):
         try:
             os.system("git pull")
             viviatools.log("Pulled git repository.", logging.DEBUG)
+            # NOTE: pip command may be different on different systems, this may fail
             os.system("pip install -r requirements.txt")
             viviatools.log("Installed new dependencies.", logging.DEBUG)
         except Exception as e:
