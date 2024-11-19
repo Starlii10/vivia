@@ -219,19 +219,37 @@ async def on_guild_join(guild: discord.Guild):
     """
 
     viviatools.log(f"Bot joined {guild.name} ({guild.id})")
+
+    def setup_guild_data():
+        if config["Advanced"]["Debug"] == "True":
+            viviatools.log(f"Setting up custom quotes, config file, and Vivia admin role for {guild.name} ({guild.id})", logging.DEBUG)
+        with open(os.path.join('data', 'servers', str(guild.id), 'quotes.json'), 'w') as f:
+            json.dump({'quotes': []}, f)
+        with open(os.path.join('data', 'servers', str(guild.id), 'config.json'), 'w') as f, open(f'data/config.json.example', 'r') as g:
+            json.dump(json.load(g), f)
+
+    def setup_roles():
+        for member in guild.members:
+            if member.guild_permissions.administrator:
+                role = discord.utils.find(lambda r: r.name == "Vivia Admin", guild.roles)
+                if role is None:
+                    role = asyncio.run_coroutine_threadsafe(guild.create_role(name="Vivia Admin", reason="Vivia setup: Users with this role have privileges when running Vivia's commands in this server."), bot.loop).result()
+                asyncio.run_coroutine_threadsafe(member.add_roles(role, reason="Vivia setup: This user has administrative permissions and was automatically assigned to the Vivia Admin role."), bot.loop)
+                viviatools.log(f"User {member.name} ({member.id}) was automatically assigned the Vivia Admin role in {guild.name} ({guild.id}).", logging.DEBUG)
+
+    threads = [
+        threading.Thread(target=setup_guild_data),
+        threading.Thread(target=setup_roles)
+    ]
+
+    for t in threads:
+        t.start()
+
+    for t in threads:
+        t.join()
+
     if config["Advanced"]["Debug"] == "True":
-        viviatools.log(f"Setting up custom quotes, config file, and Vivia admin role for {guild.name} ({guild.id})", logging.DEBUG)
-    with open(os.path.join('data', 'servers', str(guild.id), 'quotes.json'), 'w') as f:
-        json.dump({'quotes': []}, f)
-    with open(os.path.join('data', 'servers', str(guild.id), 'config.json'), 'w') as f, open(f'data/config.json.example', 'r') as g:
-        json.dump(g, f)
-    await guild.create_role(name="Vivia Admin", reason="Vivia setup: Users with this role have privileges when running Vivia's commands in this server.")
-    for member in guild.members:
-        if member.guild_permissions.administrator:
-            await member.add_roles(discord.utils.find(lambda r: r.name == "Vivia Admin", guild.roles), reason="Vivia setup: This user has administrative permissions and was automatically assigned to the Vivia Admin role.")
-            viviatools.log(f"User {member.name} ({member.id}) was automatically assigned the Vivia Admin role in {guild.name} ({guild.id}).", logging.DEBUG)
-    if config["Advanced"]["Debug"] == "True":
-        viviatools.log(f"Setup complete for {guild.name} ({guild.id})", logging.DEBUG)    
+        viviatools.log(f"Setup complete for {guild.name} ({guild.id})", logging.DEBUG)
 
 @bot.event
 async def on_message(message: discord.Message):
@@ -257,16 +275,8 @@ async def on_message(message: discord.Message):
         # we need to check both for direct mentions of Vivia and for mentions of the Vivia role to prevent confusion
         if (message.mentions and (message.mentions[0] == bot.user or message.role_mentions[0] == discord.utils.get(message.guild.roles, name="Vivia"))):
             async with message.channel.typing():
-                threading.Thread(target=llamaReply, args=(message,)).start()
-
-
-def llamaReply(message: discord.Message):
-    """
-    Gets a reply using LLaMa.
-    This has to be a separate (non-async) function because threads.
-    """
-    
-    generation_fut = asyncio.run_coroutine_threadsafe(Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "),
+                # TODO: HOW DO I MAKE THIS NON BLOCKING??????????????????????????????
+                await Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "),
                                                     message.author.display_name,
                                                     message.author.name,
                                                     message.attachments,
@@ -274,14 +284,7 @@ def llamaReply(message: discord.Message):
                                                     current_status,
                                                     message.guild.name,
                                                     message.channel.name,
-                                                    message.channel.category.name), bot.loop)
-    
-    asyncio.wait([generation_fut])
-
-    generation = generation_fut.result()
-    
-    # Send the reply (note that reply is async so we need to use asyncio)
-    asyncio.run_coroutine_threadsafe(message.reply(generation), bot.loop) # we don't care about the result
+                                                    message.channel.category.name)
 
 async def reload_all_extensions():
     """
@@ -289,7 +292,7 @@ async def reload_all_extensions():
     """
 
     # Unload all extensions
-    for extension in viviatools.loaded_extensions:
+    async def unload_extension(extension):
         try:
             await bot.unload_extension(extension)
             viviatools.log(f"Unloaded extension {extension}")
@@ -299,69 +302,47 @@ async def reload_all_extensions():
             viviatools.log(f"Failed to unload extension {extension}", logging.ERROR)
             viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
             viviatools.log("This may cause issues during reloading.", logging.ERROR)
-            
+
+    unload_threads = [threading.Thread(target=asyncio.run, args=(unload_extension(extension),)) for extension in viviatools.loaded_extensions]
+    for thread in unload_threads:
+        thread.start()
+    for thread in unload_threads:
+        thread.join()
+
     # Reset list of extensions
     loaded = ["core"] # Vivia core is always loaded
     failed = []
 
-    # Load ViviaBase
-    for file in os.listdir(os.path.join("commands", "viviabase")):
-        if file.endswith(".py"):
-            try:
-                await bot.load_extension(f"commands.viviabase.{file[:-3]}")
-                loaded += [f"viviabase.{file[:-3]}"]
-            except errors.ExtensionAlreadyLoaded:
-                viviatools.log(f"Extension viviabase.{file[:-3]} was already loaded.")
-                loaded += [f"viviabase.{file[:-3]}"]
-            except Exception as e:
-                viviatools.log(f"Failed to load base extension {file[:-3]}", logging.ERROR)
-                viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
-                viviatools.log("Functionality may be limited. Please report this on GitHub.", logging.ERROR)
-                failed += [f"viviabase.{file[:-3]}"]
-                continue
-            viviatools.log(f"Loaded extension viviabase.{file[:-3]}")
-    
-    # Load ViviaBase beta
-    if config["Advanced"]["betaextensions"]:
-        viviatools.log("Loading beta extensions.")
-        for file in os.listdir(os.path.join("commands", "viviabase-beta")):
+    # Load extensions from a directory
+    async def load_extension(directory, prefix):
+        for file in os.listdir(directory):
             if file.endswith(".py"):
                 try:
-                    await bot.load_extension(f"commands.viviabase-beta.{file[:-3]}")
-                    loaded += [f"viviabase-beta.{file[:-3]}"]
+                    await bot.load_extension(f"{prefix}.{file[:-3]}")
+                    loaded.append(f"{prefix}.{file[:-3]}")
                 except errors.ExtensionAlreadyLoaded:
-                    viviatools.log(f"Extension viviabase-beta.{file[:-3]} was already loaded.")
-                    loaded += [f"viviabase-beta.{file[:-3]}"]
+                    viviatools.log(f"Extension {prefix}.{file[:-3]} was already loaded.")
+                    loaded.append(f"{prefix}.{file[:-3]}")
                 except Exception as e:
-                    viviatools.log(f"Failed to load beta extension {file[:-3]}", logging.ERROR)
+                    viviatools.log(f"Failed to load extension {file[:-3]}", logging.ERROR)
                     viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
-                    viviatools.log("Functionality may be limited.", logging.ERROR)
-                    failed += [f"viviabase-beta.{file[:-3]}"]
+                    failed.append(f"{prefix}.{file[:-3]}")
                     continue
-                viviatools.log(f"Loaded extension viviabase-beta.{file[:-3]}")
+                viviatools.log(f"Loaded extension {prefix}.{file[:-3]}")
 
-    # Load custom extensions
-    for file in os.listdir("commands"):
-        if file.endswith(".py"):
-            try:
-                await bot.load_extension(f"commands.{file[:-3]}")
-                loaded += [f"{file[:-3]}"]
-            except errors.ExtensionAlreadyLoaded:
-                viviatools.log(f"Extension {file[:-3]} was already loaded.")
-                loaded += [f"{file[:-3]}"]
-            except discord.ext.commands.NoEntryPointError:
-                viviatools.log(f"Failed to load custom extension {file[:-3]}", logging.ERROR)
-                viviatools.log("No entry point found. Does the extension contain a setup(bot) function?", logging.ERROR)
-                viviatools.log("Functionality may be limited.", logging.ERROR)
-                failed += [f"{file[:-3]}"]
-                continue
-            except Exception as e:
-                viviatools.log(f"Failed to load custom extension {file[:-3]}", logging.ERROR)
-                viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
-                viviatools.log("Functionality may be limited. Ensure the extension contains no errors.", logging.ERROR)
-                failed += [f"{file[:-3]}"]
-                continue
-            viviatools.log(f"Loaded extension {file[:-3]}")
+    load_tasks = [
+        threading.Thread(target=asyncio.run, args=(load_extension(os.path.join("commands", "viviabase"), "commands.viviabase"),)),
+        threading.Thread(target=asyncio.run, args=(load_extension(os.path.join("commands", "viviabase-beta"), "commands.viviabase-beta"),)) if config["Advanced"]["betaextensions"] else None,
+        threading.Thread(target=asyncio.run, args=(load_extension("commands", "commands"),))
+    ]
+
+    for task in load_tasks:
+        if task:
+            task.start()
+
+    for task in load_tasks:
+        if task:
+            task.join()
 
     viviatools.loaded_extensions = loaded
     viviatools.failed_extensions = failed
@@ -401,10 +382,22 @@ async def fixconfig(ctx: commands.Context):
     """
 
     viviatools.log(f"Regenerating missing data files for all servers...", logging.DEBUG)
+    threads = []
     for guild in bot.guilds:
-        # Regenerate server data path if it doesn't exist
-        if not os.path.exists(os.path.join('data', 'servers', str(guild.id))):
-            os.mkdir(os.path.join('data', 'servers', str(guild.id)))
+        t = threading.Thread(target=regen_server_files, args=(guild,))
+        threads.append(t)
+        t.start()
+
+    for t in threads:
+        t.join()
+
+    await ctx.send('Fixed all missing config and quotes files. Check log for more info.')
+
+# the actual function
+def regen_server_files(guild):
+    # Regenerate server data path if it doesn't exist
+    if not os.path.exists(os.path.join('data', 'servers', str(guild.id))):
+        os.mkdir(os.path.join('data', 'servers', str(guild.id)))
         viviatools.log(f'Data path for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
 
         # Regenerate configuration if guild config is missing
@@ -430,8 +423,6 @@ async def fixconfig(ctx: commands.Context):
             viviatools.log(f'Warn file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
         except FileExistsError:
             pass # Most likely there was nothing wrong with it
-
-    await ctx.send('Fixed all missing config and quotes files. Check log for more info.')
 
 @bot.hybrid_command(
     name="statuschange",
