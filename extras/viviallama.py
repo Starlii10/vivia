@@ -113,7 +113,7 @@ async def createResponse(
             os.makedirs(os.path.dirname(memory_file_path))
             with open(memory_file_path, "w") as file:
                 json.dump([], file)
-            additional_messages = json.load(file)
+        additional_messages = json.load(open(memory_file_path, "r"))
 
         # Read message attachments
         if len(attachments) > 0:
