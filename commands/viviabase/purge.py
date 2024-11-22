@@ -40,7 +40,7 @@ async def purge(ctx: commands.Context, start: int = None, end: int = None):
             - If end is None, all messages starting from the start are purged.
     """
 
-    await ctx.send(personalityMessage("purging") + "\n-# This may take a while. Vivia will most likely get rate limited...")
+    await ctx.send(personalityMessage("purge.purging") + "\n-# This may take a while. Vivia will most likely get rate limited...")
 
     if start == None and end == None:
         await ctx.channel.purge()
@@ -62,4 +62,4 @@ async def purge(ctx: commands.Context, start: int = None, end: int = None):
             after=start,
             before=end
         )
-    await ctx.send(personalityMessage("purge"))
+    await ctx.send(personalityMessage("purge.purge"))

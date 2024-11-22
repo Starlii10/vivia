@@ -338,7 +338,7 @@ def ownerOnly(func: Callable) -> Callable:
     async def wrapper(ctx: commands.Context, *args, **kwargs):
         if await bot.is_owner(ctx.author):
             return await func(ctx, *args, **kwargs)
-        await ctx.send(personalityMessage("missingpermissions"))
+        await ctx.send(personalityMessage("errors.missingpermissions"))
         return False
     return wrapper
 
@@ -351,7 +351,7 @@ def adminOnly(func: Callable) -> Callable:
         log(f"ctx: {type(ctx)}\nargs: {args}\nkwargs: {kwargs}", logging.DEBUG)
         if has_bot_permissions(ctx.author, ctx.guild):
             return await func(ctx, *args, **kwargs)
-        await ctx.send(personalityMessage("missingpermissions"))
+        await ctx.send(personalityMessage("errors.missingpermissions"))
         return False
     return wrapper
 
@@ -363,7 +363,7 @@ def blockInDMs(func: Callable) -> Callable:
     async def wrapper(ctx: commands.Context, *args, **kwargs):
         log(f"ctx: {type(ctx)}\nargs: {args}\nkwargs: {kwargs}", logging.DEBUG)
         if not ctx.guild:
-            await ctx.send(personalityMessage("nodm"))
+            await ctx.send(personalityMessage("errors.nodm"))
             return False
         return await func(ctx, *args, **kwargs)
     return wrapper

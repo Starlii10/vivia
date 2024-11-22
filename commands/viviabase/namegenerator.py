@@ -70,4 +70,4 @@ async def namegenerator(ctx: commands.Context, type: str="first", gender: str="n
             
         if config["Advanced"]["Debug"] == "True":
             log(f"Generated name: {name}", logging.DEBUG)
-    await ctx.send(personalityMessage("namegeneration").replace("{name}", name))
+    await ctx.send(personalityMessage("base.namegeneration").replace("{name}", name))

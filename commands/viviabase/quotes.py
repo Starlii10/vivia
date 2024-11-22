@@ -54,7 +54,7 @@ async def addquote(ctx: commands.Context, quote: str, author: str, date: str):
     try:
         add_custom_quote(f'"{quote}" - {author}, {date}', ctx.guild.id)
     except Exception as e:
-        await ctx.send(personalityMessage("error"))
+        await ctx.send(personalityMessage("errors.error"))
         if config["General"]["VerboseErrors"]:
             await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
         await log(f'Failed to add "{quote} - {author}, {date}" to the custom quote list for server {ctx.guild.name} ({ctx.guild.id}): {type(e)}: {e}', severity=logging.ERROR)
@@ -83,7 +83,7 @@ async def quote(ctx: commands.Context):
                 quote = random.choice(json.load(f)['quotes'])
                 await ctx.send(quote)
     except Exception as e:
-        await ctx.send(personalityMessage("error"))
+        await ctx.send(personalityMessage("errors.error"))
         if ctx.guild:
             if serverConfig(ctx.guild.id)['verboseErrors']:
                 await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
@@ -108,7 +108,7 @@ async def listquotes(ctx: commands.Context, customonly: bool = False):
                     quotes = '\n'.join(quotes)
                     await ctx.send(quotes)
             else:
-                await ctx.send(personalityMessage("error")
+                await ctx.send(personalityMessage("errors.error")
                                 + "\n-# `customonly` flag only works in a server.")
                 return
         else:
@@ -125,7 +125,7 @@ async def listquotes(ctx: commands.Context, customonly: bool = False):
                     quotes = '\n'.join(quotes)
                     await ctx.send(quotes)
     except Exception as e:
-        await ctx.send(personalityMessage("error"))
+        await ctx.send(personalityMessage("errors.error"))
         if ctx.guild:
             if serverConfig(ctx.guild.id)['verboseErrors']:
                 await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
@@ -160,7 +160,7 @@ async def removequote(ctx: commands.Context, quote: str):
         with open(os.path.join('data', 'quotes.json'), 'w') as f:
             json.dump(quotes, f)
     except Exception as e:
-        await ctx.send(personalityMessage("error"))
+        await ctx.send(personalityMessage("errors.error"))
         if serverConfig(ctx.guild.id)['verboseErrors']:
             await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
         await log(f'Failed to remove "{quote}" from the list for server {ctx.guild.name} ({ctx.guild.id}): {type(e)}: {e}', severity=logging.ERROR)
