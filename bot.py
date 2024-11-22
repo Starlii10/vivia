@@ -85,7 +85,7 @@ else:
 # Configure bot settings
 intents = discord.Intents.default()
 intents.message_content = True # will need to verify at 100 servers
-bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
+bot = commands.AutoShardedBot(command_prefix=config['General']['Prefix'], intents=intents)
 bot.remove_command("help") # because we hate the default help command
 tree = bot.tree
 
