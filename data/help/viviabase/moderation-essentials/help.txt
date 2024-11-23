@@ -1,0 +1,26 @@
+# ViviaBase: `moderation-essentials`
+The Moderation Essentials command pack provides basic moderation actions such as warning, banning, or kicking users.
+
+## Commands
+* `warn`
+    - Usage: `v!warn <user> <reason>`
+    - Example: `v!warn @masquerade "Self-promotion of your video outside of #advertising and not relevant to the conversation."`
+* `unwarn`
+    - Usage: `v!unwarn <user> <reason>`
+    - Example: `v!unwarn @masquerade "The video was actually relevant to the conversation, sorry!"`
+* `kick`
+    - Usage: `v!kick <user> <reason>`
+    - Example: `v!kick @wildside "Spamming #art - 3rd offense"`
+* `ban`
+    - Usage: `v!ban <user> <reason>`
+    - Example: `v!ban @melobyte "Attempting to hack into Vivia"`
+* `unban`
+    - Usage: `v!unban <user> <reason>`
+    - Example: `v!unban @melobyte "Someone else was impersonating you and hacking into Vivia."`
+
+## Limitations
+- You must have Moderate Members permission to issue warns, and Kick/Ban Members to kick and ban members, respectively.
+    - Vivia Admins cannot bypass this unless they have a role that grants them the permissions.
+- Users with Administrator permissions cannot be moderated.
+- You can't moderate Vivia using Vivia. 
+- The user you are moderating must be below you in the role hierarchy.

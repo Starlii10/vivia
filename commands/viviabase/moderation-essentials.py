@@ -10,6 +10,9 @@
     Have a great time using Vivia!
 """
 
+if __name__ == "__main__":
+    raise Exception("Vivia extensions should not be run as a script.")
+
 import json
 import logging
 import os
@@ -207,7 +210,8 @@ async def kick(ctx: commands.Context, user: discord.Member, reason: str = "No re
     name = "ban"
 )
 @app_commands.describe(
-    user = "The user to ban."
+    user = "The user to ban.",
+    reason = "The reason for the ban."
 )
 @viviatools.blockInDMs
 async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No reason provided."):

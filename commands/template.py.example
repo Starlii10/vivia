@@ -15,8 +15,8 @@
 
 # You'll need the discord.py library, of course - suggested imports:
 import discord
-from discord.ext import commands
 from discord import app_commands
+from discord.ext import commands
 # Add any additional imports you may need in here
 # ex: from extras.viviatools import personalityMessage, blockInDMs
 

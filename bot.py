@@ -200,9 +200,13 @@ async def statusChanges():
     """
     Changes the bot's status every hour.
     """
-    with open(os.path.join("data", "statuses.json"), "r") as f:
-        statuses = json.load(f)
-    status = random.choice(statuses["statuses"])
+    # statuses are now stored in data/statuses/*.json to support extensions that add their own statuses
+    statuses = []
+    for file in os.listdir("data/statuses"):
+        if file.endswith(".json"):
+            with open(os.path.join("data", "statuses", file), "r") as f:
+                statuses.extend(json.load(f)["statuses"])
+    status = random.choice(statuses)
     await viviatools.setCustomPresence(status, bot)
     viviatools.log(f"Status changed to {status}", logging.DEBUG)
 

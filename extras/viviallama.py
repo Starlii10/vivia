@@ -24,6 +24,8 @@
     Have a great time using Vivia!
 """
 
+# TODO: Make this an extension
+
 import configparser
 import json
 import logging

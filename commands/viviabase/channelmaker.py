@@ -10,6 +10,9 @@
     Have a great time using Vivia!
 """
 
+if __name__ == "__main__":
+    raise Exception("Vivia extensions should not be run as a script.")
+
 import json
 import logging
 from discord.ext import commands

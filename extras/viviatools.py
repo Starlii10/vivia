@@ -135,10 +135,11 @@ def extractVSE(file: str):
     with zipfile.ZipFile(file, 'r') as zip_ref:
         zip_ref.extractall(extract_path)
 
-    # main python file
+    # main python file (__main__.py)
     for f in os.listdir(extract_path):
-        if f.endswith(".py"):
-            os.rename(os.path.join(extract_path, f), os.path.join("commands", f"{filename}.py"))
+        if f == "__main__.py":
+            os.makedirs(os.path.join("commands", filename), exist_ok=True)
+            os.rename(os.path.join(extract_path, f), os.path.join("commands", filename, f))
             break
     
     # extra python files
@@ -173,6 +174,12 @@ def extractVSE(file: str):
                 log(f"{str(type(e))}: {e}", logging.ERROR)
                 log(f"{filename} may not load correctly. Please install the requirements manually", logging.ERROR)
             break
+    
+    # statuses
+    for f in os.listdir(extract_path):
+        if f.endswith(".json") and "status" in f:
+            os.makedirs(os.path.join("data", "status", filename), exist_ok=True)
+            os.rename(os.path.join(extract_path, f), os.path.join("data", "status", filename, f))
 
     # Find and copy any other files (if any)
     for f in os.listdir(extract_path):
