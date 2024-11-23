@@ -29,10 +29,4 @@ async def help(ctx: commands.Context, extension: str = "core"):
     """
         Help command.
     """
-    log(f"{loaded_extensions}", logging.DEBUG)
-    log(f"{extension} - is loaded: {extension in loaded_extensions}", logging.DEBUG)
-    # we need to account for custom extensions too
-    if extension in loaded_extensions:
-        await ctx.send(helpMsg(extension))
-    else:
-        await ctx.send(personalityMessage("errors.extensionnotloaded"))
+    await ctx.send(helpMsg(extension))
