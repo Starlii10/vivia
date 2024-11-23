@@ -2,19 +2,19 @@
 The Moderation Essentials command pack provides basic moderation actions such as warning, banning, or kicking users.
 
 ## Commands
-* `warn`
+* `warn` - Warns a user for a specified reason.
     - Usage: `v!warn <user> <reason>`
     - Example: `v!warn @masquerade "Self-promotion of your video outside of #advertising and not relevant to the conversation."`
-* `unwarn`
+* `unwarn` - Unwarns a user for a specified reason.
     - Usage: `v!unwarn <user> <reason>`
     - Example: `v!unwarn @masquerade "The video was actually relevant to the conversation, sorry!"`
-* `kick`
+* `kick` - Kicks a user for a specified reason.
     - Usage: `v!kick <user> <reason>`
     - Example: `v!kick @wildside "Spamming #art - 3rd offense"`
-* `ban`
+* `ban` - Bans a user for a specified reason.
     - Usage: `v!ban <user> <reason>`
     - Example: `v!ban @melobyte "Attempting to hack into Vivia"`
-* `unban`
+* `unban` - Unbans a user for a specified reason.
     - Usage: `v!unban <user> <reason>`
     - Example: `v!unban @melobyte "Someone else was impersonating you and hacking into Vivia."`
 
