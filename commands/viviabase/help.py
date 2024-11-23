@@ -13,6 +13,7 @@
 if __name__ == "__main__":
     raise Exception("Vivia extensions should not be run as a script.")
 
+import logging
 from discord.ext import commands
 from discord import app_commands
 from extras.viviatools import helpMsg,personalityMessage, loaded_extensions, failed_extensions, log
@@ -28,9 +29,9 @@ async def help(ctx: commands.Context, extension: str = "core"):
     """
         Help command.
     """
-    log(extension)
+    log(f"{extension} - is loaded: {extension in loaded_extensions}", logging.DEBUG)
     # we need to account for custom extensions too
-    if extension in loaded_extensions or extension in failed_extensions:
+    if extension in loaded_extensions:
         await ctx.send(helpMsg(extension))
     else:
         await ctx.send(personalityMessage("errors.extensionnotloaded"))
