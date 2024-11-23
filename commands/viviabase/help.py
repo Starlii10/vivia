@@ -29,4 +29,5 @@ async def help(ctx: commands.Context, extension: str = "core"):
     """
         Help command.
     """
-    await ctx.send(helpMsg(extension))
+    await ctx.author.send(helpMsg(extension))
+    await ctx.send(personalityMessage("base.helpsent"))
