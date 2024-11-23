@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
 from discord.ext import commands
 from discord import app_commands
-from extras.viviatools import helpMsg,personalityMessage, loaded_extensions, failed_extensions
+from extras.viviatools import helpMsg,personalityMessage, loaded_extensions, failed_extensions, log
 
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(help)
@@ -28,6 +28,7 @@ async def help(ctx: commands.Context, extension: str = "core"):
     """
         Help command.
     """
+    log(extension)
     # we need to account for custom extensions too
     if extension in loaded_extensions or extension in failed_extensions:
         await ctx.send(helpMsg(extension))
