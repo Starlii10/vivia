@@ -9,7 +9,6 @@
         "Did you need me, {user}? Check your DMs for a help message from me!",
         "Do you need me, {user}? I just sent you a message with some helpful information.",
         "Hiya {user}, I just sent you a DM!",
-        "{user}, I just sent you a message with some helpful information.",
         "I just sent you a message with some helpful information, {user}!",
         "Check your DMs for the help message, {user}.",
         "Just sent the help message, {user}. Hope it helps!"

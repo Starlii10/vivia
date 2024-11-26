@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
     This is the help command, part of the ViviaBase extension package.
 

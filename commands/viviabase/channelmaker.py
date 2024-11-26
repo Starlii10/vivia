@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
     This is the channelmaker command, part of the ViviaBase extension package.
 

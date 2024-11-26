@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
     This is the quote extension, part of the ViviaBase extension package.
 

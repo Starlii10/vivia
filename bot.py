@@ -18,7 +18,6 @@ __VERSION__ = "Vivia 20241025"
 
 # Imports
 import sys
-
 import concurrent
 
 
@@ -85,7 +84,10 @@ else:
 # Configure bot settings
 intents = discord.Intents.default()
 intents.message_content = True # will need to verify at 100 servers
-bot = commands.AutoShardedBot(command_prefix=config['General']['Prefix'], intents=intents)
+if config['Advanced']['Sharded'] == "True":
+    bot = commands.AutoShardedBot(command_prefix=config['General']['Prefix'], intents=intents)
+else:
+    bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
 bot.remove_command("help") # because we hate the default help command
 tree = bot.tree
 
@@ -249,9 +251,6 @@ async def on_guild_join(guild: discord.Guild):
     for t in threads:
         t.start()
 
-    for t in threads:
-        t.join()
-
     if config["Advanced"]["Debug"] == "True":
         viviatools.log(f"Setup complete for {guild.name} ({guild.id})", logging.DEBUG)
 
@@ -278,9 +277,8 @@ async def on_message(message: discord.Message):
     if serverConfig(message.guild.id)['aiEnabled']:
         # we need to check both for direct mentions of Vivia and for mentions of the Vivia role to prevent confusion
         if (message.mentions and (message.mentions[0] == bot.user or message.role_mentions[0] == discord.utils.get(message.guild.roles, name="Vivia"))):
-            async with message.channel.typing():
-                # TODO: HOW DO I MAKE THIS NON BLOCKING??????????????????????????????
-                await Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "),
+                await message.channel.typing()
+                thread = threading.Thread(target=Llama.createResponse, args=((message.content.removeprefix(f"<@{str(message.author.id)}>"),
                                                     message.author.display_name,
                                                     message.author.name,
                                                     message.attachments,
@@ -288,7 +286,8 @@ async def on_message(message: discord.Message):
                                                     current_status,
                                                     message.guild.name,
                                                     message.channel.name,
-                                                    message.channel.category.name)
+                                                    message.channel.category.name)))
+                thread.start()
 
 async def reload_all_extensions():
     """

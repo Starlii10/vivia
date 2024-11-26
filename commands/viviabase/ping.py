@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
     This is a simple ping command, part of the ViviaBase extension package.
 

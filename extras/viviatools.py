@@ -263,12 +263,15 @@ def personalityMessage(type: str):
     try:
         with open(os.path.join("data", "personalityMessages", f"{type.replace('.', os.path.sep)}.json")) as f:
             messages = json.load(f)
-            random_msg = messages["messages"][random.randint(0, len(messages["messages"]) - 1)]
-            if config["Advanced"]["Debug"] == "True":
-                log(f"Got a random {type} message: {random_msg}", logging.DEBUG)
-                return random_msg + f"\n-# (Message type: {type})"
+            if config["General"]["UsePersonalityMessages"] == "True":
+                random_msg = messages["messages"][random.randint(0, len(messages["messages"]) - 1)]
+                if config["Advanced"]["Debug"] == "True":
+                    log(f"Got a random {type} message: {random_msg}", logging.DEBUG)
+                    return random_msg + f"\n-# (Message type: {type})"
+                else:
+                    return random_msg
             else:
-                return random_msg
+                return messages["default"]
     except FileNotFoundError:
         log(f"Couldn't find personality message database for type {type}. Does it even exist?", logging.ERROR)
         return ""

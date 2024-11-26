@@ -26,6 +26,7 @@
 
 # TODO: Make this an extension
 
+import asyncio
 import configparser
 import json
 import logging
@@ -91,12 +92,12 @@ try:
     import pytesseract
 except:
     viviatools.log("Couldn't load pytesseract. This is not a fatal error, however Vivia will not be able to read images unless it is installed.", logging.ERROR)
-    viviatools.log("This may be caused by the missing tesseract-ocr package. Pytesseract requires tesseract-ocr, which does not come with the package and must be installed manually.", logging.ERROR)
-    viviatools.log("Ensure both pytesseract and tesseract-ocr are installed.")
+    viviatools.log("This may be caused by a missing tesseract-ocr package. Pytesseract requires the tesseract-ocr engine, which does not come with the package and must be installed manually.", logging.ERROR)
+    viviatools.log("Ensure both pytesseract and tesseract-ocr are installed and restart Vivia.")
     viviatools.log("OCR functionality will be disabled for this session.", logging.ERROR)
     imageReadingDisabled = True
 
-async def createResponse(
+def createResponse(
         prompt: str,
         username: str,
         internal_name: str,
@@ -121,10 +122,10 @@ async def createResponse(
         if len(attachments) > 0:
             viviatools.log("Reading message attachments...", logging.DEBUG)
             for attachment in attachments:
-                attachment_messages.append(await processAttachment(attachment, internal_name))
+                attachment_messages.append(asyncio.run_coroutine_threadsafe(processAttachment(attachment, internal_name)))
             viviatools.log("Attachments read.", logging.DEBUG)
 
-        # Sysprompt processing. Terrible, ik. Too bad!
+        # Process sysprompt and data. This is a TERRIBLE way to do this but it works and I can't be bothered to fix it
         sysprompt = [{"role": "system", "content": {
             add_info_to_sysprompt(open(os.path.join("data", "system-prompt.txt"), "r").read(), 
                                   internal_name, 
@@ -201,13 +202,17 @@ async def processAttachment(attachment, internal_name):
                 # Pytesseract didn't load, skip
                 viviatools.log(f"Attachment {attachment.filename} is not text. Skipping OCR due to previous errors loading pytesseract.", logging.WARNING)
                 return {"role": "user", "content": f"An image ({attachment.filename}) that couldn't be read due to errors"}
+        case "audio":
+            # TODO: audio transcription?
+            viviatools.log(f"Attachment {attachment.filename} is audio. Skipping.", logging.WARNING)
+            return {"role": "user", "content": f"An audio attachment \"{attachment.filename}\" (unimplemented)"}
         case _:
             # Unrecognized attachment type
             viviatools.log(f"Attachment {attachment.filename} is unrecognized. Skipping.", logging.WARNING)
             return {"role": "user", "content": f"An unrecognized attachment ({attachment.filename})"}
 
 def add_info_to_sysprompt(sysprompt, internal_name, username, discord_status_user, status_bot, server_name, channel_name, category_name):
-    # This is a TERRIBLE way to do this. I know
+    # pain
     sysprompt = sysprompt.replace("{username}", username)
     sysprompt = sysprompt.replace("{discord_status_user}", discord_status_user)
     sysprompt = sysprompt.replace("{status_bot}", status_bot)
