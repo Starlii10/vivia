@@ -148,11 +148,13 @@ def createResponse(
         with open(os.path.join("data", "tempchats", internal_name, "messages.txt"), "w") as file:
             json.dump(additional_messages + [{"role": "user", "content": prompt}] + [{"role": "assistant", "content": f"{response}"}], file)
 
-        asyncio.run_coroutine_threadsafe(channel_ref.send(response))
+        asyncio.run(channel_ref.send(response))
     else:
         # Return an error message if LLaMa failed to load
         viviatools.log(f"Ignoring generation request by {internal_name} ({username}) due to previous errors while loading LLaMa", logging.WARNING)
-        asyncio.run_coroutine_threadsafe(channel_ref.send(personalityMessage("ai.cannotrespond")))
+        # for some reason run_coroutine_threadsafe requires a loop, something I don't feel like passing through the function
+        # there's enough jank here that I don't care, we'll just use something else
+        asyncio.run(channel_ref.send(personalityMessage("ai.cannotrespond")))
 
 async def processAttachment(attachment, internal_name):
     # Download attachment
