@@ -282,6 +282,7 @@ async def on_message(message: discord.Message):
                                                     message.author.display_name,
                                                     message.author.name,
                                                     message.channel,
+                                                    bot.loop,
                                                     message.attachments,
                                                     message.author.raw_status,
                                                     current_status,
