@@ -101,12 +101,14 @@ def createResponse(
         prompt: str,
         username: str,
         internal_name: str,
+        channel_ref: discord.TextChannel,
         attachments: list[discord.Attachment] = [],
         user_status: str | None = None,
         current_status: str | None = None,
         server_name: str | None = None,
         channel_name: str | None = None,
-        category_name: str | None = None):
+        category_name: str | None = None,
+    ):
     if not aiDisabled:
         viviatools.log(f"Response generation requested by {internal_name} ({username}) - generating now! (This may take a moment)", logging.DEBUG)
 
@@ -146,11 +148,11 @@ def createResponse(
         with open(os.path.join("data", "tempchats", internal_name, "messages.txt"), "w") as file:
             json.dump(additional_messages + [{"role": "user", "content": prompt}] + [{"role": "assistant", "content": f"{response}"}], file)
 
-        return response
+        channel_ref.send(response)
     else:
         # Return an error message if LLaMa failed to load
         viviatools.log(f"Ignoring generation request by {internal_name} ({username}) due to previous errors while loading LLaMa", logging.WARNING)
-        return(personalityMessage("ai.cannotrespond"))
+        channel_ref.send(personalityMessage("ai.cannotrespond"))
 
 async def processAttachment(attachment, internal_name):
     # Download attachment

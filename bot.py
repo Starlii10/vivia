@@ -281,6 +281,7 @@ async def on_message(message: discord.Message):
                 thread = threading.Thread(target=Llama.createResponse, args=((message.content.removeprefix(f"<@{str(message.author.id)}>"),
                                                     message.author.display_name,
                                                     message.author.name,
+                                                    message.channel,
                                                     message.attachments,
                                                     message.author.raw_status,
                                                     current_status,
