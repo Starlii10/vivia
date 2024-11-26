@@ -148,11 +148,11 @@ def createResponse(
         with open(os.path.join("data", "tempchats", internal_name, "messages.txt"), "w") as file:
             json.dump(additional_messages + [{"role": "user", "content": prompt}] + [{"role": "assistant", "content": f"{response}"}], file)
 
-        channel_ref.send(response)
+        asyncio.run_coroutine_threadsafe(channel_ref.send(response))
     else:
         # Return an error message if LLaMa failed to load
         viviatools.log(f"Ignoring generation request by {internal_name} ({username}) due to previous errors while loading LLaMa", logging.WARNING)
-        channel_ref.send(personalityMessage("ai.cannotrespond"))
+        asyncio.run_coroutine_threadsafe(channel_ref.send(personalityMessage("ai.cannotrespond")))
 
 async def processAttachment(attachment, internal_name):
     # Download attachment
