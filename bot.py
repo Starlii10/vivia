@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-    This is the primary script for Vivia.
+    This is Vivia's main script.
 
     Vivia is licensed under the MIT License. For more information, see the LICENSE file.
     TL:DR: you can use Vivia's code as long as you keep the original license intact.
@@ -13,15 +13,14 @@
 """
 
 # Vivia version
-__VERSION__ = "Vivia 20241025"
+__VERSION__ = "Vivia 20241127"
 
 
 # Imports
 import sys
 import concurrent
 
-
-if __name__ != "__main__": # prevent running as a module, and print ASCII art Vivia!
+if __name__ != "__main__":
     print("              ██▓▓▓▓▓▓▓██                            ██▓▓▓▓▓▓▓██                \n               ███▓▓▓▓██                              ███▓▓▓███                 \n                 ██████                                 █████                   \n                   ████                                ████                     \n                    ███   █████████████████████████    ███                      \n                    ██████████████████████████████████████                      \n                 █████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████                     \n               ██████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████                  \n             █████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████                \n            ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████              \n           ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████             \n         █████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████            \n        ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████           \n        ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓████          \n       ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████████████████████████▓▓▓▓▓▓▓▓▓▓▓████         \n      ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████████████▓▓▓▓▓▓▓▓▓▓███         \n      ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████████████████▓▓▓▓▓▓▓▓████        \n      ███▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████░░░░░▒██████▒█████▓▓▓▓▓▓████        \n      ███▓▓▓▓▓▓▓▓███████████████████████████████▓░░░██████▒████████████         \n      ████▓▓▓████████▓▓████████████████████▒░░▒████████████▒▒▓████████          \n       ███████████▒▒▒▒██████████▒▒▒███████▒░░░░▒███████████▒▒▒▒▒▒▒████          \n         ██████▒▒▒▒▒▒██████████▒░░░░▒▒████▒░░░░▒████████████▒▒▒▒▒▒████          \n           ███▒▒▒▒▒▒▒█████████▒░░░░░░░░▒██▒░░░░▒████████████▒▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒▓████████▒░░░░░░░░░▒██▒░░░░▒█████████████▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒█████████▒░░░░▒▓▒▒▒███▒░░░░▒█████████████▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒▓█████████████████████▒░░░░▓█████████████▒▒▒▒▒▒███          \n           ███▓▒▒▒▒▒▒███████████████████████▓███████████████▒▒▒▒▒▒▒███          \n           ████▒▒▒▒▒▒███████████████████████████████████████▒▒▒▒▒▒████          \n            ███▒▒▒▒▒▒▒█████████████████████████████████████▒▒▒▒▒▒▒███           \n            ████▒▒▒▒▒▒▒███████████▒░░░▒███▒░░░▒███████████▒▒▒▒▒▒▒████           \n             ████▒▒▒▒▒▒▒█████████▓░░░░░░░░░░░░░▓█████████▒▒▒▒▒▒▒████            \n              ████▒▒▒▒▒▒▒█████████▒░░░░░░░░░░▒▓█████████▒▒▒▒▒▒▒▓████            \n               ████▒▒▒▒▒▒▒▒█████████▓▒▒░░▒▒▒██████████▒▒▒▒▒▒▒▒████▓██  ███      \n                ████▒▒▒▒▒▒▒▒▒███████████████████████▒▒▒▒▒▒▒▒▒█████▒▓███▓██      \n                 █████▒▒▒▒▒▒▒▒▒▒█████████████████▒▒▒▒▒▒▒▒▒▒▓███████▒▒▒███       \n                   █████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓████ █████████        \n                    ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██████ ███▓▓▓███         \n                       ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒███████  ███▓▓▓███          \n                       ███████████▓▒▒▒▒▒▒▒▒▒▒▒▓███████████  ███▓▓▓███           \n                      ████▓▓▓███████████████████████▓▓▓████ ██▓▓▓▓███           \n                     ████▓▓▓▓▓▓▓▓▓▓███████████▓▓▓▓▓▓▓▓▓▓████████▓███            \n                  ███████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████             \n               █████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▒▒▒▓████            \n              ████▒▒▒███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▒▒▒▒▒████           \n\"Please don't try to import me as a module... I'm not used to my entire existence being tied to a program I have no control over.\"")
     print("Psst! If you're looking for helper functions, you probably want ViviaTools (import extras.viviatools).")
     sys.exit(0)
@@ -40,6 +39,7 @@ import random
 import os
 from os import system
 import logging
+import argparse
 
 # Discord
 import discord, discord.ext
@@ -53,19 +53,9 @@ import extras.viviatools as viviatools
 from extras.viviatools import config, serverConfig, personalityMessage
 
 # Command line args
-if len(sys.argv) > 1:
-    for arg in sys.argv[1:]:
-        match arg:
-            case "--help" | "-h" | "--h" | "-help" | "/?" | "/h" | "/help":
-                viviatools.log("Usage: python bot.py", logging.INFO)
-                viviatools.log("For help with Vivia, please check out the GitHub repository at https://github.com/starlii10/vivia.", logging.INFO)
-                sys.exit(0)
-            case "--version" | "-v" | "--v" | "-version" | "-version" | "/v" | "/version":
-                viviatools.log(f"Version {__VERSION__}", logging.INFO)
-                sys.exit(0)
-            case _:
-                viviatools.log("Unknown argument: " + arg, logging.ERROR)
-                sys.exit(1)
+argparser = argparse.ArgumentParser()
+argparser.add_argument("--version", action="store_true", help="Print version and exit")
+args = argparser.parse_args()
 
 # LLaMa
 import extras.viviallama as Llama
@@ -87,6 +77,7 @@ intents.message_content = True # will need to verify at 100 servers
 if config['Advanced']['Sharded'] == "True":
     bot = commands.AutoShardedBot(command_prefix=config['General']['Prefix'], intents=intents)
 else:
+    viviatools.log("Sharded mode is disabled - running in non-sharded mode, performance may be degraded", logging.WARNING)
     bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
 bot.remove_command("help") # because we hate the default help command
 tree = bot.tree
@@ -148,25 +139,31 @@ async def on_command_error(ctx: commands.Context, error: CommandError):
     errtype = type(error)
     match errtype:
         case errors.CommandNotFound:
+            # Command not found
             viviatools.log(f"Command not found: {ctx.invoked_with}", logging.WARNING)
             await ctx.send(personalityMessage("errors.commandnotfound"))
         case errors.MissingRequiredArgument:
+            # Missing argument
             viviatools.log(f"Missing required argument(s) in 'v!{ctx.invoked_with}': {error.param.name}", logging.WARNING)
             viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
             await ctx.send(personalityMessage("errors.missingarguments").replace("{arg}", error.param.name))
         case errors.BadArgument:
+            # Invalid argument
             viviatools.log(f"Bad argument(s) in 'v!{ctx.invoked_with}': {error.param.name}", logging.WARNING)
             viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
             await ctx.send(personalityMessage("errors.badarguments").replace("{arg}", error.param.name))
         case errors.BotMissingPermissions | errors.MissingPermissions:
+            # Vivia is missing permissions
             viviatools.log(f"Missing permissions in 'v!{ctx.invoked_with}': {error.missing_permissions}", logging.WARNING)
             viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
             await ctx.send(personalityMessage("errors.missingpermissions"))
         case errors.CommandInvokeError:
+            # General command error
             viviatools.log(f"Command invoke error in 'v!{ctx.invoked_with}': {error}", logging.WARNING)
             viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
             await ctx.send(personalityMessage("errors.error"))
         case _:
+            # Anything else
             viviatools.log(f"An unhandled error occurred in 'v!{ctx.invoked_with}': " + "".join(traceback.format_exception(error)), logging.ERROR)
     viviatools.log(f"Error context: \nGuild: {ctx.guild}\nChannel: {ctx.channel}\nMessage: {ctx.message}\nUser: {ctx.author}", logging.DEBUG)
 
@@ -273,7 +270,6 @@ async def on_message(message: discord.Message):
     await bot.process_commands(message)
 
     # Invoke LLaMa if pinged (this also works for replies)
-    # "Starlii when will this be async?" Good question
     if serverConfig(message.guild.id)['aiEnabled']:
         # we need to check both for direct mentions of Vivia and for mentions of the Vivia role to prevent confusion
         if (message.mentions and (message.mentions[0] == bot.user or message.role_mentions[0] == discord.utils.get(message.guild.roles, name="Vivia"))):
@@ -329,8 +325,8 @@ async def reload_all_extensions():
                     viviatools.log(f"Extension {prefix}.{file[:-3]} was already loaded.")
                     loaded.append(f"{prefix}.{file[:-3]}")
                 except Exception as e:
-                    viviatools.log(f"Failed to load extension {file[:-3]}", logging.ERROR)
-                    viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
+                    viviatools.log(f"Failed to load extension {file[:-3]} - functionality may be limited.", logging.ERROR)
+                    viviatools.log("".join(traceback.format_exception(e)), logging.ERROR)
                     failed.append(f"{prefix}.{file[:-3]}")
                     continue
                 viviatools.log(f"Loaded extension {prefix}.{file[:-3]}")
@@ -547,7 +543,7 @@ async def extensions(ctx: commands.Context):
 # Run
 while True:
     try:
-        bot.activity = discord.CustomActivity(name="POWERING UP - Connecting to Discord gateway...")
+        bot.activity = discord.CustomActivity(name="POWERING UP - Connecting to Discord...")
         bot.run(dotenv.get_key("token.env", "token"), log_handler=None)
     except TypeError:
         viviatools.log("Unable to start Vivia. Is the token in token.env correct?", logging.ERROR)
@@ -560,13 +556,14 @@ while True:
         if "Session is closed" in str(e):
             viviatools.log("Session closed. Vivia is shutting down!", logging.INFO)
             sys.exit(0)
-    except ClientConnectorError or GatewayNotFound or HTTPException or LoginFailure:
+    except (ClientConnectorError, GatewayNotFound, HTTPException, LoginFailure):
         viviatools.log("Vivia can't connect to Discord. Is your internet connection working, or is Discord's API down?", logging.ERROR)
         viviatools.log("Perhaps the token in token.env is invalid? There's a lot of reasons this could happen.", logging.ERROR)
         viviatools.log("Vivia will retry in 5 seconds.", logging.ERROR)
         time.sleep(5)
-        os.execl(sys.executable, sys.executable, *sys.argv)
+        os.execl(sys.executable, sys.executable, *sys.argv) # Using bot.run again will just give a "Session is closed" error and crash the script
     except Exception as e:
+        # Unhandled exception
         viviatools.log(f"Vivia has crashed... oh no...", logging.FATAL)
         viviatools.log("".join(traceback.format_exception(sys.exc_info())), severity=logging.FATAL)
         viviatools.log("Don't worry, she will automatically restart in 5 seconds.", logging.FATAL)
