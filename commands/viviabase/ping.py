@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
     This is a simple ping command, part of the ViviaBase extension package.
 
@@ -10,6 +11,9 @@
     Have a great time using Vivia!
 """
 
+if __name__ == "__main__":
+    raise Exception("Vivia extensions should not be run as a script.")
+
 from discord.ext import commands
 from extras.viviatools import personalityMessage, bot
 
@@ -21,4 +25,4 @@ async def setup(bot: commands.Bot):
     description="Shows the bot's latency.",
 )
 async def ping(ctx: commands.Context):
-    await ctx.send(personalityMessage("ping").replace("{ping}", str(bot.latency * 1000) + "ms"))
+    await ctx.send(personalityMessage("base.ping").replace("{ping}", str(bot.latency * 1000) + "ms"))

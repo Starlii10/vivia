@@ -1,0 +1,24 @@
+# ViviaBase: `quotes`
+The quote command pack lets you quote your favorite messages for future humor.
+
+## Commands
+* `quote` - Sends a random quote from the global and server lists.
+    - Usage: `v!quote`
+* `addquote` - Adds a quote to the server list.
+    - Usage: `v!addquote <message> <author> <time>
+    - Example: `v!addquote "A man got hit in the head with a can of Coke, but he was alright because it was a soft drink." @vivia "July 18, 2022"`
+* `removequote` - Deletes a quote from the server list.
+    - Usage: `v!removequote <quote>`
+    - Example: `v!removequote "Was that really NES-essary? - @starlii10, October 5, 2020"`
+* `listquotes` - Lists the quotes Vivia can use.
+    - Usage: `v!listquotes <customonly>`
+    - Example: `v!listquotes`, `v!listquotes true`
+
+`addquote` and `removequote` both require Vivia Admin permissions.
+
+## Context Menu
+You can turn any message into a custom quote using the context menu command (Context Menu -> Apps -> Add Custom Quote). This is the same as running `v!addquote <message contents> <message author> <time message was sent>`.
+
+## In DMs
+Custom quotes are not supported in DMs, so `quote` and `listquotes` will only give results from the global quote list.
+`addquote` and `removequote` will be blocked, and attempting to use `listquotes` with `customonly` set to True will fail with the message "`customonly` flag only works in a server."

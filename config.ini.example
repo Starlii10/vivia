@@ -1,7 +1,8 @@
 [General]
 # The command prefix for the bot.
 prefix = v!
-# Whether or not to use personality messages.
+# Whether or not to use personality messages (if any).
+# If False, will use the default message.
 usepersonalitymessages = True
 
 [Extensions]
@@ -12,6 +13,6 @@ vseclear = True
 # Shows more verbose information about Vivia in the terminal/logs, as well as in Discord messages.
 # This should usually be set to False, however this may help finding issues in some extensions.
 debug = False
-# Enable loading extensions from the viviabase-beta folder. These contain base extensions that are still under development.
-# These extensions may not be stable - run at your own risk! 
-betaextensions = False
+# Turns on sharded mode, which automatically opens multiple shards to process requests faster.
+# This should usually only be disabled for debugging purposes.
+sharded = True

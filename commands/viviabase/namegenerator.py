@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
     This is the namegenerator command, part of the ViviaBase extension package.
 
@@ -9,6 +10,9 @@
 
     Have a great time using Vivia!
 """
+
+if __name__ == "__main__":
+    raise Exception("Vivia extensions should not be run as a script.")
 
 import json
 import logging
@@ -70,4 +74,4 @@ async def namegenerator(ctx: commands.Context, type: str="first", gender: str="n
             
         if config["Advanced"]["Debug"] == "True":
             log(f"Generated name: {name}", logging.DEBUG)
-    await ctx.send(personalityMessage("namegeneration").replace("{name}", name))
+    await ctx.send(personalityMessage("base.namegeneration").replace("{name}", name))

@@ -1,0 +1,7 @@
+# ViviaBase: `namegenerator`
+Name Generator lets you make completely random names!
+
+Usage: `v!namegenerator <type> <gender>`
+Examples:
+* `v!namegenerator first female`
+* `v!namegenerator full none`

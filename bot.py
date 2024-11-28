@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-    This is the primary script for Vivia.
+    This is Vivia's main script.
 
     Vivia is licensed under the MIT License. For more information, see the LICENSE file.
     TL:DR: you can use Vivia's code as long as you keep the original license intact.
@@ -13,14 +13,14 @@
 """
 
 # Vivia version
-__VERSION__ = "Vivia 20241025"
+__VERSION__ = "Vivia 20241127"
 
 
 # Imports
 import sys
+import concurrent
 
-
-if __name__ != "__main__": # prevent running as a module, and print ASCII art Vivia!
+if __name__ != "__main__":
     print("              ██▓▓▓▓▓▓▓██                            ██▓▓▓▓▓▓▓██                \n               ███▓▓▓▓██                              ███▓▓▓███                 \n                 ██████                                 █████                   \n                   ████                                ████                     \n                    ███   █████████████████████████    ███                      \n                    ██████████████████████████████████████                      \n                 █████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████                     \n               ██████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████                  \n             █████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████                \n            ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████              \n           ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████             \n         █████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████            \n        ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████           \n        ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓████          \n       ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████████████████████████▓▓▓▓▓▓▓▓▓▓▓████         \n      ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████████████▓▓▓▓▓▓▓▓▓▓███         \n      ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████████████████▓▓▓▓▓▓▓▓████        \n      ███▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████░░░░░▒██████▒█████▓▓▓▓▓▓████        \n      ███▓▓▓▓▓▓▓▓███████████████████████████████▓░░░██████▒████████████         \n      ████▓▓▓████████▓▓████████████████████▒░░▒████████████▒▒▓████████          \n       ███████████▒▒▒▒██████████▒▒▒███████▒░░░░▒███████████▒▒▒▒▒▒▒████          \n         ██████▒▒▒▒▒▒██████████▒░░░░▒▒████▒░░░░▒████████████▒▒▒▒▒▒████          \n           ███▒▒▒▒▒▒▒█████████▒░░░░░░░░▒██▒░░░░▒████████████▒▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒▓████████▒░░░░░░░░░▒██▒░░░░▒█████████████▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒█████████▒░░░░▒▓▒▒▒███▒░░░░▒█████████████▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒▓█████████████████████▒░░░░▓█████████████▒▒▒▒▒▒███          \n           ███▓▒▒▒▒▒▒███████████████████████▓███████████████▒▒▒▒▒▒▒███          \n           ████▒▒▒▒▒▒███████████████████████████████████████▒▒▒▒▒▒████          \n            ███▒▒▒▒▒▒▒█████████████████████████████████████▒▒▒▒▒▒▒███           \n            ████▒▒▒▒▒▒▒███████████▒░░░▒███▒░░░▒███████████▒▒▒▒▒▒▒████           \n             ████▒▒▒▒▒▒▒█████████▓░░░░░░░░░░░░░▓█████████▒▒▒▒▒▒▒████            \n              ████▒▒▒▒▒▒▒█████████▒░░░░░░░░░░▒▓█████████▒▒▒▒▒▒▒▓████            \n               ████▒▒▒▒▒▒▒▒█████████▓▒▒░░▒▒▒██████████▒▒▒▒▒▒▒▒████▓██  ███      \n                ████▒▒▒▒▒▒▒▒▒███████████████████████▒▒▒▒▒▒▒▒▒█████▒▓███▓██      \n                 █████▒▒▒▒▒▒▒▒▒▒█████████████████▒▒▒▒▒▒▒▒▒▒▓███████▒▒▒███       \n                   █████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓████ █████████        \n                    ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██████ ███▓▓▓███         \n                       ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒███████  ███▓▓▓███          \n                       ███████████▓▒▒▒▒▒▒▒▒▒▒▒▓███████████  ███▓▓▓███           \n                      ████▓▓▓███████████████████████▓▓▓████ ██▓▓▓▓███           \n                     ████▓▓▓▓▓▓▓▓▓▓███████████▓▓▓▓▓▓▓▓▓▓████████▓███            \n                  ███████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████             \n               █████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▒▒▒▓████            \n              ████▒▒▒███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▒▒▒▒▒████           \n\"Please don't try to import me as a module... I'm not used to my entire existence being tied to a program I have no control over.\"")
     print("Psst! If you're looking for helper functions, you probably want ViviaTools (import extras.viviatools).")
     sys.exit(0)
@@ -39,6 +39,7 @@ import random
 import os
 from os import system
 import logging
+import argparse
 
 # Discord
 import discord, discord.ext
@@ -52,19 +53,9 @@ import extras.viviatools as viviatools
 from extras.viviatools import config, serverConfig, personalityMessage
 
 # Command line args
-if len(sys.argv) > 1:
-    for arg in sys.argv[1:]:
-        match arg:
-            case "--help" | "-h" | "--h" | "-help" | "/?" | "/h" | "/help":
-                viviatools.log("Usage: python bot.py", logging.INFO)
-                viviatools.log("For help with Vivia, please check out the GitHub repository at https://github.com/starlii10/vivia.", logging.INFO)
-                sys.exit(0)
-            case "--version" | "-v" | "--v" | "-version" | "-version" | "/v" | "/version":
-                viviatools.log(f"Version {__VERSION__}", logging.INFO)
-                sys.exit(0)
-            case _:
-                viviatools.log("Unknown argument: " + arg, logging.ERROR)
-                sys.exit(1)
+argparser = argparse.ArgumentParser()
+argparser.add_argument("--version", action="store_true", help="Print version and exit")
+args = argparser.parse_args()
 
 # LLaMa
 import extras.viviallama as Llama
@@ -83,7 +74,11 @@ else:
 # Configure bot settings
 intents = discord.Intents.default()
 intents.message_content = True # will need to verify at 100 servers
-bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
+if config['Advanced']['Sharded'] == "True":
+    bot = commands.AutoShardedBot(command_prefix=config['General']['Prefix'], intents=intents)
+else:
+    viviatools.log("Sharded mode is disabled - running in non-sharded mode, performance may be degraded", logging.WARNING)
+    bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
 bot.remove_command("help") # because we hate the default help command
 tree = bot.tree
 
@@ -104,25 +99,26 @@ async def setup_hook():
 
     viviatools.log("Searching for VSE extensions...")
 
-    # Load VSCs
-    for root, dirs, files in os.walk("commands"):
-        for file in files:
-            if file.endswith(".vse"):
-                try:
-                    viviatools.extractVSE(os.path.join(root, file))
-                except Exception as e:
-                    viviatools.log(f"Failed to extract VSE extension {file}", logging.ERROR)
-                    viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
-                    viviatools.log("VSE extension will not be loaded - functionality may be limited.", logging.ERROR)
-                    if config['Advanced']['Debug'] != "True":
-                        os.remove(os.path.join(root, file))
-                else:
-                    viviatools.log(f"VSE extension {file} extracted", logging.DEBUG)
+    # Load VSEs
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = []
+        for root, dirs, files in os.walk("commands"):
+            for file in files:
+                if file.endswith(".vse"):
+                    futures.append(executor.submit(viviatools.extractVSE, os.path.join(root, file)))
+        for future in concurrent.futures.as_completed(futures):
+            if future.exception():
+                viviatools.log(f"Failed to extract VSE extension {future.result()[1]}", logging.ERROR)
+                viviatools.log("".join(traceback.format_exception(future.exception())), logging.ERROR)
+                viviatools.log("VSE extension will not be loaded - functionality may be limited.", logging.ERROR)
+                if config['Advanced']['Debug'] != "True":
+                    os.remove(os.path.join(future.result()[0], future.result()[1]))
+            else:
+                viviatools.log(f"VSE extension {future.result()[1]} extracted", logging.DEBUG)
     
     # Create server data folder
-    if not os.path.exists("data/servers"):
-        os.makedirs("data/servers")
-
+    if not os.path.exists(os.path.join("data", "servers")):
+        os.makedirs(os.path.join("data", "servers"))
     viviatools.log("VSE extensions extracted.")
 
 @bot.event
@@ -143,25 +139,31 @@ async def on_command_error(ctx: commands.Context, error: CommandError):
     errtype = type(error)
     match errtype:
         case errors.CommandNotFound:
+            # Command not found
             viviatools.log(f"Command not found: {ctx.invoked_with}", logging.WARNING)
-            await ctx.send(personalityMessage("commandnotfound"))
+            await ctx.send(personalityMessage("errors.commandnotfound"))
         case errors.MissingRequiredArgument:
+            # Missing argument
             viviatools.log(f"Missing required argument(s) in 'v!{ctx.invoked_with}': {error.param.name}", logging.WARNING)
             viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
-            await ctx.send(personalityMessage("missingarguments").replace("{arg}", error.param.name))
+            await ctx.send(personalityMessage("errors.missingarguments").replace("{arg}", error.param.name))
         case errors.BadArgument:
+            # Invalid argument
             viviatools.log(f"Bad argument(s) in 'v!{ctx.invoked_with}': {error.param.name}", logging.WARNING)
             viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
-            await ctx.send(personalityMessage("badarguments").replace("{arg}", error.param.name))
+            await ctx.send(personalityMessage("errors.badarguments").replace("{arg}", error.param.name))
         case errors.BotMissingPermissions | errors.MissingPermissions:
+            # Vivia is missing permissions
             viviatools.log(f"Missing permissions in 'v!{ctx.invoked_with}': {error.missing_permissions}", logging.WARNING)
             viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
-            await ctx.send(personalityMessage("missingpermissions"))
+            await ctx.send(personalityMessage("errors.missingpermissions"))
         case errors.CommandInvokeError:
+            # General command error
             viviatools.log(f"Command invoke error in 'v!{ctx.invoked_with}': {error}", logging.WARNING)
             viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
-            await ctx.send(personalityMessage("error"))
+            await ctx.send(personalityMessage("errors.error"))
         case _:
+            # Anything else
             viviatools.log(f"An unhandled error occurred in 'v!{ctx.invoked_with}': " + "".join(traceback.format_exception(error)), logging.ERROR)
     viviatools.log(f"Error context: \nGuild: {ctx.guild}\nChannel: {ctx.channel}\nMessage: {ctx.message}\nUser: {ctx.author}", logging.DEBUG)
 
@@ -197,9 +199,13 @@ async def statusChanges():
     """
     Changes the bot's status every hour.
     """
-    with open("data/statuses.json", "r") as f:
-        statuses = json.load(f)
-    status = random.choice(statuses["statuses"])
+    # statuses are now stored in data/statuses/*.json to support extensions that add their own statuses
+    statuses = []
+    for file in os.listdir("data/statuses"):
+        if file.endswith(".json"):
+            with open(os.path.join("data", "statuses", file), "r") as f:
+                statuses.extend(json.load(f)["statuses"])
+    status = random.choice(statuses)
     await viviatools.setCustomPresence(status, bot)
     viviatools.log(f"Status changed to {status}", logging.DEBUG)
 
@@ -216,19 +222,34 @@ async def on_guild_join(guild: discord.Guild):
     """
 
     viviatools.log(f"Bot joined {guild.name} ({guild.id})")
+
+    def setup_guild_data():
+        if config["Advanced"]["Debug"] == "True":
+            viviatools.log(f"Setting up custom quotes, config file, and Vivia admin role for {guild.name} ({guild.id})", logging.DEBUG)
+        with open(os.path.join('data', 'servers', str(guild.id), 'quotes.json'), 'w') as f:
+            json.dump({'quotes': []}, f)
+        with open(os.path.join('data', 'servers', str(guild.id), 'config.json'), 'w') as f, open(f'data/config.json.example', 'r') as g:
+            json.dump(json.load(g), f)
+
+    def setup_roles():
+        for member in guild.members:
+            if member.guild_permissions.administrator:
+                role = discord.utils.find(lambda r: r.name == "Vivia Admin", guild.roles)
+                if role is None:
+                    role = asyncio.run_coroutine_threadsafe(guild.create_role(name="Vivia Admin", reason="Vivia setup: Users with this role have privileges when running Vivia's commands in this server."), bot.loop).result()
+                asyncio.run_coroutine_threadsafe(member.add_roles(role, reason="Vivia setup: This user has administrative permissions and was automatically assigned to the Vivia Admin role."), bot.loop)
+                viviatools.log(f"User {member.name} ({member.id}) was automatically assigned the Vivia Admin role in {guild.name} ({guild.id}).", logging.DEBUG)
+
+    threads = [
+        threading.Thread(target=setup_guild_data),
+        threading.Thread(target=setup_roles)
+    ]
+
+    for t in threads:
+        t.start()
+
     if config["Advanced"]["Debug"] == "True":
-        viviatools.log(f"Setting up custom quotes, config file, and Vivia admin role for {guild.name} ({guild.id})", logging.DEBUG)
-    with open(f'data/servers/{guild.id}/quotes.json', 'w') as f:
-        json.dump({'quotes': []}, f)
-    with open(f'data/servers/{guild.id}/config.json', 'w') as f, open(f'data/config.json.example', 'r') as g:
-        json.dump(g, f)
-    await guild.create_role(name="Vivia Admin", reason="Vivia setup: Users with this role have privileges when running Vivia's commands in this server.")
-    for member in guild.members:
-        if member.guild_permissions.administrator:
-            await member.add_roles(discord.utils.find(lambda r: r.name == "Vivia Admin", guild.roles), reason="Vivia setup: This user has administrative permissions and was automatically assigned to the Vivia Admin role.")
-            viviatools.log(f"User {member.name} ({member.id}) was automatically assigned the Vivia Admin role in {guild.name} ({guild.id}).", logging.DEBUG)
-    if config["Advanced"]["Debug"] == "True":
-        viviatools.log(f"Setup complete for {guild.name} ({guild.id})", logging.DEBUG)    
+        viviatools.log(f"Setup complete for {guild.name} ({guild.id})", logging.DEBUG)
 
 @bot.event
 async def on_message(message: discord.Message):
@@ -249,36 +270,22 @@ async def on_message(message: discord.Message):
     await bot.process_commands(message)
 
     # Invoke LLaMa if pinged (this also works for replies)
-    # "Starlii when will this be async?" Good question
     if serverConfig(message.guild.id)['aiEnabled']:
         # we need to check both for direct mentions of Vivia and for mentions of the Vivia role to prevent confusion
         if (message.mentions and (message.mentions[0] == bot.user or message.role_mentions[0] == discord.utils.get(message.guild.roles, name="Vivia"))):
-            async with message.channel.typing():
-                threading.Thread(target=llamaReply, args=(message,)).start()
-
-
-def llamaReply(message: discord.Message):
-    """
-    Gets a reply using LLaMa.
-    This has to be a separate (non-async) function because threads.
-    """
-    
-    generation_fut = asyncio.run_coroutine_threadsafe(Llama.createResponse(message.content.removeprefix(f"<@{str(message.author.id)}> "),
+                await message.channel.typing()
+                thread = threading.Thread(target=Llama.createResponse, args=((message.content.removeprefix(f"<@{str(message.author.id)}>"),
                                                     message.author.display_name,
                                                     message.author.name,
+                                                    message.channel,
+                                                    bot.loop,
                                                     message.attachments,
                                                     message.author.raw_status,
                                                     current_status,
                                                     message.guild.name,
                                                     message.channel.name,
-                                                    message.channel.category.name), bot.loop)
-    
-    asyncio.wait([generation_fut])
-
-    generation = generation_fut.result()
-    
-    # Send the reply (note that reply is async so we need to use asyncio)
-    asyncio.run_coroutine_threadsafe(message.reply(generation), bot.loop) # we don't care about the result
+                                                    message.channel.category.name)))
+                thread.start()
 
 async def reload_all_extensions():
     """
@@ -286,7 +293,7 @@ async def reload_all_extensions():
     """
 
     # Unload all extensions
-    for extension in viviatools.loaded_extensions:
+    async def unload_extension(extension):
         try:
             await bot.unload_extension(extension)
             viviatools.log(f"Unloaded extension {extension}")
@@ -296,69 +303,47 @@ async def reload_all_extensions():
             viviatools.log(f"Failed to unload extension {extension}", logging.ERROR)
             viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
             viviatools.log("This may cause issues during reloading.", logging.ERROR)
-            
+
+    unload_threads = [threading.Thread(target=asyncio.run, args=(unload_extension(extension),)) for extension in viviatools.loaded_extensions]
+    for thread in unload_threads:
+        thread.start()
+    for thread in unload_threads:
+        thread.join()
+
     # Reset list of extensions
     loaded = ["core"] # Vivia core is always loaded
     failed = []
 
-    # Load ViviaBase
-    for file in os.listdir(os.path.join("commands", "viviabase")):
-        if file.endswith(".py"):
-            try:
-                await bot.load_extension(f"commands.viviabase.{file[:-3]}")
-                loaded += [f"viviabase.{file[:-3]}"]
-            except errors.ExtensionAlreadyLoaded:
-                viviatools.log(f"Extension viviabase.{file[:-3]} was already loaded.")
-                loaded += [f"viviabase.{file[:-3]}"]
-            except Exception as e:
-                viviatools.log(f"Failed to load base extension {file[:-3]}", logging.ERROR)
-                viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
-                viviatools.log("Functionality may be limited. Please report this on GitHub.", logging.ERROR)
-                failed += [f"viviabase.{file[:-3]}"]
-                continue
-            viviatools.log(f"Loaded extension viviabase.{file[:-3]}")
-    
-    # Load ViviaBase beta
-    if config["Advanced"]["betaextensions"]:
-        viviatools.log("Loading beta extensions.")
-        for file in os.listdir(os.path.join("commands", "viviabase-beta")):
+    # Load extensions from a directory
+    async def load_extension(directory, prefix):
+        for file in os.listdir(directory):
             if file.endswith(".py"):
                 try:
-                    await bot.load_extension(f"commands.viviabase-beta.{file[:-3]}")
-                    loaded += [f"viviabase-beta.{file[:-3]}"]
+                    await bot.load_extension(f"{prefix}.{file[:-3]}")
+                    loaded.append(f"{prefix}.{file[:-3]}")
                 except errors.ExtensionAlreadyLoaded:
-                    viviatools.log(f"Extension viviabase-beta.{file[:-3]} was already loaded.")
-                    loaded += [f"viviabase-beta.{file[:-3]}"]
+                    viviatools.log(f"Extension {prefix}.{file[:-3]} was already loaded.")
+                    loaded.append(f"{prefix}.{file[:-3]}")
                 except Exception as e:
-                    viviatools.log(f"Failed to load beta extension {file[:-3]}", logging.ERROR)
-                    viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
-                    viviatools.log("Functionality may be limited.", logging.ERROR)
-                    failed += [f"viviabase-beta.{file[:-3]}"]
+                    viviatools.log(f"Failed to load extension {file[:-3]} - functionality may be limited.", logging.ERROR)
+                    viviatools.log("".join(traceback.format_exception(e)), logging.ERROR)
+                    failed.append(f"{prefix}.{file[:-3]}")
                     continue
-                viviatools.log(f"Loaded extension viviabase-beta.{file[:-3]}")
+                viviatools.log(f"Loaded extension {prefix}.{file[:-3]}")
 
-    # Load custom extensions
-    for file in os.listdir("commands"):
-        if file.endswith(".py"):
-            try:
-                await bot.load_extension(f"commands.{file[:-3]}")
-                loaded += [f"{file[:-3]}"]
-            except errors.ExtensionAlreadyLoaded:
-                viviatools.log(f"Extension {file[:-3]} was already loaded.")
-                loaded += [f"{file[:-3]}"]
-            except discord.ext.commands.NoEntryPointError:
-                viviatools.log(f"Failed to load custom extension {file[:-3]}", logging.ERROR)
-                viviatools.log("No entry point found. Does the extension contain a setup(bot) function?", logging.ERROR)
-                viviatools.log("Functionality may be limited.", logging.ERROR)
-                failed += [f"{file[:-3]}"]
-                continue
-            except Exception as e:
-                viviatools.log(f"Failed to load custom extension {file[:-3]}", logging.ERROR)
-                viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
-                viviatools.log("Functionality may be limited. Ensure the extension contains no errors.", logging.ERROR)
-                failed += [f"{file[:-3]}"]
-                continue
-            viviatools.log(f"Loaded extension {file[:-3]}")
+    load_tasks = [
+        threading.Thread(target=asyncio.run, args=(load_extension(os.path.join("commands", "viviabase"), "commands.viviabase"),)),
+        threading.Thread(target=asyncio.run, args=(load_extension(os.path.join("commands", "viviabase-beta"), "commands.viviabase-beta"),)) if config["Advanced"]["betaextensions"] else None,
+        threading.Thread(target=asyncio.run, args=(load_extension("commands", "commands"),))
+    ]
+
+    for task in load_tasks:
+        if task:
+            task.start()
+
+    for task in load_tasks:
+        if task:
+            task.join()
 
     viviatools.loaded_extensions = loaded
     viviatools.failed_extensions = failed
@@ -398,10 +383,22 @@ async def fixconfig(ctx: commands.Context):
     """
 
     viviatools.log(f"Regenerating missing data files for all servers...", logging.DEBUG)
+    threads = []
     for guild in bot.guilds:
-        # Regenerate server data path if it doesn't exist
-        if not os.path.exists(os.path.join('data', 'servers', str(guild.id))):
-            os.mkdir(os.path.join('data', 'servers', str(guild.id)))
+        t = threading.Thread(target=regen_server_files, args=(guild,))
+        threads.append(t)
+        t.start()
+
+    for t in threads:
+        t.join()
+
+    await ctx.send('Fixed all missing config and quotes files. Check log for more info.')
+
+# the actual function
+def regen_server_files(guild):
+    # Regenerate server data path if it doesn't exist
+    if not os.path.exists(os.path.join('data', 'servers', str(guild.id))):
+        os.mkdir(os.path.join('data', 'servers', str(guild.id)))
         viviatools.log(f'Data path for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
 
         # Regenerate configuration if guild config is missing
@@ -427,8 +424,6 @@ async def fixconfig(ctx: commands.Context):
             viviatools.log(f'Warn file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
         except FileExistsError:
             pass # Most likely there was nothing wrong with it
-
-    await ctx.send('Fixed all missing config and quotes files. Check log for more info.')
 
 @bot.hybrid_command(
     name="statuschange",
@@ -456,10 +451,10 @@ async def clearhistory(ctx: commands.Context):
     """
     if os.path.exists(os.path.join("data", "tempchats", str(ctx.author.name))):
         shutil.rmtree(os.path.join("data", "tempchats", str(ctx.author.name)))
-        await ctx.send(personalityMessage("historyclear"), ephemeral=True)
+        await ctx.send(personalityMessage("ai.historyclear"), ephemeral=True)
         viviatools.log(f"{ctx.author.name} cleared their chat history", logging.DEBUG)
     else:
-        await ctx.send(personalityMessage("nohistory"), ephemeral=True)
+        await ctx.send(personalityMessage("ai.nohistory"), ephemeral=True)
     
 @bot.hybrid_command(
     name="setting",
@@ -495,7 +490,7 @@ async def setting(ctx: commands.Context, option: str, value: bool):
                 return
         await ctx.send(f"Done! `{option}` is now `{value}`.", ephemeral=True)
     except Exception as e:
-        await ctx.send(personalityMessage("error"), ephemeral=True)
+        await ctx.send(personalityMessage("errors.error"), ephemeral=True)
         if serverConfig(ctx.guild.id)['verboseErrors']:
             await ctx.send(f"{str(type(e))}: {e}\n-# To disable these messages, run /config verboseErrors false")
         viviatools.log(f"Error while changing config for {ctx.guild.name} ({str(ctx.guild.id)}): {str(type(e))}: {str(e)}", severity=logging.ERROR)
@@ -527,6 +522,7 @@ async def reboot(ctx: commands.Context, pull_git: bool = False):
         try:
             os.system("git pull")
             viviatools.log("Pulled git repository.", logging.DEBUG)
+            # NOTE: pip command may be different on different systems, this may fail
             os.system("pip install -r requirements.txt")
             viviatools.log("Installed new dependencies.", logging.DEBUG)
         except Exception as e:
@@ -547,7 +543,7 @@ async def extensions(ctx: commands.Context):
 # Run
 while True:
     try:
-        bot.activity = discord.CustomActivity(name="POWERING UP - Connecting to Discord gateway...")
+        bot.activity = discord.CustomActivity(name="POWERING UP - Connecting to Discord...")
         bot.run(dotenv.get_key("token.env", "token"), log_handler=None)
     except TypeError:
         viviatools.log("Unable to start Vivia. Is the token in token.env correct?", logging.ERROR)
@@ -560,13 +556,14 @@ while True:
         if "Session is closed" in str(e):
             viviatools.log("Session closed. Vivia is shutting down!", logging.INFO)
             sys.exit(0)
-    except ClientConnectorError or GatewayNotFound or HTTPException or LoginFailure:
+    except (ClientConnectorError, GatewayNotFound, HTTPException, LoginFailure):
         viviatools.log("Vivia can't connect to Discord. Is your internet connection working, or is Discord's API down?", logging.ERROR)
         viviatools.log("Perhaps the token in token.env is invalid? There's a lot of reasons this could happen.", logging.ERROR)
         viviatools.log("Vivia will retry in 5 seconds.", logging.ERROR)
         time.sleep(5)
-        os.execl(sys.executable, sys.executable, *sys.argv)
+        os.execl(sys.executable, sys.executable, *sys.argv) # Using bot.run again will just give a "Session is closed" error and crash the script
     except Exception as e:
+        # Unhandled exception
         viviatools.log(f"Vivia has crashed... oh no...", logging.FATAL)
         viviatools.log("".join(traceback.format_exception(sys.exc_info())), severity=logging.FATAL)
         viviatools.log("Don't worry, she will automatically restart in 5 seconds.", logging.FATAL)

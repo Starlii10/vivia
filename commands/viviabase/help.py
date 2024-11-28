@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
     This is the help command, part of the ViviaBase extension package.
 
@@ -10,9 +11,13 @@
     Have a great time using Vivia!
 """
 
+if __name__ == "__main__":
+    raise Exception("Vivia extensions should not be run as a script.")
+
+import logging
 from discord.ext import commands
 from discord import app_commands
-from extras.viviatools import helpMsg,personalityMessage, loaded_extensions, failed_extensions
+from extras.viviatools import helpMsg,personalityMessage, loaded_extensions, failed_extensions, log
 
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(help)
@@ -25,8 +30,5 @@ async def help(ctx: commands.Context, extension: str = "core"):
     """
         Help command.
     """
-    # we need to account for custom extensions too
-    if extension in loaded_extensions or extension in failed_extensions:
-        await ctx.send(helpMsg(extension))
-    else:
-        await ctx.send(personalityMessage("extensionnotloaded"))
+    await ctx.author.send(helpMsg(extension))
+    await ctx.send(personalityMessage("base.helpsent").replace("{user}", str(ctx.author)), ephemeral=True)

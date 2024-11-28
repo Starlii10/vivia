@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
     This is the channelmaker command, part of the ViviaBase extension package.
 
@@ -9,6 +10,9 @@
 
     Have a great time using Vivia!
 """
+
+if __name__ == "__main__":
+    raise Exception("Vivia extensions should not be run as a script.")
 
 import json
 import logging
@@ -66,7 +70,7 @@ async def channelmaker(ctx: commands.Context, channel_config: str, type: str="te
                     case "forum":
                         await ctx.guild.create_forum(channel, category=target, reason=f"Created by /channelmaker - run by {ctx.author}")
     except Exception as e:
-        await ctx.send(personalityMessage("error"))
+        await ctx.send(personalityMessage("errors.error"))
         if serverConfig(ctx.guild.id)['verboseErrors']:
             await ctx.send(str(e) + "\n-# To disable these messages, run /config verboseErrors false")
         await log(f"Error while making channels in server {str(ctx.guild.name)} ({str(ctx.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)

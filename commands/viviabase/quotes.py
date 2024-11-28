@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
     This is the quote extension, part of the ViviaBase extension package.
 
@@ -10,14 +11,18 @@
     Have a great time using Vivia!
 """
 
+if __name__ == "__main__":
+    raise Exception("Vivia extensions should not be run as a script.")
+
 import json
 import logging
+import os
 import random
 import discord
 from discord.ext import commands
 from discord import app_commands
 from extras import viviatools
-from extras.viviatools import has_bot_permissions, log, config, add_custom_quote, personalityMessage, serverConfig
+from extras.viviatools import log, config, add_custom_quote, personalityMessage, serverConfig
 
 async def setup(bot: commands.Bot):
     bot.add_command(addquote)
@@ -53,7 +58,7 @@ async def addquote(ctx: commands.Context, quote: str, author: str, date: str):
     try:
         add_custom_quote(f'"{quote}" - {author}, {date}', ctx.guild.id)
     except Exception as e:
-        await ctx.send(personalityMessage("error"))
+        await ctx.send(personalityMessage("errors.error"))
         if config["General"]["VerboseErrors"]:
             await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
         await log(f'Failed to add "{quote} - {author}, {date}" to the custom quote list for server {ctx.guild.name} ({ctx.guild.id}): {type(e)}: {e}', severity=logging.ERROR)
@@ -70,9 +75,9 @@ async def quote(ctx: commands.Context):
     Sends a random (slightly insane) quote.
     """
     try:
-        with open('data/quotes.json') as f:
+        with open(os.path.join('data', 'quotes.json')) as f:
             if ctx.guild:
-                with open(f'data/servers/{ctx.guild.id}/quotes.json') as g:
+                with open(os.path.join('data', 'servers', str(ctx.guild.id), 'quotes.json')) as g:
                     default_quotes = json.load(f)
                     custom_quotes = json.load(g)
                     quotes = default_quotes['quotes'] + custom_quotes['quotes']
@@ -82,7 +87,7 @@ async def quote(ctx: commands.Context):
                 quote = random.choice(json.load(f)['quotes'])
                 await ctx.send(quote)
     except Exception as e:
-        await ctx.send(personalityMessage("error"))
+        await ctx.send(personalityMessage("errors.error"))
         if ctx.guild:
             if serverConfig(ctx.guild.id)['verboseErrors']:
                 await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
@@ -107,7 +112,7 @@ async def listquotes(ctx: commands.Context, customonly: bool = False):
                     quotes = '\n'.join(quotes)
                     await ctx.send(quotes)
             else:
-                await ctx.send(personalityMessage("error")
+                await ctx.send(personalityMessage("errors.error")
                                 + "\n-# `customonly` flag only works in a server.")
                 return
         else:
@@ -124,7 +129,7 @@ async def listquotes(ctx: commands.Context, customonly: bool = False):
                     quotes = '\n'.join(quotes)
                     await ctx.send(quotes)
     except Exception as e:
-        await ctx.send(personalityMessage("error"))
+        await ctx.send(personalityMessage("errors.error"))
         if ctx.guild:
             if serverConfig(ctx.guild.id)['verboseErrors']:
                 await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
@@ -140,27 +145,26 @@ async def listquotes(ctx: commands.Context, customonly: bool = False):
 @viviatools.adminOnly
 async def removequote(ctx: commands.Context, quote: str):
     """
-    Removes a quote from the list.
+    Removes a quote from the custom quote list for the server it is run in.
 
     ## Args:
         - quote (str): The quote to remove.
     ## Notes:
         - Only users with bot permissions can use this command.
-        - This removes the quote from the custom quote list.
     """
 
     try:
-        with open(f'data/servers/{str(ctx.guild.id)}/quotes.json') as f:
+        with open(os.path.join('data', 'servers', str(ctx.guild.id), 'quotes.json')) as f:
             quotes = json.load(f)
             if quote in quotes['quotes']:
                 quotes['quotes'].remove(quote)
             else:
                 await ctx.send("That quote isn't in the list, though...")
                 return
-        with open('quotes.json', 'w') as f:
+        with open(os.path.join('data', 'quotes.json'), 'w') as f:
             json.dump(quotes, f)
     except Exception as e:
-        await ctx.send(personalityMessage("error"))
+        await ctx.send(personalityMessage("errors.error"))
         if serverConfig(ctx.guild.id)['verboseErrors']:
             await ctx.send(f"{type(e)}: {e}\n-# To disable these messages, run /config verboseErrors false")
         await log(f'Failed to remove "{quote}" from the list for server {ctx.guild.name} ({ctx.guild.id}): {type(e)}: {e}', severity=logging.ERROR)

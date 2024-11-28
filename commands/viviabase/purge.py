@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
     This is the purge command, part of the ViviaBase extension package.
 
@@ -10,8 +11,11 @@
     Have a great time using Vivia!
 """
 
+if __name__ == "__main__":
+    raise Exception("Vivia extensions should not be run as a script.")
+
 from discord.ext import commands
-from discord import Message, app_commands
+from discord import app_commands
 from extras.viviatools import personalityMessage, adminOnly
 
 async def setup(bot: commands.Bot): # for extension loading
@@ -40,7 +44,7 @@ async def purge(ctx: commands.Context, start: int = None, end: int = None):
             - If end is None, all messages starting from the start are purged.
     """
 
-    await ctx.send(personalityMessage("purging") + "\n-# This may take a while. Vivia will most likely get rate limited...")
+    await ctx.send(personalityMessage("purge.purging") + "\n-# This may take a while. Vivia will most likely get rate limited...")
 
     if start == None and end == None:
         await ctx.channel.purge()
@@ -62,4 +66,4 @@ async def purge(ctx: commands.Context, start: int = None, end: int = None):
             after=start,
             before=end
         )
-    await ctx.send(personalityMessage("purge"))
+    await ctx.send(personalityMessage("purge.purge"))

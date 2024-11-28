@@ -1,5 +1,6 @@
+#!/usr/bin/env python
 """
-    This is the essential moderation command pack, part of the ViviaBase extension package.
+    This is the essential moderation extension, part of the ViviaBase extension package.
 
     Vivia is licensed under the MIT License. For more information, see the LICENSE file.
     TL:DR: you can use Vivia's code as long as you keep the original license intact.
@@ -10,8 +11,12 @@
     Have a great time using Vivia!
 """
 
+if __name__ == "__main__":
+    raise Exception("Vivia extensions should not be run as a script.")
+
 import json
 import logging
+import os
 import discord
 from discord.ext import commands
 from discord import HTTPException, app_commands
@@ -43,44 +48,44 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No re
     """
 
     if not ctx.author.guild_permissions.moderate_members:
-        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+        await ctx.send(personalityMessage("errors.errors.nopermissions"), ephemeral=True)
         return
 
     if user == None:
-        await ctx.send(personalityMessage("moderation/targetnone"), ephemeral=True)
+        await ctx.send(personalityMessage("errors.targetnone"), ephemeral=True)
         return
 
     if user == ctx.me:
-        await ctx.send(personalityMessage("moderation/moderatevivia").replace("{action}", "warn"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderatevivia").replace("{action}", "warn"), ephemeral=True)
         return
     
     if user == ctx.author:
-        await ctx.send(personalityMessage("moderation/moderateself").replace("{action}", "warn"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderateself").replace("{action}", "warn"), ephemeral=True)
         return
 
     if user.guild_permissions.administrator:
-        await ctx.send(personalityMessage("moderation/moderateadmin").replace("{user}", user.name).replace("{action}", "warn"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderateadmin").replace("{user}", user.name).replace("{action}", "warn"), ephemeral=True)
         return
     
     if user.top_role >= ctx.author.top_role and not ctx.author.guild_permissions.administrator:
-        await ctx.send(personalityMessage("moderation/moderatehigher").replace("{user}", user.name).replace("{action}", "warn"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderatehigher").replace("{user}", user.name).replace("{action}", "warn"), ephemeral=True)
         return
 
     # add user to warned users
     # TODO: users can be warned multiple times
     viviatools.log(json.dumps([reason, ctx.message.created_at.strftime('%Y-%m-%d %H:%M:%S'), ctx.author.id]))
-    with open(f"data/servers/{ctx.guild.id}/warns.json", "w") as f:
+    with open(os.path.join("data", "servers", str(ctx.guild.id), "warns.json"), "w") as f:
         json.dump({user.id: [reason, ctx.message.created_at.strftime('%Y-%m-%d %H:%M:%S'), ctx.author.id]}, f)
     
     viviatools.log(f"{ctx.author.name} warned {user} in {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
     # messages
-    await ctx.send(personalityMessage("moderation/warn").replace("{user}", user.mention), ephemeral=True)
+    await ctx.send(personalityMessage("moderation.warn").replace("{user}", user.mention), ephemeral=True)
 
     try:
-        await user.send(f"# You've been warned in {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/warned").replace("{server}", ctx.guild.name).replace("{user}", ctx.author.mention)
-                        + "\n" + personalityMessage("moderation/reason").replace("{reason}", reason).replace("{action}", "warning").replace("{reason}", reason)
-                        + "\n\n" + personalityMessage("moderation/followrules").replace("{server}", ctx.guild.name)
+        await user.send(f"# You've been warned in {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation.warned").replace("{server}", ctx.guild.name).replace("{user}", ctx.author.mention)
+                        + "\n" + personalityMessage("moderation.reason").replace("{reason}", reason).replace("{action}", "warning").replace("{reason}", reason)
+                        + "\n\n" + personalityMessage("moderation.followrules").replace("{server}", ctx.guild.name)
                         + "\n" + "-# This automated message was sent because a moderator warned you using Vivia.")
     except HTTPException:
         await ctx.send("I couldn't DM the user.", ephemeral=True)
@@ -103,27 +108,27 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
     """
 
     if not ctx.author.guild_permissions.moderate_members:
-        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+        await ctx.send(personalityMessage("errors.errors.nopermissions"), ephemeral=True)
         return
 
     if user == None:
-        await ctx.send(personalityMessage("moderation/targetnone"), ephemeral=True)
+        await ctx.send(personalityMessage("errors.targetnone"), ephemeral=True)
         return
     
     if user == ctx.me:
-        await ctx.send(personalityMessage("moderation/moderatevivia").replace("{action}", "unwarn"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderatevivia").replace("{action}", "unwarn"), ephemeral=True)
         return
     
     if user == ctx.author:
-        await ctx.send(personalityMessage("moderation/moderateself").replace("{action}", "unwarn"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderateself").replace("{action}", "unwarn"), ephemeral=True)
         return
     
     if user.guild_permissions.administrator:
-        await ctx.send(personalityMessage("moderation/moderateadmin").replace("{user}", user.name).replace("{action}", "unwarn"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderateadmin").replace("{user}", user.name).replace("{action}", "unwarn"), ephemeral=True)
         return
     
     if user.top_role >= ctx.author.top_role and not ctx.author.guild_permissions.administrator:
-        await ctx.send(personalityMessage("moderation/moderatehigher").replace("{user}", user.name).replace("{action}", "unwarn"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderatehigher").replace("{user}", user.name).replace("{action}", "unwarn"), ephemeral=True)
         return
 
     # remove user from warned users
@@ -133,7 +138,7 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
         if warns.get(str(user.id)) != None:
             del warns[str(user.id)]
         else:
-            await ctx.send(personalityMessage("moderation/notwarned").replace("{user}", user.mention), ephemeral=True)
+            await ctx.send(personalityMessage("moderation.notwarned").replace("{user}", user.mention), ephemeral=True)
             return
         with open(f"data/servers/{ctx.guild.id}/warns.json", "w") as f:
             json.dump(warns, f)
@@ -141,11 +146,11 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
     viviatools.log(f"{ctx.author.name} unwarned {user} in {ctx.guild} ({ctx.guild.id})", logging.DEBUG)
 
     # messages
-    await ctx.send(personalityMessage("moderation/unwarn").replace("{user}", user.mention), ephemeral=True)
+    await ctx.send(personalityMessage("moderation.unwarn").replace("{user}", user.mention), ephemeral=True)
     try:
-        await user.send(f"# You've been unwarned in {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/unwarned").replace("{user}", ctx.author.mention)
-                        + "\n" + personalityMessage("moderation/reason").replace("{reason}", reason).replace("{action}", "unwarning").replace("{reason}", reason)
-                        + "\n\n" + personalityMessage("moderation/followrules").replace("{server}", ctx.guild.name)
+        await user.send(f"# You've been unwarned in {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation.unwarned").replace("{user}", ctx.author.mention)
+                        + "\n" + personalityMessage("moderation.reason").replace("{reason}", reason).replace("{action}", "unwarning").replace("{reason}", reason)
+                        + "\n\n" + personalityMessage("moderation.followrules").replace("{server}", ctx.guild.name)
                         + "\n" + "-# This automated message was sent because a moderator unwarned you using Vivia.")
     except HTTPException:
         await ctx.send("I couldn't DM the user.", ephemeral=True)
@@ -168,35 +173,35 @@ async def kick(ctx: commands.Context, user: discord.Member, reason: str = "No re
     """
     
     if not ctx.author.guild_permissions.kick_members:
-        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+        await ctx.send(personalityMessage("errors.nopermissions"), ephemeral=True)
         return
 
     if user == None:
-        await ctx.send(personalityMessage("moderation/targetnone"), ephemeral=True)
+        await ctx.send(personalityMessage("errors.targetnone"), ephemeral=True)
         return
     
     if user == ctx.me:
-        await ctx.send(personalityMessage("moderation/moderatevivia").replace("{action}", "kick"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderatevivia").replace("{action}", "kick"), ephemeral=True)
         return
     
     if user == ctx.author:
-        await ctx.send(personalityMessage("moderation/moderateself").replace("{action}", "kick"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderateself").replace("{action}", "kick"), ephemeral=True)
         return
     
     if user.guild_permissions.administrator:
-        await ctx.send(personalityMessage("moderation/moderateadmin").replace("{user}", user.name).replace("{action}", "kick"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderateadmin").replace("{user}", user.name).replace("{action}", "kick"), ephemeral=True)
         return
     
     if user.top_role >= ctx.author.top_role and not ctx.author.guild_permissions.administrator:
-        await ctx.send(personalityMessage("moderation/moderatehigher").replace("{user}", user.name).replace("{action}", "kick"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderatehigher").replace("{user}", user.name).replace("{action}", "kick"), ephemeral=True)
         return
 
     await user.kick(reason=f"Kicked by {ctx.author}: {reason}")
-    await ctx.send(personalityMessage("moderation/moderationactions").replace("{user}", user.mention).replace("{action}", "kicked"), ephemeral=True)
+    await ctx.send(personalityMessage("moderation.moderationactions").replace("{user}", user.mention).replace("{action}", "kicked"), ephemeral=True)
     try:
-        await user.send(f"# You've been kicked from {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/kicked").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
-                        + "\n" + personalityMessage("moderation/reason").replace("{reason}", "").replace("{action}", "kicking").replace("{reason}", reason)
-                        + "\n\n" + personalityMessage("moderation/followrules").replace("{server}", ctx.guild.name)
+        await user.send(f"# You've been kicked from {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation.kicked").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
+                        + "\n" + personalityMessage("moderation.reason").replace("{reason}", "").replace("{action}", "kicking").replace("{reason}", reason)
+                        + "\n\n" + personalityMessage("moderation.followrules").replace("{server}", ctx.guild.name)
                         + "\n" + "-# This automated message was sent because a moderator kicked you using Vivia.")
     except HTTPException:
         await ctx.send("I couldn't DM the user.", ephemeral=True)
@@ -206,7 +211,8 @@ async def kick(ctx: commands.Context, user: discord.Member, reason: str = "No re
     name = "ban"
 )
 @app_commands.describe(
-    user = "The user to ban."
+    user = "The user to ban.",
+    reason = "The reason for the ban."
 )
 @viviatools.blockInDMs
 async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No reason provided."):
@@ -219,35 +225,35 @@ async def ban(ctx: commands.Context, user: discord.Member, reason: str = "No rea
     """
 
     if not ctx.author.guild_permissions.ban_members:
-        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+        await ctx.send(personalityMessage("errors.nopermissions"), ephemeral=True)
         return
     
     if user == None:
-        await ctx.send(personalityMessage("moderation/targetnone"), ephemeral=True)
+        await ctx.send(personalityMessage("errors.targetnone"), ephemeral=True)
         return
     
     if user == ctx.me:
-        await ctx.send(personalityMessage("moderation/moderatevivia").replace("{action}", "ban"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderatevivia").replace("{action}", "ban"), ephemeral=True)
         return
     
     if user == ctx.author:
-        await ctx.send(personalityMessage("moderation/moderateself").replace("{action}", "ban"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderateself").replace("{action}", "ban"), ephemeral=True)
         return
     
     if user.guild_permissions.administrator:
-        await ctx.send(personalityMessage("moderation/moderateadmin").replace("{user}", user.name).replace("{action}", "ban"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderateadmin").replace("{user}", user.name).replace("{action}", "ban"), ephemeral=True)
         return
     
     if user.top_role >= ctx.author.top_role and not ctx.author.guild_permissions.administrator:
-        await ctx.send(personalityMessage("moderation/moderatehigher").replace("{user}", user.name).replace("{action}", "ban"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderatehigher").replace("{user}", user.name).replace("{action}", "ban"), ephemeral=True)
         return
 
     await user.ban(reason=f"Banned by {ctx.author}: {reason}")
-    await ctx.send(personalityMessage("moderation/moderationactions").replace("{user}", user.mention).replace("{action}", "banned"), ephemeral=True)
+    await ctx.send(personalityMessage("moderation.moderationactions").replace("{user}", user.mention).replace("{action}", "banned"), ephemeral=True)
     try:
-        await user.send(f"# You've been banned from {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/banned").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
-                        + "\n" + personalityMessage("moderation/reason").replace("{reason}", "").replace("{action}", "banning").replace("{reason}", reason)
-                        + "\n" + personalityMessage("moderation/followrules").replace("{server}", "other servers")
+        await user.send(f"# You've been banned from {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation.banned").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
+                        + "\n" + personalityMessage("moderation.reason").replace("{reason}", "").replace("{action}", "banning").replace("{reason}", reason)
+                        + "\n" + personalityMessage("moderation.followrules").replace("{server}", "other servers")
                         + "\n" + "-# This automated message was sent because a moderator banned you using Vivia.")
     except HTTPException:
         await ctx.send("I couldn't DM the user.", ephemeral=True)
@@ -270,35 +276,35 @@ async def unban(ctx: commands.Context, user: discord.User, reason: str = "No rea
     """
     
     if not ctx.author.guild_permissions.ban_members:
-        await ctx.send(personalityMessage("nopermissions"), ephemeral=True)
+        await ctx.send(personalityMessage("errors.nopermissions"), ephemeral=True)
         return
     
     if user == None:
-        await ctx.send(personalityMessage("moderation/targetnone"), ephemeral=True)
+        await ctx.send(personalityMessage("errors.targetnone"), ephemeral=True)
         return
 
     if user == ctx.me:
-        await ctx.send(personalityMessage("moderation/moderatevivia").replace("{action}", "unban"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderatevivia").replace("{action}", "unban"), ephemeral=True)
         return
     
     if user == ctx.author:
-        await ctx.send(personalityMessage("moderation/moderateself").replace("{action}", "unban"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderateself").replace("{action}", "unban"), ephemeral=True)
         return
     
     if user.guild_permissions.administrator:
-        await ctx.send(personalityMessage("moderation/moderateadmin").replace("{user}", user.name).replace("{action}", "unban"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderateadmin").replace("{user}", user.name).replace("{action}", "unban"), ephemeral=True)
         return
     
     if user.top_role >= ctx.author.top_role and not ctx.author.guild_permissions.administrator:
-        await ctx.send(personalityMessage("moderation/moderatehigher").replace("{user}", user.name).replace("{action}", "unban"), ephemeral=True)
+        await ctx.send(personalityMessage("moderation.moderatehigher").replace("{user}", user.name).replace("{action}", "unban"), ephemeral=True)
         return
 
     await ctx.guild.unban(user, reason=f"Unbanned by {ctx.author}: {reason}")
-    await ctx.send(personalityMessage("moderation/unban").replace("{user}", user.mention), ephemeral=True)
+    await ctx.send(personalityMessage("moderation.unban").replace("{user}", user.mention), ephemeral=True)
     try:
-        await user.send(f"# You've been unbanned from {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation/unbanned").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
-                        + "\n" + personalityMessage("moderation/reason").replace("{reason}", "").replace("{action}", "unbanning").replace("{reason}", "")
-                        + "\n" + personalityMessage("moderation/followrules").replace("{server}", ctx.guild.name)
+        await user.send(f"# You've been unbanned from {ctx.guild} ({ctx.guild.id})\n\n" + personalityMessage("moderation.unbanned").replace("{user}", ctx.author.mention).replace("{server}", ctx.guild.name)
+                        + "\n" + personalityMessage("moderation.reason").replace("{reason}", "").replace("{action}", "unbanning").replace("{reason}", "")
+                        + "\n" + personalityMessage("moderation.followrules").replace("{server}", ctx.guild.name)
                         + "\n" + "-# This automated message was sent because a moderator unbanned you using Vivia.")
     except HTTPException:
         await ctx.send("I couldn't DM the user.", ephemeral=True)
