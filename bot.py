@@ -473,6 +473,8 @@ async def setting(ctx: commands.Context, option: str, value: bool):
         - Only users with Vivia admin permissions can use this command.
     """
 
+    # TODO: Toggle extensions on and off per server
+
     try:
         match(option):
             case "aiEnabled":
@@ -539,6 +541,16 @@ async def extensions(ctx: commands.Context):
     """
     await ctx.send("Available extensions: \n- " + ("\n- ".join(viviatools.loaded_extensions)) if len(viviatools.loaded_extensions) > 0 else "No extensions loaded? Wait, what?!", ephemeral=True)
     await ctx.send("Extensions that failed to load: \n- " + ("\n- ".join(viviatools.failed_extensions)) if len(viviatools.failed_extensions) > 0 else "No extensions failed to load!", ephemeral=True)
+
+@bot.hybrid_command(
+    name="version",
+    description="Displays Vivia's version."
+)
+async def version(ctx: commands.Context):
+    """
+    Displays Vivia's version.
+    """
+    await ctx.send(personalityMessage("base.version").replace("{version}", __VERSION__), ephemeral=True)
 
 # Run
 while True:

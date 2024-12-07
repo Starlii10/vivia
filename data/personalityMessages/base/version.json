@@ -1,0 +1,8 @@
+{
+    "messages": [
+        "You're interacting with {version}!",
+        "My software identifies itself as \"{version}\".",
+        "I'm {version}! Nice to meet you.",
+        "Currently running {version}."
+    ]
+}
