@@ -143,11 +143,13 @@ def createResponse(
         generation = model.create_chat_completion(messages=additional_messages + sysprompt +
                                                   [{"role": "user", "content": prompt}] + [{"role": "user", "content": attachment_messages}])
         response = generation['choices'][0]['message']['content']
+        # Remove common prefixes
+        response = response.replace("Vivia: ", "")
         viviatools.log(f"Response generated successfully for user {internal_name} ({username}).", logging.DEBUG)
         
         # Write messages to memory file
         with open(os.path.join("data", "tempchats", internal_name, "messages.txt"), "w") as file:
-            json.dump(additional_messages + [{"role": "user", "content": prompt}] + [{"role": "assistant", "content": f"{response}"}], file)
+            json.dump(additional_messages + [{"role": "user", "content": prompt}] + [{"role": "assistant", "content": response}], file)
 
         asyncio.run_coroutine_threadsafe(channel_ref.send(response), loop)
     else:
