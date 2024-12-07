@@ -44,6 +44,19 @@ running = False
 # Config loading
 config = configparser.ConfigParser()
 if os.path.exists("config.ini"):
+    # Update configuration if example config has something the current config doesn't
+    with open('config.ini.example', 'r') as example_config, open('config.ini', 'r') as current_config:
+        example = configparser.ConfigParser()
+        example.read_file(example_config)
+        current = configparser.ConfigParser()
+        current.read_file(current_config)
+        for section in example.sections():
+            for option in example.options(section):
+                if option not in current.options(section):
+                    print(f"Config update: {section} - {option} (automatically applied)")
+                    current.set(section, option, example.get(section, option))
+        with open('config.ini', 'w') as configfile:
+            current.write(configfile)
     config.read("config.ini")
 else:
     try:
