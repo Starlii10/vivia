@@ -51,16 +51,19 @@ if os.path.exists("config.ini"):
         current = configparser.ConfigParser()
         current.read_file(current_config)
         for section in example.sections():
+            if not current.has_section(section):
+                current.add_section(section)
+                print(f"Config update: new section {section} (automatically applied)")
             for option in example.options(section):
-                if option not in current.options(section):
-                    print(f"Config update: {section} - {option} (automatically applied)")
+                if not current.has_option(section, option):
+                    print(f"Config update: new option {section} - {option} (automatically applied)")
                     current.set(section, option, example.get(section, option))
         with open('config.ini', 'w') as configfile:
             current.write(configfile)
     config.read("config.ini")
 else:
     try:
-        print("I didn't find a configuration file. I'm creating one for ya!")
+        print("I didn't find a configuration file. I'm creating one for ya!)")
         config.read("config.ini.example")
         with open('config.ini', 'w') as configfile:
             config.write(configfile)
