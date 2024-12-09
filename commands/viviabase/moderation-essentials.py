@@ -48,7 +48,7 @@ async def warn(ctx: commands.Context, user: discord.Member, reason: str = "No re
     """
 
     if not ctx.author.guild_permissions.moderate_members:
-        await ctx.send(personalityMessage("errors.errors.nopermissions"), ephemeral=True)
+        await ctx.send(personalityMessage("errors.nopermissions"), ephemeral=True)
         return
 
     if user == None:
@@ -108,7 +108,7 @@ async def unwarn(ctx: commands.Context, user: discord.Member, reason: str = "No 
     """
 
     if not ctx.author.guild_permissions.moderate_members:
-        await ctx.send(personalityMessage("errors.errors.nopermissions"), ephemeral=True)
+        await ctx.send(personalityMessage("errors.nopermissions"), ephemeral=True)
         return
 
     if user == None:
