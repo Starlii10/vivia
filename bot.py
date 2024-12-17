@@ -79,7 +79,7 @@ if config['Advanced']['Sharded'] == "True":
 else:
     viviatools.log("Sharded mode is disabled - running in non-sharded mode, performance may be degraded", logging.WARNING)
     bot = commands.Bot(command_prefix=config['General']['Prefix'], intents=intents)
-bot.remove_command("help") # because we hate the default help command
+bot.remove_command("help")
 tree = bot.tree
 
 # Set viviatools references
@@ -260,16 +260,29 @@ async def on_message(message: discord.Message):
     # Make sure Vivia doesn't respond to herself
     if message.author == bot.user:
         return
-    
-    # Ignore DMs
-    # TODO: Vivia LLaMa triggers in DMs
-    if message.guild == None:
-        return
 
     # Process commands
     await bot.process_commands(message)
 
-    # Invoke LLaMa if pinged (this also works for replies)
+    # Invoke LLaMa if pinged
+    # DMs (need to be checked separately because the message.guild attribute is None in DMs)
+    if not message.guild:
+        await message.channel.typing()
+        thread = threading.Thread(target=Llama.createResponse, args=((message.content,
+                                                                    message.author.display_name,
+                                                                    message.author.name,
+                                                                    message.channel,
+                                                                    bot.loop,
+                                                                    message.attachments,
+                                                                    message.author.raw_status,
+                                                                    current_status,
+                                                                    "DMs",
+                                                                    "DMs",
+                                                                    "DMs")))
+        thread.start()
+        return
+    
+    # Guilds
     if serverConfig(message.guild.id)['aiEnabled']:
         # we need to check both for direct mentions of Vivia and for mentions of the Vivia role to prevent confusion
         if (message.mentions and (message.mentions[0] == bot.user or message.role_mentions[0] == discord.utils.get(message.guild.roles, name="Vivia"))):
@@ -286,55 +299,30 @@ async def on_message(message: discord.Message):
                                                     message.channel.name,
                                                     message.channel.category.name)))
                 thread.start()
+                return
 
 async def reload_all_extensions():
     """
-        Reloads EVERY extension Vivia can find.
+    Reloads EVERY extension Vivia can find.
     """
 
     # Unload all extensions
-    async def unload_extension(extension):
-        try:
-            await bot.unload_extension(extension)
-            viviatools.log(f"Unloaded extension {extension}")
-        except errors.ExtensionNotLoaded:
-            viviatools.log(f"Extension {extension} was already unloaded.")
-        except Exception as e:
-            viviatools.log(f"Failed to unload extension {extension}", logging.ERROR)
-            viviatools.log(f"{str(type(e))}: {e}", logging.ERROR)
-            viviatools.log("This may cause issues during reloading.", logging.ERROR)
-
-    unload_threads = [threading.Thread(target=asyncio.run, args=(unload_extension(extension),)) for extension in viviatools.loaded_extensions]
+    unload_threads = [threading.Thread(target=asyncio.run, args=(viviatools.unload_extension(extension),)) for extension in viviatools.loaded_extensions]
     for thread in unload_threads:
         thread.start()
     for thread in unload_threads:
         thread.join()
 
     # Reset list of extensions
-    loaded = ["core"] # Vivia core is always loaded
-    failed = []
+    viviatools.loaded_extensions = ["core"] # Vivia core is always loaded
+    viviatools.failed_extensions = []
 
     # Load extensions from a directory
-    async def load_extension(directory, prefix):
-        for file in os.listdir(directory):
-            if file.endswith(".py"):
-                try:
-                    await bot.load_extension(f"{prefix}.{file[:-3]}")
-                    loaded.append(f"{prefix}.{file[:-3]}")
-                except errors.ExtensionAlreadyLoaded:
-                    viviatools.log(f"Extension {prefix}.{file[:-3]} was already loaded.")
-                    loaded.append(f"{prefix}.{file[:-3]}")
-                except Exception as e:
-                    viviatools.log(f"Failed to load extension {file[:-3]} - functionality may be limited.", logging.ERROR)
-                    viviatools.log("".join(traceback.format_exception(e)), logging.ERROR)
-                    failed.append(f"{prefix}.{file[:-3]}")
-                    continue
-                viviatools.log(f"Loaded extension {prefix}.{file[:-3]}")
 
     load_tasks = [
-        threading.Thread(target=asyncio.run, args=(load_extension(os.path.join("commands", "viviabase"), "commands.viviabase"),)),
-        threading.Thread(target=asyncio.run, args=(load_extension(os.path.join("commands", "viviabase-beta"), "commands.viviabase-beta"),)) if config["Advanced"]["betaextensions"] else None,
-        threading.Thread(target=asyncio.run, args=(load_extension("commands", "commands"),))
+        threading.Thread(target=asyncio.run, args=(viviatools.load_extension(os.path.join("commands", "viviabase"), "commands.viviabase"),)),
+        threading.Thread(target=asyncio.run, args=(viviatools.load_extension(os.path.join("commands", "viviabase-beta"), "commands.viviabase-beta"),)) if config["Advanced"]["betaextensions"] else None,
+        threading.Thread(target=asyncio.run, args=(viviatools.load_extension("commands", "commands"),))
     ]
 
     for task in load_tasks:
@@ -345,9 +333,7 @@ async def reload_all_extensions():
         if task:
             task.join()
 
-    viviatools.loaded_extensions = loaded
-    viviatools.failed_extensions = failed
-    viviatools.log(f"Loaded {len(loaded)} extensions - failed loading {len(failed)}.")
+    viviatools.log(f"Loaded {len(viviatools.loaded_extensions)} extensions - failed loading {len(viviatools.failed_extensions)}.")
 
 # Core commands
 # These commands are always available

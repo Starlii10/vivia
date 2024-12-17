@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-    ViviaTools contains commonly used functions for Vivia.
+    ViviaTools contains additional functions for Vivia and extensions.
 
     Vivia is licensed under the MIT License. For more information, see the LICENSE file.
     TL:DR: you can use Vivia's code as long as you keep the original license intact.
@@ -23,12 +23,14 @@ import os
 import random
 import shutil
 import sys
+import traceback
 from typing import Callable
 import colorlog
-import discord
 import zipfile
 
+import discord
 from discord.ext import commands
+from discord.ext.commands import errors
 
 if __name__ == "__main__":
     print("This is a helper script for Vivia that should not be run directly.", file=sys.stderr)
@@ -115,8 +117,48 @@ def log(message: str, severity: int=logging.INFO):
     logging.log(severity, message)
 
 def set_refs(bot_ref: commands.Bot):
+    """
+    An internal function to set variables so that extensions can access them. 
+    """
     global bot
     bot = bot_ref
+
+async def unload_extension(extension: str):
+    """
+    Unloads `extension` if it's loaded.
+
+    ## Args:
+        - extension (str): The name of the extension to unload.
+    """
+    try:
+        await bot.unload_extension(extension)
+        log(f"Unloaded extension {extension}")
+    except errors.ExtensionNotLoaded:
+        log(f"Extension {extension} was already unloaded.")
+    except Exception as e:
+        log(f"Failed to unload extension {extension}", logging.ERROR)
+        log(f"{str(type(e))}: {e}", logging.ERROR)
+        log("This may cause issues during reloading.", logging.ERROR)
+
+async def load_extension(file: str, directory: str="commands"):
+    """
+    Loads `file` as an extension.
+
+    ## Args:
+        - file (str): The name of the file to load.
+        - directory (str, optional): The directory to load the extension from. Defaults to "commands".
+    """
+    try:
+        await bot.load_extension(f"{directory}.{file[:-3]}")
+        loaded_extensions.append(f"{directory}.{file[:-3]}")
+    except errors.ExtensionAlreadyLoaded:
+        log(f"Extension {directory}.{file[:-3]} was already loaded.")
+    except Exception as e:
+        log(f"Failed to load extension {file[:-3]} - functionality may be limited.", logging.ERROR)
+        log("".join(traceback.format_exception(e)), logging.ERROR)
+        failed_extensions.append(f"{directory}.{file[:-3]}")
+    else:
+        log(f"Loaded extension {directory}.{file[:-3]}")
 
 def extractVSE(file: str):
     """
@@ -213,18 +255,18 @@ def extractVSE(file: str):
     
 def has_bot_permissions(user: discord.Member, server: discord.Guild):
     """
-    Checks if the specified user has bot permissions.
+    Checks if the specified user has bot administrator permissions.
 
     ## Args:
         - user (discord.User): The user to check.
         - server (discord.Guild): The server to check in.
 
     ## Returns:
-        - bool: True if the user has bot permissions, False otherwise.
+        - bool: True if the user has bot administrator permissions, False otherwise.
 
     ## Notes:
         - This always returns true for the server owner.
-        - This also returns true if the user has a role with administrator permissions.
+        - This also returns true if the user has a role with general administrator permissions.
     """
     adminRole = discord.utils.find(lambda a: a.name == "Vivia Admin", server.roles)
     if adminRole == None:
@@ -245,7 +287,7 @@ def serverConfig(serverID: int):
     with open(os.path.join("data", "servers", str(serverID), "config.json"), "r") as f:
         return json.load(f)
     
-
+# TODO: Separate this into quotes extension, doesn't make sense to be in ViviaTools
 def add_custom_quote(quote: str, serverID: int):
     """
     Adds a custom quote to a server's quotes.json file.
@@ -358,7 +400,7 @@ def helpMsg(extension: str):
 
 def ownerOnly(func: Callable) -> Callable:
     """
-        Decorator that only allows the bot owner to execute a command.
+    Decorator that only allows the bot owner to execute a command.
     """
     @wraps(func)
     async def wrapper(ctx: commands.Context, *args, **kwargs):
@@ -370,7 +412,7 @@ def ownerOnly(func: Callable) -> Callable:
 
 def adminOnly(func: Callable) -> Callable:
     """
-        Decorator that only allows Vivia Admins to execute a command.
+    Decorator that only allows Vivia Admins to execute a command.
     """
     @wraps(func)
     async def wrapper(ctx: commands.Context, *args, **kwargs):
@@ -382,7 +424,7 @@ def adminOnly(func: Callable) -> Callable:
 
 def blockInDMs(func: Callable) -> Callable:
     """
-        Decorator that blocks commands from being executed in DMs.
+    Decorator that blocks commands from being executed in DMs.
     """
     @wraps(func)
     async def wrapper(ctx: commands.Context, *args, **kwargs):

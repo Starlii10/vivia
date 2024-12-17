@@ -10,7 +10,7 @@
     If you'd like to contribute, please check out the GitHub repository at https://github.com/starlii10/vivia.
 
     This uses the llama-cpp-python package, licensed under the MIT License. This is not a required dependency for Vivia.
-    Note that you should compile it according to the hardware you're running Vivia on for maximum performance.
+    Note that you should compile and install it according to the hardware you're running Vivia on for maximum performance.
     For more info, see https://github.com/abetlen/llama-cpp-python?tab=readme-ov-file#are-there-pre-built-binaries--binary-wheels-available
 
     This uses a LLaMa model in extras/models/llama-model.gguf, which can be changed by the user.
@@ -68,6 +68,7 @@ if os.path.exists("data/tempchats"):
 try:
     from llama_cpp import Llama
 except:
+    # llama-cpp-python not installed, disable AI
     viviatools.log("Couldn't load llama-cpp-python. This is not a fatal error, however Vivia will not be able to generate responses unless it is installed.", logging.ERROR)
     viviatools.log("Please install it according to their installation guide. See https://github.com/abetlen/llama-cpp-python/blob/main/README.md#installation.", logging.ERROR)
     viviatools.log("AI functionality will be disabled for this session.", logging.ERROR)
@@ -80,6 +81,7 @@ else:
             n_gpu_layers=-1
         )
     except Exception as e:
+        # couldn't load model, disable AI
         viviatools.log(f"Couldn't load LLaMa model. This can be caused by an invalid model path, no supported devices to run LLaMa on, or an error in the model.", logging.ERROR)
         viviatools.log("This is not a fatal error, however Vivia will not be able to generate responses unless it is installed.", logging.ERROR)
         viviatools.log("Please ensure that a supported model file exists in the models directory, and that LLaMa is installed correctly.", logging.ERROR)
@@ -89,8 +91,12 @@ else:
 
 # Load pytesseract
 try:
+    viviatools.log("Attempting to load pytesseract - this may take a moment", logging.INFO)
     import pytesseract
+    # test OCR with blank image
+    pytesseract.image_to_string(Image.new("RGB", (1, 1)))
 except:
+    # test failed, disable OCR
     viviatools.log("Couldn't load pytesseract. This is not a fatal error, however Vivia will not be able to read images unless it is installed.", logging.ERROR)
     viviatools.log("This may be caused by a missing tesseract-ocr package. Pytesseract requires the tesseract-ocr engine, which does not come with the package and must be installed manually.", logging.ERROR)
     viviatools.log("Ensure both pytesseract and tesseract-ocr are installed and restart Vivia.")
@@ -143,7 +149,7 @@ def createResponse(
         generation = model.create_chat_completion(messages=additional_messages + sysprompt +
                                                   [{"role": "user", "content": prompt}] + [{"role": "user", "content": attachment_messages}])
         response = generation['choices'][0]['message']['content']
-        # Remove common prefixes
+        # Remove common prefixes before the response
         response = response.replace("Vivia: ", "")
         viviatools.log(f"Response generated successfully for user {internal_name} ({username}).", logging.DEBUG)
         
@@ -169,13 +175,14 @@ async def processAttachment(attachment, internal_name):
     # Check if the attachment is text
     match mimetypes.guess_type(os.path.join("data", "tempchats", internal_name, attachment.filename))[0].split("/")[0]:
         case "text":
+            # Simple text file, just read it
             with open(os.path.join("data", "tempchats", internal_name, attachment.filename), "r") as file:
                 viviatools.log(f"Attachment {attachment.filename} read as text", logging.DEBUG)
                 return {"role": "user", "content": f"An attached text file: {attachment.filename}:\n{file.read()}"}
         case "image":
-            # Attempt OCR on the attachment
+            # Attempt OCR on the image
             if not imageReadingDisabled:
-                viviatools.log(f"Attachment {attachment.filename} is not text. Attempting OCR...", logging.DEBUG)
+                viviatools.log(f"Attachment {attachment.filename} is an image. Attempting OCR...", logging.DEBUG)
                 try:
                     # Load image
                     img = np.array(Image.open(os.path.join("data", "tempchats", internal_name, attachment.filename)))
@@ -204,8 +211,8 @@ async def processAttachment(attachment, internal_name):
                     viviatools.log(f"Error performing OCR on {attachment.filename}. Skipping.\n{str(type(e))}: {e}", logging.ERROR)
                     return {"role": "user", "content": f"An image ({attachment.filename}) that couldn't be read due to errors"}
             else:
-                # Pytesseract didn't load, skip
-                viviatools.log(f"Attachment {attachment.filename} is not text. Skipping OCR due to previous errors loading pytesseract.", logging.WARNING)
+                # Tesseract isn't working, skip
+                viviatools.log(f"Attachment {attachment.filename} is an image. Skipping OCR due to previous errors loading pytesseract.", logging.WARNING)
                 return {"role": "user", "content": f"An image ({attachment.filename}) that couldn't be read due to errors"}
         case "audio":
             # TODO: audio transcription?
