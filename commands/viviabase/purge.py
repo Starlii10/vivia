@@ -42,6 +42,7 @@ async def purge(ctx: commands.Context, start: int = None, end: int = None):
             - If both start and end are None, all messages in the channel are purged.
             - If start is None, all messages up to the end are purged.
             - If end is None, all messages starting from the start are purged.
+            - This command may take a while and may cause Vivia to be rate limited. If you see 429s in the log, blame this command.
     """
 
     await ctx.send(personalityMessage("purge.purging") + "\n-# This may take a while. Vivia will most likely get rate limited...")
@@ -64,6 +65,8 @@ async def purge(ctx: commands.Context, start: int = None, end: int = None):
         # Purge
         await ctx.channel.purge(
             after=start,
-            before=end
+            before=end,
+            bulk=True # NOTE: bulk will not work on messages older than 14 days, in which case it will be ignored
+                      #       (which means Vivia will use single message deletes, basically guaranteeing rate limits)
         )
     await ctx.send(personalityMessage("purge.purge"))

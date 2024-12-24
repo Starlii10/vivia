@@ -50,7 +50,7 @@ from discord.ext.commands.errors import CommandError
 
 # ViviaTools
 import extras.viviatools as viviatools
-from extras.viviatools import config, serverConfig, personalityMessage
+from extras.viviatools import config, perServerFile, serverConfig, personalityMessage
 
 # Command line args
 argparser = argparse.ArgumentParser()
@@ -156,7 +156,7 @@ async def on_command_error(ctx: commands.Context, error: CommandError):
             # Vivia is missing permissions
             viviatools.log(f"Missing permissions in 'v!{ctx.invoked_with}': {error.missing_permissions}", logging.WARNING)
             viviatools.log("".join(traceback.format_exception(error)), logging.WARNING)
-            await ctx.send(personalityMessage("errors.missingpermissions"))
+            await ctx.send(personalityMessage("errors.missingpermissions").replace("{perms}", ", ".join(error.missing_permissions)))
         case errors.CommandInvokeError:
             # General command error
             viviatools.log(f"Command invoke error in 'v!{ctx.invoked_with}': {error}", logging.WARNING)
@@ -347,6 +347,7 @@ async def sync(ctx, guild: int=0):
     ## Notes:
         - Only the bot owner can use this command.
         - If you want to sync the entire bot, use "v!sync 0" or "v!sync". Otherwise specify the ID of the guild you want to sync.
+        - Syncing the entire bot requires up to 1 hour. This is a Discord limitation and I (and DPY devs) can't do anything about it.
     """
 
     if guild == 0:
@@ -459,8 +460,6 @@ async def setting(ctx: commands.Context, option: str, value: bool):
         - Only users with Vivia admin permissions can use this command.
     """
 
-    # TODO: Toggle extensions on and off per server
-
     try:
         match(option):
             case "aiEnabled":
@@ -482,6 +481,28 @@ async def setting(ctx: commands.Context, option: str, value: bool):
         if serverConfig(ctx.guild.id)['verboseErrors']:
             await ctx.send(f"{str(type(e))}: {e}\n-# To disable these messages, run /config verboseErrors false")
         viviatools.log(f"Error while changing config for {ctx.guild.name} ({str(ctx.guild.id)}): {str(type(e))}: {str(e)}", severity=logging.ERROR)
+
+@bot.hybrid_command(
+    name="extensions",
+    description="Manages Vivia's extensions for a specific server."
+)
+@viviatools.adminOnly
+async def extensions(ctx: commands.Context, extension: str, value: bool):
+    """
+    Manages Vivia's extensions for a specific server.
+
+    ## Notes:
+        - Only users with Vivia admin permissions can use this command.
+    """
+
+    with perServerFile(ctx.guild.id, "extensions.json") as f:
+        extensions = json.load(f)
+        extensions[extension] = value
+        json.dump(extensions, f)
+
+    await ctx.send(f"Done! `{extension}` is now {value and 'enabled' or 'disabled'}.", ephemeral=True)
+
+    # TODO: Handle extension unloading for individual servers
 
 @bot.hybrid_command(
     name="reboot",
@@ -518,10 +539,10 @@ async def reboot(ctx: commands.Context, pull_git: bool = False):
     os.execl(sys.executable, sys.executable, *sys.argv)
 
 @bot.hybrid_command(
-    name="extensions",
+    name="listextensions",
     description="Displays Vivia's available extensions."
 )
-async def extensions(ctx: commands.Context):
+async def listextensions(ctx: commands.Context):
     """
     Displays Vivia's available extensions.
     """

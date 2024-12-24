@@ -1,8 +1,8 @@
 {
     "messages": [
-        "I don't have permission to do that... can someone inform an admin?",
-        "I don't have permission to do that.",
-        "I'm not authorized to do that, sadly.",
-        "I can't do that for some reason..."
+        "I don't have permission to do that... can someone inform an admin? I need these permissions:\n{perms}",
+        "I don't have permission to do that. I'll need these permissions:\n{perms}",
+        "I'm not authorized to do that, sadly. I need these permissions to do that.\n{perms}",
+        "I can't do that. Can someone please inform an admin to give me the following permissions?\n{perms}"
     ]
 }
