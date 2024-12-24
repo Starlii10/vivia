@@ -319,11 +319,22 @@ async def reload_all_extensions():
 
     # Load extensions from a directory
 
-    load_tasks = [
-        threading.Thread(target=asyncio.run, args=(viviatools.load_extension(os.path.join("commands", "viviabase"), "commands.viviabase"),)),
-        threading.Thread(target=asyncio.run, args=(viviatools.load_extension(os.path.join("commands", "viviabase-beta"), "commands.viviabase-beta"),)) if config["Advanced"]["betaextensions"] else None,
-        threading.Thread(target=asyncio.run, args=(viviatools.load_extension("commands", "commands"),))
-    ]
+    load_tasks = []
+
+    # ViviaBase
+    for extension in os.listdir(os.path.join("commands", "viviabase")):
+        if extension.endswith(".py"):
+            load_tasks.append(threading.Thread(target=asyncio.run, args=(viviatools.load_extension(extension, "viviabase"),)))
+        
+    # ViviaBase Beta
+    for extension in os.listdir(os.path.join("commands", "viviabase-beta")):
+        if extension.endswith(".py"):
+            load_tasks.append(threading.Thread(target=asyncio.run, args=(viviatools.load_extension(extension, "viviabase-beta"),)))
+
+    # Custom commands
+    for extension in os.listdir(os.path.join("commands")):
+        if extension.endswith(".py"):
+            load_tasks.append(threading.Thread(target=asyncio.run, args=(viviatools.load_extension(extension, "commands"),)))
 
     for task in load_tasks:
         if task:
