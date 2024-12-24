@@ -1,0 +1,8 @@
+{
+    "messages": [
+        "Reset {user}'s level.",
+        "{user}'s level has been reset.",
+        "Set {user}'s level to 1.",
+        "Reset {user}'s level to 1."
+    ]
+}

@@ -1,0 +1,6 @@
+{
+    "messages": [
+        "You're at level {level}.",
+        "You're level {level}."
+    ]
+}
