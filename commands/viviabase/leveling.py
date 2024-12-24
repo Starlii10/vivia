@@ -32,7 +32,7 @@ class leveling(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.Cog.listener()
+    @commands.Cog.listener("leveling_message")
     async def on_message(self, message: discord.Message):
         # Don't give leveling experience to bots
         if message.author.bot:
@@ -71,7 +71,7 @@ class leveling(commands.Cog):
         with perServerFile(message.guild.id, "leveling.json") as f:
             json.dump(leveling, f)
     
-    @blockInDMs()
+    @blockInDMs
     @commands.hybrid_command(
         name = "level",
         description = "Checks your current level."
@@ -83,7 +83,7 @@ class leveling(commands.Cog):
 
         await ctx.send(personalityMessage("leveling.level").replace("{level}", str(ctx.author.level)))
     
-    @blockInDMs()
+    @blockInDMs
     @adminOnly
     @commands.hybrid_command(
         name = "setlevel",
@@ -101,7 +101,7 @@ class leveling(commands.Cog):
 
         await ctx.send(personalityMessage("leveling.setlevel").replace("{user}", user.mention).replace("{level}", str(level)))
 
-    @blockInDMs()
+    @blockInDMs
     @adminOnly
     @commands.hybrid_command(
         name = "resetlevel",
@@ -120,7 +120,7 @@ class leveling(commands.Cog):
 
         await ctx.send(personalityMessage("leveling.resetuserlevel").replace("{user}", user.mention))
     
-    @blockInDMs()
+    @blockInDMs
     @adminOnly
     @commands.hybrid_command(
         name = "resetlevels",
