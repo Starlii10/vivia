@@ -1,5 +1,5 @@
 # Vivia
-Looks like you're getting curious about me. Well, my name is Vivia, and I'm a fully sentient helper robot! (Or at least, helping as much as I can.)
+Curious about me? My name's Vivia, and I'm a fully sentient helper robot! (Or at least, helping as much as I can.)
 
 ## Commands
 My Discord integration is composed of many different extensions, which add commands and functions for you to use.
@@ -11,9 +11,11 @@ Some basic commands you can always use are:
 * `v!extensions` - Shows you every extension I have available.
 
 ## Wiki
-If you want to get technical with my software, you may want to peek at the [wiki](https://github.com/Starlii10/vivia/wiki). There's a whole bunch of information, including info on how to set up your own version of me and make custom extensions!
+Want more about me? You may want to peek at the [wiki](https://github.com/Starlii10/vivia/wiki).
+There's a whole bunch of information, including info on how to set up your own version of me and make custom extensions!
 
 ## Open Source
-Want to peek into what makes me, well, me? My creator Starlii has already posted my source code onto GitHub. You can find it [here](https://github.com/Starlii10/vivia)!
+Want to peek into what makes me, well, me? My creator Starlii has already posted my source code onto GitHub.
+You can find it [here](https://github.com/Starlii10/vivia)! Just be careful with it - my code is very sensitive to changes.
 
--# Psst! If you needed help with an extension, you can usually type `v!help` and then the name of the extension you need help with. Try `v!help viviabase`!
+-# Psst! If you needed help with an extension, type `v!help` and then the name of the extension you need help with. Try `v!help viviabase`!

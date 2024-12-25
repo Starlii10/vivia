@@ -129,6 +129,31 @@ async def on_error(event, *args, **kwargs):
 
     viviatools.log(f"Error in event {event}!\n{''.join(traceback.format_exception(*sys.exc_info()))}", logging.ERROR)
     viviatools.log(f"(Error args: {args} | Error kwargs: {kwargs})", logging.DEBUG)
+    # attempt to send generic error message
+    try:
+        await args[0].send(personalityMessage("errors.error"))
+    except:
+        viviatools.log("Failed to send error message to user", logging.ERROR)
+
+@tree.error
+async def on_app_command_error(interaction, error: app_commands.AppCommandError):
+    """
+    Function called when an app command error is raised in Vivia.
+
+    This function handles errors derived from `discord.app_commands.AppCommandError`.
+    """
+
+    viviatools.log(f"App command error in interaction {interaction}!\n{''.join(traceback.format_exception(*sys.exc_info()))}", logging.ERROR)
+    match type(error):
+        case app_commands.CommandSignatureMismatch:
+            # Command out of sync - usually because v!sync was run
+            await interaction.response.send_message(personalityMessage("errors.commandoutofsync"))
+        case app_commands.CommandNotFound:
+            # Command not found
+            await interaction.response.send_message(personalityMessage("errors.commandnotfound"))
+        case _:
+            # Anything else
+            await interaction.response.send_message(personalityMessage("errors.error"))
 
 @bot.event
 async def on_command_error(ctx: commands.Context, error: CommandError):

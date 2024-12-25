@@ -17,7 +17,8 @@ The quote command pack lets you quote your favorite messages for future humor.
 `addquote` and `removequote` both require Vivia Admin permissions.
 
 ## Context Menu
-You can turn any message into a custom quote using the context menu command (Context Menu -> Apps -> Add Custom Quote). This is the same as running `v!addquote <message contents> <message author> <time message was sent>`.
+You can turn any message into a custom quote using the context menu command (Context Menu -> Apps -> Add Custom Quote).
+This is the same as running `v!addquote <message contents> <message author> <time message was sent>`.
 
 ## In DMs
 Custom quotes are not supported in DMs, so `quote` and `listquotes` will only give results from the global quote list.

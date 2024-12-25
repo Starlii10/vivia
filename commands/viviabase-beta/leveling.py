@@ -21,7 +21,7 @@ from discord import app_commands
 from extras.viviatools import adminOnly, personalityMessage, perServerFile, blockInDMs
 
 async def setup(bot):
-    bot.add_cog(leveling(bot))
+    await bot.add_cog(leveling(bot))
 
 
 class leveling(commands.Cog):
