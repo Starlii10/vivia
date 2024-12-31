@@ -64,7 +64,8 @@ class leveling(commands.Cog):
             leveling = json.load(f)
             if leveling["leveling"][str(message.author.id)]["xp"] >= leveling["leveling"][str(message.author.id)]["level"] * 5:
                 leveling["leveling"][str(message.author.id)]["level"] += 1
-                leveling["leveling"][str(message.author.id)]["xp"] = 0
+                # Add leftover XP
+                leveling["leveling"][str(message.author.id)]["xp"] = 0 - (leveling["leveling"][str(message.author.id)]["level"] * 5 - leveling["leveling"][str(message.author.id)]["xp"])
                 await message.reply(personalityMessage("leveling.levelup").replace("{level}", str(leveling["leveling"][str(message.author.id)]["level"])))
         
         # Save leveling data

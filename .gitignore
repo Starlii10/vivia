@@ -4,21 +4,20 @@
 # configuration, logs, and other temp files
 *.ini
 *.log
-tempchats
+data/tempchats
 
 # testing directory
 testing
 
-# idk what these directories are so let's ignore them
+# vs code settings
 .vscode
-.venv
 
 # per-server data
 data/servers
 
 # python things
 __pycache__/
-venv
+.venv
 
 # LLaMa models
 models

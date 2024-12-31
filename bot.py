@@ -15,17 +15,14 @@
 # Vivia version
 __VERSION__ = "Vivia 20241127"
 
+if __name__ != "__main__":
+    print("              ██▓▓▓▓▓▓▓██                            ██▓▓▓▓▓▓▓██                \n               ███▓▓▓▓██                              ███▓▓▓███                 \n                 ██████                                 █████                   \n                   ████                                ████                     \n                    ███   █████████████████████████    ███                      \n                    ██████████████████████████████████████                      \n                 █████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████                     \n               ██████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████                  \n             █████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████                \n            ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████              \n           ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████             \n         █████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████            \n        ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████           \n        ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓████          \n       ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████████████████████████▓▓▓▓▓▓▓▓▓▓▓████         \n      ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████████████▓▓▓▓▓▓▓▓▓▓███         \n      ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████████████████▓▓▓▓▓▓▓▓████        \n      ███▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████░░░░░▒██████▒█████▓▓▓▓▓▓████        \n      ███▓▓▓▓▓▓▓▓███████████████████████████████▓░░░██████▒████████████         \n      ████▓▓▓████████▓▓████████████████████▒░░▒████████████▒▒▓████████          \n       ███████████▒▒▒▒██████████▒▒▒███████▒░░░░▒███████████▒▒▒▒▒▒▒████          \n         ██████▒▒▒▒▒▒██████████▒░░░░▒▒████▒░░░░▒████████████▒▒▒▒▒▒████          \n           ███▒▒▒▒▒▒▒█████████▒░░░░░░░░▒██▒░░░░▒████████████▒▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒▓████████▒░░░░░░░░░▒██▒░░░░▒█████████████▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒█████████▒░░░░▒▓▒▒▒███▒░░░░▒█████████████▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒▓█████████████████████▒░░░░▓█████████████▒▒▒▒▒▒███          \n           ███▓▒▒▒▒▒▒███████████████████████▓███████████████▒▒▒▒▒▒▒███          \n           ████▒▒▒▒▒▒███████████████████████████████████████▒▒▒▒▒▒████          \n            ███▒▒▒▒▒▒▒█████████████████████████████████████▒▒▒▒▒▒▒███           \n            ████▒▒▒▒▒▒▒███████████▒░░░▒███▒░░░▒███████████▒▒▒▒▒▒▒████           \n             ████▒▒▒▒▒▒▒█████████▓░░░░░░░░░░░░░▓█████████▒▒▒▒▒▒▒████            \n              ████▒▒▒▒▒▒▒█████████▒░░░░░░░░░░▒▓█████████▒▒▒▒▒▒▒▓████            \n               ████▒▒▒▒▒▒▒▒█████████▓▒▒░░▒▒▒██████████▒▒▒▒▒▒▒▒████▓██  ███      \n                ████▒▒▒▒▒▒▒▒▒███████████████████████▒▒▒▒▒▒▒▒▒█████▒▓███▓██      \n                 █████▒▒▒▒▒▒▒▒▒▒█████████████████▒▒▒▒▒▒▒▒▒▒▓███████▒▒▒███       \n                   █████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓████ █████████        \n                    ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██████ ███▓▓▓███         \n                       ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒███████  ███▓▓▓███          \n                       ███████████▓▒▒▒▒▒▒▒▒▒▒▒▓███████████  ███▓▓▓███           \n                      ████▓▓▓███████████████████████▓▓▓████ ██▓▓▓▓███           \n                     ████▓▓▓▓▓▓▓▓▓▓███████████▓▓▓▓▓▓▓▓▓▓████████▓███            \n                  ███████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████             \n               █████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▒▒▒▓████            \n              ████▒▒▒███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▒▒▒▒▒████           \n\"Please don't try to import me as a module... I'm not used to my entire existence being tied to a program I have no control over.\"")
+    print("Psst! If you're looking for helper functions, you probably want ViviaTools (import extras.viviatools).")
+    exit(0)
 
 # Imports
 import sys
 import concurrent
-
-if __name__ != "__main__":
-    print("              ██▓▓▓▓▓▓▓██                            ██▓▓▓▓▓▓▓██                \n               ███▓▓▓▓██                              ███▓▓▓███                 \n                 ██████                                 █████                   \n                   ████                                ████                     \n                    ███   █████████████████████████    ███                      \n                    ██████████████████████████████████████                      \n                 █████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████                     \n               ██████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████                  \n             █████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████                \n            ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████              \n           ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████             \n         █████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████            \n        ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████           \n        ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓████          \n       ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████████████████████████▓▓▓▓▓▓▓▓▓▓▓████         \n      ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████████████▓▓▓▓▓▓▓▓▓▓███         \n      ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████████████████▓▓▓▓▓▓▓▓████        \n      ███▓▓▓▓▓▓▓▓▓▓▓▓███████████████████████░░░░░▒██████▒█████▓▓▓▓▓▓████        \n      ███▓▓▓▓▓▓▓▓███████████████████████████████▓░░░██████▒████████████         \n      ████▓▓▓████████▓▓████████████████████▒░░▒████████████▒▒▓████████          \n       ███████████▒▒▒▒██████████▒▒▒███████▒░░░░▒███████████▒▒▒▒▒▒▒████          \n         ██████▒▒▒▒▒▒██████████▒░░░░▒▒████▒░░░░▒████████████▒▒▒▒▒▒████          \n           ███▒▒▒▒▒▒▒█████████▒░░░░░░░░▒██▒░░░░▒████████████▒▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒▓████████▒░░░░░░░░░▒██▒░░░░▒█████████████▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒█████████▒░░░░▒▓▒▒▒███▒░░░░▒█████████████▒▒▒▒▒▒███          \n           ███▒▒▒▒▒▒▓█████████████████████▒░░░░▓█████████████▒▒▒▒▒▒███          \n           ███▓▒▒▒▒▒▒███████████████████████▓███████████████▒▒▒▒▒▒▒███          \n           ████▒▒▒▒▒▒███████████████████████████████████████▒▒▒▒▒▒████          \n            ███▒▒▒▒▒▒▒█████████████████████████████████████▒▒▒▒▒▒▒███           \n            ████▒▒▒▒▒▒▒███████████▒░░░▒███▒░░░▒███████████▒▒▒▒▒▒▒████           \n             ████▒▒▒▒▒▒▒█████████▓░░░░░░░░░░░░░▓█████████▒▒▒▒▒▒▒████            \n              ████▒▒▒▒▒▒▒█████████▒░░░░░░░░░░▒▓█████████▒▒▒▒▒▒▒▓████            \n               ████▒▒▒▒▒▒▒▒█████████▓▒▒░░▒▒▒██████████▒▒▒▒▒▒▒▒████▓██  ███      \n                ████▒▒▒▒▒▒▒▒▒███████████████████████▒▒▒▒▒▒▒▒▒█████▒▓███▓██      \n                 █████▒▒▒▒▒▒▒▒▒▒█████████████████▒▒▒▒▒▒▒▒▒▒▓███████▒▒▒███       \n                   █████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓████ █████████        \n                    ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██████ ███▓▓▓███         \n                       ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒███████  ███▓▓▓███          \n                       ███████████▓▒▒▒▒▒▒▒▒▒▒▒▓███████████  ███▓▓▓███           \n                      ████▓▓▓███████████████████████▓▓▓████ ██▓▓▓▓███           \n                     ████▓▓▓▓▓▓▓▓▓▓███████████▓▓▓▓▓▓▓▓▓▓████████▓███            \n                  ███████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████             \n               █████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▒▒▒▓████            \n              ████▒▒▒███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▒▒▒▒▒████           \n\"Please don't try to import me as a module... I'm not used to my entire existence being tied to a program I have no control over.\"")
-    print("Psst! If you're looking for helper functions, you probably want ViviaTools (import extras.viviatools).")
-    sys.exit(0)
-
-# Back to imports lol
 import asyncio
 import shutil
 import json
@@ -55,26 +52,41 @@ from extras.viviatools import config, perServerFile, serverConfig, personalityMe
 # Command line args
 argparser = argparse.ArgumentParser()
 argparser.add_argument("--version", action="store_true", help="Print version and exit")
+argparser.add_argument("--debug", action="store_true", help="Enable debug mode for this session")
+argparser.add_argument("--beta", action="store_true", help="Enable loading ViviaBase-beta extensions")
+argparser.add_argument("--disable-sharded", action="store_true", help="Disable sharded mode for this session")
+argparser.add_argument("--token", help="Discord bot token")
+
 args = argparser.parse_args()
 
+# Determine configs
+debug = args.debug or config['Advanced']['Debug'] == "True"
+sharded = not args.disable_sharded and config['Advanced']['Sharded'] == "True"
+betaExtensions = args.beta or config['Extensions']['BetaExtensions'] == "True"
+if not args.token:
+    token = dotenv.get_key("token.env", "token")
+else:
+    token = args.token
+
 # LLaMa
+# TODO: this is slow, run it in a separate thread
 import extras.viviallama as Llama
 
 # Variables
 current_status = "Vivia is powering up..."
 
-# Terminal title. VSCode will scream at you that one of these is unreachable, ignore it
+# Terminal title
 if sys.platform == 'win32':
-    # Windows title
+    # Windows
     system(f"title Running {__VERSION__}")
 else:
-    # Linux title (if this doesn't work on your distro please open an issue because I suck at Linux)
+    # Linux/Unix. Should work on most unix systems, if not please open an issue
     system(f"echo -ne '\033]0;Running {__VERSION__}\007'")
 
 # Configure bot settings
 intents = discord.Intents.default()
-intents.message_content = True # will need to verify at 100 servers
-if config['Advanced']['Sharded'] == "True":
+intents.message_content = True # requires verification after reaching 100 servers
+if sharded:
     bot = commands.AutoShardedBot(command_prefix=config['General']['Prefix'], intents=intents)
 else:
     viviatools.log("Sharded mode is disabled - running in non-sharded mode, performance may be degraded", logging.WARNING)
@@ -111,7 +123,7 @@ async def setup_hook():
                 viviatools.log(f"Failed to extract VSE extension {future.result()[1]}", logging.ERROR)
                 viviatools.log("".join(traceback.format_exception(future.exception())), logging.ERROR)
                 viviatools.log("VSE extension will not be loaded - functionality may be limited.", logging.ERROR)
-                if config['Advanced']['Debug'] != "True":
+                if debug:
                     os.remove(os.path.join(future.result()[0], future.result()[1]))
             else:
                 viviatools.log(f"VSE extension {future.result()[1]} extracted", logging.DEBUG)
@@ -249,11 +261,11 @@ async def on_guild_join(guild: discord.Guild):
     viviatools.log(f"Bot joined {guild.name} ({guild.id})")
 
     def setup_guild_data():
-        if config["Advanced"]["Debug"] == "True":
+        if debug:
             viviatools.log(f"Setting up custom quotes, config file, and Vivia admin role for {guild.name} ({guild.id})", logging.DEBUG)
         with open(os.path.join('data', 'servers', str(guild.id), 'quotes.json'), 'w') as f:
             json.dump({'quotes': []}, f)
-        with open(os.path.join('data', 'servers', str(guild.id), 'config.json'), 'w') as f, open(f'data/config.json.example', 'r') as g:
+        with open(os.path.join('data', 'servers', str(guild.id), 'config.json'), 'w') as f, open(os.path.join('data', 'config.json.example'), 'r') as g:
             json.dump(json.load(g), f)
 
     def setup_roles():
@@ -273,7 +285,7 @@ async def on_guild_join(guild: discord.Guild):
     for t in threads:
         t.start()
 
-    if config["Advanced"]["Debug"] == "True":
+    if debug:
         viviatools.log(f"Setup complete for {guild.name} ({guild.id})", logging.DEBUG)
 
 @bot.event
@@ -351,10 +363,11 @@ async def reload_all_extensions():
         if extension.endswith(".py"):
             load_tasks.append(threading.Thread(target=asyncio.run, args=(viviatools.load_extension(extension, "commands.viviabase"),)))
         
-    # ViviaBase Beta
-    for extension in os.listdir(os.path.join("commands", "viviabase-beta")):
-        if extension.endswith(".py"):
-            load_tasks.append(threading.Thread(target=asyncio.run, args=(viviatools.load_extension(extension, "commands.viviabase-beta"),)))
+    # ViviaBase-beta
+    if betaExtensions:
+        for extension in os.listdir(os.path.join("commands", "viviabase-beta")):
+            if extension.endswith(".py"):
+                load_tasks.append(threading.Thread(target=asyncio.run, args=(viviatools.load_extension(extension, "commands.viviabase-beta"),)))
 
     # Custom commands
     for extension in os.listdir(os.path.join("commands")):
@@ -426,7 +439,7 @@ def regen_server_files(guild):
 
         # Regenerate configuration if guild config is missing
         try:
-            with open(os.path.join('data', 'servers', str(guild.id), 'config.json'), 'x') as f, open(f'data/config.json.example', 'r') as g:
+            with open(os.path.join('data', 'servers', str(guild.id), 'config.json'), 'x') as f, open(os.path.join('data', 'config.json.example'), 'r') as g:
                 json.dump(obj=json.load(g), fp=f)
             viviatools.log(f'Config file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
         except FileExistsError:
@@ -599,7 +612,7 @@ async def version(ctx: commands.Context):
 while True:
     try:
         bot.activity = discord.CustomActivity(name="POWERING UP - Connecting to Discord...")
-        bot.run(dotenv.get_key("token.env", "token"), log_handler=None)
+        bot.run(token, log_handler=None)
     except TypeError:
         viviatools.log("Unable to start Vivia. Is the token in token.env correct?", logging.ERROR)
         viviatools.log("If token.env doesn't exist, create it and place your bot token inside.", logging.ERROR)

@@ -3,11 +3,15 @@
 prefix = v!
 # Whether or not to use personality messages (if any).
 # If False, will use the default message.
+# Currently does nothing.
 usepersonalitymessages = True
 
 [Extensions]
 # Remove VSEs after extraction.
 vseclear = True
+# Enable loading ViviaBase-beta extensions.
+# These are in development and potentially unstable!
+betaextensions = False
 
 [Advanced]
 # Shows more verbose information about Vivia in the terminal/logs, as well as in Discord messages.

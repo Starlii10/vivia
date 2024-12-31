@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-    A wrapper for llama-cpp, powering Vivia's AI functionality.
+    A wrapper for llama-cpp and tesseract, powering Vivia's AI functionality.
 
     Vivia is licensed under the MIT License. For more information, see the LICENSE file.
     TL:DR: you can use Vivia's code as long as you keep the original license intact.
