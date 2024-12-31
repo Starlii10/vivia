@@ -1,4 +1,5 @@
 {
+    "default": "Reset {user}'s level.",
     "messages": [
         "Reset {user}'s level.",
         "{user}'s level has been reset.",

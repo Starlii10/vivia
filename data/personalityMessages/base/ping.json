@@ -1,4 +1,5 @@
 {
+    "default": "Ping: {ping}.",
     "messages": [
         "My current connection to Discord's servers has a ping of {ping}.",
         "The current ping is {ping}.",

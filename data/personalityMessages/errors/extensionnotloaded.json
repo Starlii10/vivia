@@ -1,4 +1,5 @@
 {
+    "default": "Extension not loaded.",
     "messages": [
         "I'm sorry, but that extension isn't loaded.",
         "I'm sorry, that extension isn't loaded.",

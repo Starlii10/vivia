@@ -1,4 +1,5 @@
 {
+    "default": "User not found.",
     "messages": [
         "I'm not sure who that is. Are they in this server?",
         "I don't know who that is. Are they in this server?",

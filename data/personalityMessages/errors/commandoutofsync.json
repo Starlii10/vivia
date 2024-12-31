@@ -1,4 +1,5 @@
 {
+    "default": "Command out of sync. Try again later.",
     "messages": [
         "Uh... an update just got pushed to that command and Discord hasn't caught up. Try again later?",
         "That command just got updated. Discord needs a moment to process it, give it a moment...",

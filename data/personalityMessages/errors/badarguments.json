@@ -1,4 +1,5 @@
 {
+    "default": "Invalid parameter: \"{arg}\".",
     "messages": [
         "The \"{arg}\" parameter appears to be invalid.",
         "The \"{arg}\" parameter is invalid.",

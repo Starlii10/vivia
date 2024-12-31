@@ -1,4 +1,5 @@
 {
+    "default": "You leveled up to level {level}!",
     "messages": [
         "You leveled up to level {level}!",
         "You're now level {level}!",

@@ -3,7 +3,6 @@
 prefix = v!
 # Whether or not to use personality messages (if any).
 # If False, will use the default message.
-# Currently does nothing.
 usepersonalitymessages = True
 
 [Extensions]

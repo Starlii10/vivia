@@ -1,4 +1,5 @@
 {
+    "default": "Sent help message.",
     "messages": [
         "I just sent a help message your way, {user}!",
         "I've sent you a help message, {user}. Hope it, well, helps!",

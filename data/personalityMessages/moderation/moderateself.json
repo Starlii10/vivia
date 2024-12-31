@@ -1,4 +1,5 @@
 {
+    "default": "You can't {action} yourself.",
     "messages": [
         "I don't think you can just {action} yourself.",
         "I'm sorry, but you can't {action} yourself.",

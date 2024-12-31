@@ -1,4 +1,5 @@
 {
+    "default": "{user} has been {action}.",
     "messages": [
         "Okay. {user} has been {action}.",
         "Got it! I've {action} {user}.",

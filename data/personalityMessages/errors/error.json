@@ -1,4 +1,5 @@
 {
+    "default": "Something went wrong. Please try again.",
     "messages": [
         "Uh... that's not supposed to happen. Sorry about that!",
         "Oh no! Something went wrong. Please try again.",

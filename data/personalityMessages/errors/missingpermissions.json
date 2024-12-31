@@ -1,4 +1,5 @@
 {
+    "default": "Vivia does not have the required permissions. The following permissions are required:\n{perms}",
     "messages": [
         "I don't have permission to do that... can someone inform an admin? I need these permissions:\n{perms}",
         "I don't have permission to do that. I'll need these permissions:\n{perms}",

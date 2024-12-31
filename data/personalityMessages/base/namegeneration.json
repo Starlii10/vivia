@@ -1,4 +1,5 @@
 {
+    "default": "{name}",
     "messages": [
         "How does \"{name}\" sound?",
         "Hmmm... \"{name}\"!",

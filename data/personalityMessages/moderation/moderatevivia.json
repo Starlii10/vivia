@@ -1,4 +1,5 @@
 {
+    "default": "You can't {action} Vivia.",
     "messages": [
         "...you're trying to {action} me? What did I ever do?!",
         "I'm sorry, but you can't {action} me.",

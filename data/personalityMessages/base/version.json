@@ -1,4 +1,5 @@
 {
+    "default": "Version {version}.",
     "messages": [
         "You're interacting with {version}!",
         "My software identifies itself as \"{version}\".",

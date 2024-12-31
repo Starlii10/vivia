@@ -81,8 +81,9 @@ class leveling(commands.Cog):
         """
         Checks your current level.
         """
-
-        await ctx.send(personalityMessage("leveling.level").replace("{level}", str(ctx.author.level)))
+        with perServerFile(ctx.guild.id, "leveling.json") as f:
+            leveling = json.load(f)
+            await ctx.send(personalityMessage("leveling.level").replace("{level}", str(leveling["leveling"][str(ctx.author.id)]["level"])).replace("{xp}", f"{leveling["leveling"][str(ctx.author.id)]["xp"]}/{leveling['leveling'][str(ctx.author.id)]['level'] * 5}"))
     
     @blockInDMs
     @adminOnly
