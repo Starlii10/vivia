@@ -16,6 +16,6 @@ There's a whole bunch of information, including info on how to set up your own v
 
 ## Open Source
 Want to peek into what makes me, well, me? My creator Starlii has already posted my source code onto GitHub.
-You can find it [here](https://github.com/Starlii10/vivia)! Just be careful with it - my code is very sensitive to changes.
+You can find it [here, on GitHub](https://github.com/Starlii10/vivia)! Just be careful with it - my code is very sensitive to changes.
 
 -# Psst! If you needed help with an extension, type `v!help` and then the name of the extension you need help with. Try `v!help viviabase`!
