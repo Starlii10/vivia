@@ -14,10 +14,9 @@
 if __name__ == "__main__":
     raise Exception("Vivia extensions should not be run as a script.")
 
-import logging
 from discord.ext import commands
 from discord import app_commands
-from extras.viviatools import helpMsg,personalityMessage, loaded_extensions, failed_extensions, log
+from extras.viviatools import helpMsg, personalityMessage
 
 async def setup(bot: commands.Bot): # for extension loading
     bot.add_command(help)

@@ -9,6 +9,6 @@ Examples:
 * `v!help viviabase.help`
 * `v!help customextension`
 
-Not every extension has one, so you may have to experiment with commands to find out what they do.
+Not every extension has a help message, so you may have to experiment with commands to find out what they do.
 
 -# Why does the help extension have a help message?
