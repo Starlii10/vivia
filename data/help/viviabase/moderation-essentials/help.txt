@@ -20,7 +20,9 @@ The Moderation Essentials command pack provides basic moderation actions such as
 
 ## Limitations
 - You must have Moderate Members permission to issue warns, and Kick/Ban Members to kick and ban members, respectively.
-    - Vivia Admins cannot bypass this unless they have a role that grants them the permissions.
+    - Vivia Admins cannot bypass this unless they have a role that grants them such permissions.
 - Users with Administrator permissions cannot be moderated.
 - You can't moderate Vivia using Vivia. 
 - The user you are moderating must be below you in the role hierarchy.
+
+-# Simple yet very effective.

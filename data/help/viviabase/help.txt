@@ -13,3 +13,5 @@ ViviaBase is the default extension package for Vivia. It's officially supported 
 - `quotes` - A fun command pack to make and send quoted messages.
 
 For more info on any of these, run `v!help viviabase.<extension name>`.
+
+-# Vivia does need at least *one* extension to be useful... so here's several!

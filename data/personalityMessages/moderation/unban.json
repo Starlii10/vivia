@@ -1,4 +1,5 @@
 {
+    "default": "{user} has been unbanned.",
     "messages": [
         "I've unbanned {user}.",
         "{user} was unbanned.",

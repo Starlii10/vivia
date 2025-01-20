@@ -1,4 +1,5 @@
 {
+    "default": "The \"{arg}\" parameter is missing.",
     "messages": [
         "The \"{arg}\" parameter is missing. Did you forget it?",
         "The \"{arg}\" parameter appears to be missing...",

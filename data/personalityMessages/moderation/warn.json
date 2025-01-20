@@ -1,4 +1,5 @@
 {
+    "default": "Warned {user}.",
     "messages": [
         "Gave {user} a warning.",
         "Warned {user}.",

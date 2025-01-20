@@ -1,4 +1,5 @@
 {
+    "default": "This command can't be used in DMs.",
     "messages": [
         "This command can't be used in DMs.",
         "Can't use this command in DMs.",

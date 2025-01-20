@@ -1,0 +1,22 @@
+# ViviaBase-beta: `leveling`
+The leveling extension allows users to earn XP and level up in servers.
+
+## General Use
+Every message will give between 1 and 5 XP to the user who sent it.
+After enough XP is earned, the user will level up and their XP will be reset.
+
+## Commands
+* `v!level` - Shows your current level and XP amount.
+    - Usage: `v!level`
+* `v!resetlevel` - Resets a user's level to 1.
+    - Usage: `v!resetlevel <user>`
+    - **Requires Vivia Admin**
+* `v!setlevel` - Sets a user's level.
+    - Usage: `v!setlevel <user> <level>`
+    - Example: `v!setlevel @archie 6`
+    - **Requires Vivia Admin**
+* `v!resetlevels` - Resets all users' levels to 1.
+    - Usage: `v!resetlevels`
+    - **Requires Vivia Admin**
+
+-# It seems like every Discord bot nowadays has this feature...

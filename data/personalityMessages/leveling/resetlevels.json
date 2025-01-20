@@ -1,0 +1,8 @@
+{
+    "default": "Reset all users' levels.",
+    "messages": [
+        "Reset the levels of all users.",
+        "All users' levels have been reset.",
+        "Reset all users' levels."
+    ]
+}

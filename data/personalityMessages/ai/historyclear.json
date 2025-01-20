@@ -1,4 +1,5 @@
 {
+    "default": "Message history cleared.",
     "messages": [
         "Your history has been cleared.",
         "Cleared your chat history with me!",

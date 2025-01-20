@@ -1,9 +1,14 @@
 # ViviaBase: `help`
 
-The help command is a ViviaBase command that lets you open help messages like these!
+The help extension adds a command that lets you open help messages like these!
 
+## Command
 Usage: `v!help <extension>`
 Examples:
 * `v!help`
 * `v!help viviabase.help`
 * `v!help customextension`
+
+Not every extension has a help message, so you may have to experiment with commands to find out what they do.
+
+-# Why does the help extension have a help message?

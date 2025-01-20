@@ -1,7 +1,10 @@
 # ViviaBase: `namegenerator`
 Name Generator lets you make completely random names!
 
+## Command
 Usage: `v!namegenerator <type> <gender>`
 Examples:
 * `v!namegenerator first female`
 * `v!namegenerator full none`
+
+-# Great for D&D, if you really want to bother with using Vivia in a D&D session.

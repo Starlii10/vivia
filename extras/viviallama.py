@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-    A wrapper for llama-cpp, powering Vivia's AI functionality.
+    A wrapper for llama-cpp and tesseract, powering Vivia's AI functionality.
 
     Vivia is licensed under the MIT License. For more information, see the LICENSE file.
     TL:DR: you can use Vivia's code as long as you keep the original license intact.
@@ -78,11 +78,12 @@ else:
         model = Llama(
             model_path="extras/models/llama-model.gguf",
             n_ctx=0,
-            n_gpu_layers=-1
+            n_gpu_layers=-1,
+            verbose=True if config.getboolean("Advanced", "debug") else False
         )
     except Exception as e:
         # couldn't load model, disable AI
-        viviatools.log(f"Couldn't load LLaMa model. This can be caused by an invalid model path, no supported devices to run LLaMa on, or an error in the model.", logging.ERROR)
+        viviatools.log(f"Couldn't load LLaMa model. This can be caused by an invalid model path, no supported devices to run LLaMa on, or another reason.", logging.ERROR)
         viviatools.log("This is not a fatal error, however Vivia will not be able to generate responses unless it is installed.", logging.ERROR)
         viviatools.log("Please ensure that a supported model file exists in the models directory, and that LLaMa is installed correctly.", logging.ERROR)
         viviatools.log("AI functionality will be disabled for this session.", logging.ERROR)
@@ -99,7 +100,7 @@ except:
     # test failed, disable OCR
     viviatools.log("Couldn't load pytesseract. This is not a fatal error, however Vivia will not be able to read images unless it is installed.", logging.ERROR)
     viviatools.log("This may be caused by a missing tesseract-ocr package. Pytesseract requires the tesseract-ocr engine, which does not come with the package and must be installed manually.", logging.ERROR)
-    viviatools.log("Ensure both pytesseract and tesseract-ocr are installed and restart Vivia.")
+    viviatools.log("Ensure both pytesseract and tesseract-ocr are installed and restart Vivia.", logging.ERROR)
     viviatools.log("OCR functionality will be disabled for this session.", logging.ERROR)
     imageReadingDisabled = True
 
@@ -165,6 +166,9 @@ def createResponse(
         asyncio.run_coroutine_threadsafe(channel_ref.send(personalityMessage("ai.cannotrespond")), loop)
 
 async def processAttachment(attachment, internal_name):
+    """
+    Processes attachment into a format that can be read by LLaMa
+    """
     # Download attachment
     try:
         viviatools.log(f"Downloading {attachment.filename}", logging.DEBUG)

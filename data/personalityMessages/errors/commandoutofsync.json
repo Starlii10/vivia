@@ -1,0 +1,10 @@
+{
+    "default": "Command out of sync. Try again later.",
+    "messages": [
+        "Uh... an update just got pushed to that command and Discord hasn't caught up. Try again later?",
+        "That command just got updated. Discord needs a moment to process it, give it a moment...",
+        "That command is currently out of sync with Discord. Give it a moment and try again.",
+        "Looks like my commands are out of sync with Discord. Gotta wait until they catch up.",
+        "One moment, please, I have to let Discord catch up with command updates."
+    ]
+}

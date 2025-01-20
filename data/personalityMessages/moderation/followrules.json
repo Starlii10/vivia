@@ -1,4 +1,5 @@
 {
+    "default": "Please follow the rules of {server}.",
     "messages": [
         "Please ensure that you follow the rules of {server}.",
         "Please follow the rules of {server}.",

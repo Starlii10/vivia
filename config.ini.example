@@ -8,6 +8,9 @@ usepersonalitymessages = True
 [Extensions]
 # Remove VSEs after extraction.
 vseclear = True
+# Enable loading ViviaBase-beta extensions.
+# These are in development and potentially unstable!
+betaextensions = False
 
 [Advanced]
 # Shows more verbose information about Vivia in the terminal/logs, as well as in Discord messages.

@@ -1,4 +1,5 @@
 {
+    "default": "Command not found.",
     "messages": [
         "Not sure what that command is.",
         "I can't find that command in my database.",

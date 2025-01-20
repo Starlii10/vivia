@@ -1,4 +1,5 @@
 {
+    "default": "You can't {action} {user} as they're higher in the role hierarchy than you.",
     "messages": [
         "I can't {action} {user}. They're higher in the role hierarchy than you.",
         "I'm sorry, but you can't {action} {user}. They're higher in the role hierarchy than you.",

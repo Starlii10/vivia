@@ -1,0 +1,8 @@
+{
+    "default": "You're at level {level} with {xp} XP.",
+    "messages": [
+        "You're at level {level} with {xp} XP.",
+        "You're level {level} with {xp} XP.",
+        "You are currently at level {level} and {xp} XP."
+    ]
+}

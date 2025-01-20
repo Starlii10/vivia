@@ -1,4 +1,5 @@
 {
+    "default": "You've been warned in {server}.",
     "messages": [
         "I apologize, but a moderator in {server} has asked me to say that you've been warned.",
         "I'm sorry, but a moderator in {server} has asked me to say that you've been warned.",

@@ -1,0 +1,10 @@
+# ViviaBase-beta (extension package)
+
+This package contains extensions that are in development.
+By default they are disabled, though they can be enabled with the config option `betaextensions` or with the `--beta` command line argument.
+
+## Extensions
+
+- `viviabase-beta.leveling` - A leveling and XP system for your server.
+
+-# Use at your own risk!

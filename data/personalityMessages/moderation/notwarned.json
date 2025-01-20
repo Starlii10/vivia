@@ -1,4 +1,5 @@
 {
+    "default": "{user} hasn't been warned yet.",
     "messages": [
         "{user} hasn't been warned yet.",
         "I'm sorry, but {user} hasn't been warned yet.",

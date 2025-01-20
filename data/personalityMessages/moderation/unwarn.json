@@ -1,4 +1,5 @@
 {
+    "default": "{user} was unwarned.",
     "messages": [
         "I've removed a warning from {user}.",
         "I removed a warning from {user}.",

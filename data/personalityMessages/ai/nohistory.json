@@ -1,4 +1,5 @@
 {
+    "default": "Chat history empty.",
     "messages": [
         "Uh, I don't see anything to clear in here.",
         "There isn't anything in my memory banks for you. Did you already clear it?",
