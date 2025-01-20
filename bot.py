@@ -354,8 +354,7 @@ async def reload_all_extensions():
     viviatools.loaded_extensions = ["core"] # Vivia core is always loaded
     viviatools.failed_extensions = []
 
-    # Load extensions from a directory
-
+    # Load extensions
     load_tasks = []
 
     # ViviaBase
@@ -363,7 +362,7 @@ async def reload_all_extensions():
         if extension.endswith(".py"):
             load_tasks.append(threading.Thread(target=asyncio.run, args=(viviatools.load_extension(extension, "commands.viviabase"),)))
         
-    # ViviaBase-beta
+    # ViviaBase-beta if enabled
     if betaExtensions:
         for extension in os.listdir(os.path.join("commands", "viviabase-beta")):
             if extension.endswith(".py"):
