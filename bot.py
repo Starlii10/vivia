@@ -531,28 +531,6 @@ async def setting(ctx: commands.Context, option: str, value: bool):
         viviatools.log(f"Error while changing config for {ctx.guild.name} ({str(ctx.guild.id)}): {str(type(e))}: {str(e)}", severity=logging.ERROR)
 
 @bot.hybrid_command(
-    name="extensions",
-    description="Manages Vivia's extensions for a specific server."
-)
-@viviatools.adminOnly
-async def extensions(ctx: commands.Context, extension: str, value: bool):
-    """
-    Manages Vivia's extensions for a specific server.
-
-    ## Notes:
-        - Only users with Vivia admin permissions can use this command.
-    """
-
-    with perServerFile(ctx.guild.id, "extensions.json") as f:
-        extensions = json.load(f)
-        extensions[extension] = value
-        json.dump(extensions, f)
-
-    await ctx.send(f"Done! `{extension}` is now {value and 'enabled' or 'disabled'}.", ephemeral=True)
-
-    # TODO: Handle extension unloading for individual servers
-
-@bot.hybrid_command(
     name="reboot",
     description="Performs a full reboot of Vivia."
 )
