@@ -326,6 +326,7 @@ async def on_message(message: discord.Message):
         if (message.mentions and (message.mentions[0] == bot.user or message.role_mentions[0] == discord.utils.get(message.guild.roles, name="Vivia"))):
             await message.channel.typing()
             thread = threading.Thread(target=Llama.createResponse, args=((message.content.removeprefix(f"<@{str(message.author.id)}>"),
+                                                    message.author.display_name,
                                                     message.author.name,
                                                     message.channel,
                                                     bot.loop,
