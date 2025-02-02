@@ -24,7 +24,7 @@ import random
 import shutil
 import sys
 import traceback
-from typing import Callable
+from typing import Callable, Union
 import colorlog
 import zipfile
 
@@ -403,9 +403,14 @@ def ownerOnly(func: Callable) -> Callable:
     Decorator that only allows the bot owner to execute a command.
     """
     @wraps(func)
-    async def wrapper(ctx: commands.Context, *args, **kwargs):
-        if await bot.is_owner(ctx.author):
-            return await func(ctx, *args, **kwargs)
+    async def wrapper(ctx: Union[commands.Context, discord.Interaction], *args, **kwargs):
+        if type(ctx) == discord.Interaction:
+            # handle interactions differently since ctx.author isn't available
+            if has_bot_permissions(ctx.user, ctx.guild):
+                return await func(ctx, *args, **kwargs)
+        else:
+            if await bot.is_owner(ctx.author):
+                return await func(ctx, *args, **kwargs)
         await ctx.send(personalityMessage("errors.missingpermissions"))
         return False
     return wrapper
@@ -415,9 +420,14 @@ def adminOnly(func: Callable) -> Callable:
     Decorator that only allows Vivia Admins to execute a command.
     """
     @wraps(func)
-    async def wrapper(ctx: commands.Context, *args, **kwargs):
-        if has_bot_permissions(ctx.author, ctx.guild):
-            return await func(ctx, *args, **kwargs)
+    async def wrapper(ctx: Union[commands.Context, discord.Interaction], *args, **kwargs):
+        if type(ctx) == discord.Interaction:
+            # handle interactions differently since ctx.author isn't available
+            if has_bot_permissions(ctx.user, ctx.guild):
+                return await func(ctx, *args, **kwargs)
+        else:
+            if has_bot_permissions(ctx.author, ctx.guild):
+                return await func(ctx, *args, **kwargs)
         await ctx.send(personalityMessage("errors.missingpermissions"))
         return False
     return wrapper
