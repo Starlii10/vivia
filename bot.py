@@ -75,6 +75,7 @@ import extras.viviallama as Llama
 
 # Variables
 current_status = "Vivia is powering up..."
+processing_responses = 0
 
 # Terminal title
 if sys.platform == 'win32':
