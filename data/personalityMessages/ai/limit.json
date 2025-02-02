@@ -1,0 +1,8 @@
+{
+    "default": "Vivia is currently limited to {limit} responses at once. Please wait a moment before generating more responses.",
+    "messages": [
+        "Vivia is currently limited to {limit} responses at once. Please wait a moment before generating more responses.",
+        "I can't do any more than {limit} responses at once. Hang on...",
+        "One moment, I can only reply to {limit} people at once. I'll be available in a moment."
+    ]
+}

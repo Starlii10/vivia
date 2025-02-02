@@ -39,6 +39,7 @@ from PIL import Image
 import cv2
 import discord
 import numpy as np
+import configparser
 
 if __name__ == "__main__":
     print("This is a helper script for Vivia that should not be run directly.", sys.stderr)
@@ -50,10 +51,16 @@ from extras.viviatools import personalityMessage
 
 viviatools.log("Attempting to load LLaMa - this may take a moment", logging.INFO)
 
+# Load config
+config = configparser.ConfigParser()
+config.read("config.ini")
+
 # Variable initialization
 aiDisabled = False
 imageReadingDisabled = False
 attachment_messages = []
+response_limit = config.getint("Advanced", "maxairesponses")
+processing_responses = 0
 
 # Config loading
 config = configparser.ConfigParser()
@@ -118,7 +125,12 @@ def createResponse(
         category_name: str | None = None,
     ):
     if not aiDisabled:
+        if processing_responses >= response_limit:
+            viviatools.log(f"Response generation requested by {internal_name} ({username}) - ignoring due to limit ({processing_responses}/{response_limit})", logging.WARNING)
+            channel_ref.send(personalityMessage("ai.limit").replace("{limit}", str(response_limit)))
+            return
         viviatools.log(f"Response generation requested by {internal_name} ({username}) - generating now! (This may take a moment)", logging.DEBUG)
+        processing_responses += 1
 
         # Read messages from memory file
         memory_file_path = os.path.join("data", "tempchats", internal_name, "messages.txt")
@@ -165,7 +177,7 @@ def createResponse(
         viviatools.log(f"Ignoring generation request by {internal_name} ({username}) due to previous errors while loading LLaMa", logging.WARNING)
         asyncio.run_coroutine_threadsafe(channel_ref.send(personalityMessage("ai.cannotrespond")), loop)
 
-async def processAttachment(attachment, internal_name):
+async def processAttachment(attachment: discord.Attachment, internal_name: str):
     """
     Processes attachment into a format that can be read by LLaMa
     """

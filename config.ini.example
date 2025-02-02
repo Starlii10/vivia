@@ -19,3 +19,6 @@ debug = False
 # Turns on sharded mode, which automatically opens multiple shards to process requests faster.
 # This should usually only be disabled for debugging purposes.
 sharded = True
+# The maximum number of AI responses to process at the same time.
+# Setting this to 0 will allow infinite processing, though it may cause performance issues.
+maxairesponses = 0
