@@ -125,7 +125,7 @@ def createResponse(
         category_name: str | None = None,
     ):
     if not aiDisabled:
-        if processing_responses >= response_limit:
+        if processing_responses >= response_limit and response_limit > 0:
             viviatools.log(f"Response generation requested by {internal_name} ({username}) - ignoring due to limit ({processing_responses}/{response_limit})", logging.WARNING)
             channel_ref.send(personalityMessage("ai.limit").replace("{limit}", str(response_limit)))
             return
