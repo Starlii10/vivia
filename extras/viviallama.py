@@ -60,6 +60,7 @@ aiDisabled = False
 imageReadingDisabled = False
 attachment_messages = []
 response_limit = config.getint("Advanced", "maxairesponses")
+global processing_responses
 processing_responses = 0
 
 # Config loading
