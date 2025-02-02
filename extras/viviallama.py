@@ -129,7 +129,7 @@ def createResponse(
         if processing_responses >= max_ai_processes:
             # Too many AI processes running
             viviatools.log(f"Response generation requested by {internal_name} ({username}) - ignoring due to limit ({processing_responses}/{max_ai_processes})", logging.WARNING)
-            asyncio.run_coroutine_threadsafe(channel_ref.send(personalityMessage("ai.limit").replace("{limit}", str(max_ai_processes))))
+            asyncio.run_coroutine_threadsafe(channel_ref.send(personalityMessage("ai.limit").replace("{limit}", str(max_ai_processes))), loop)
             return
         processing_responses += 1
         viviatools.log(f"Response generation requested by {internal_name} ({username}) - generating now! (This may take a moment)", logging.DEBUG)
