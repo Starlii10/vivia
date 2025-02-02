@@ -59,9 +59,6 @@ config.read("config.ini")
 aiDisabled = False
 imageReadingDisabled = False
 attachment_messages = []
-response_limit = config.getint("Advanced", "maxairesponses")
-global processing_responses
-processing_responses = 0
 
 # Config loading
 config = configparser.ConfigParser()
@@ -126,12 +123,7 @@ def createResponse(
         category_name: str | None = None,
     ):
     if not aiDisabled:
-        if processing_responses >= response_limit and response_limit > 0:
-            viviatools.log(f"Response generation requested by {internal_name} ({username}) - ignoring due to limit ({processing_responses}/{response_limit})", logging.WARNING)
-            channel_ref.send(personalityMessage("ai.limit").replace("{limit}", str(response_limit)))
-            return
         viviatools.log(f"Response generation requested by {internal_name} ({username}) - generating now! (This may take a moment)", logging.DEBUG)
-        processing_responses += 1
 
         # Read messages from memory file
         memory_file_path = os.path.join("data", "tempchats", internal_name, "messages.txt")

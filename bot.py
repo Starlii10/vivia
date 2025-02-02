@@ -63,6 +63,7 @@ args = argparser.parse_args()
 debug = args.debug or config['Advanced']['Debug'] == "True"
 sharded = not args.disable_sharded and config['Advanced']['Sharded'] == "True"
 betaExtensions = args.beta or config['Extensions']['BetaExtensions'] == "True"
+max_ai_processes = int(config['Advanced']['MaxAiResponses'])
 if not args.token:
     token = dotenv.get_key("token.env", "token")
 else:
@@ -323,6 +324,11 @@ async def on_message(message: discord.Message):
     if serverConfig(message.guild.id)['aiEnabled']:
         # we need to check both for direct mentions of Vivia and for mentions of the Vivia role to prevent confusion
         if (message.mentions and (message.mentions[0] == bot.user or message.role_mentions[0] == discord.utils.get(message.guild.roles, name="Vivia"))):
+            processing_responses += 1
+            if processing_responses > max_ai_processes:
+                await message.channel.send(personalityMessage("ai.limit").replace("{limit}", str(max_ai_processes)))
+                return
+            else:
                 await message.channel.typing()
                 thread = threading.Thread(target=Llama.createResponse, args=((message.content.removeprefix(f"<@{str(message.author.id)}>"),
                                                     message.author.display_name,
