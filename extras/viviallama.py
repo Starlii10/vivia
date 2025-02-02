@@ -172,6 +172,7 @@ def createResponse(
         with open(os.path.join("data", "tempchats", internal_name, "messages.txt"), "w") as file:
             json.dump(additional_messages + [{"role": "user", "content": prompt}] + [{"role": "assistant", "content": response}], file)
 
+        processing_responses -= 1
         # Send response
         asyncio.run_coroutine_threadsafe(channel_ref.send(response), loop)
     else:
