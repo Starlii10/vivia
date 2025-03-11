@@ -14,7 +14,7 @@ Some basic commands you can always use are:
 Want more about me? You may want to peek at the [wiki](https://github.com/Starlii10/vivia/wiki).
 There's a whole bunch of information, including info on how to set up your own version of me and make custom extensions!
 
-## Open Source
+## Free and Open Source Software
 Want to peek into what makes me, well, me? My creator Starlii has already posted my source code onto GitHub.
 You can find it [here, on GitHub](https://github.com/Starlii10/vivia)! Just be careful with it - my code is very sensitive to changes.
 

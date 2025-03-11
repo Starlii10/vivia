@@ -2,6 +2,7 @@
 # The command prefix for the bot.
 prefix = v!
 # Whether or not to use personality messages (if any).
+# This allows a single message type to have many messages that can be picked at random.
 # If False, will use the default message.
 usepersonalitymessages = True
 

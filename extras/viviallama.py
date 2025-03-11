@@ -177,7 +177,7 @@ def createResponse(
         asyncio.run_coroutine_threadsafe(channel_ref.send(response), loop)
     else:
         # Return an error message if LLaMa failed to load
-        viviatools.log(f"Ignoring generation request by {internal_name} ({username}) due to previous errors while loading LLaMa", logging.WARNING)
+        viviatools.log(f"Response generation requested by {internal_name} ({username}) - ignoring due to previous errors while loading LLaMa", logging.WARNING)
         asyncio.run_coroutine_threadsafe(channel_ref.send(personalityMessage("ai.cannotrespond")), loop)
 
 async def processAttachment(attachment: discord.Attachment, internal_name: str):
@@ -215,7 +215,7 @@ async def processAttachment(attachment: discord.Attachment, internal_name: str):
                     # DEBUG - Save image
                     if config["Advanced"]["Debug"] == "True":
                         cv2.imwrite(os.path.join("extras", "ocr", attachment.filename), noise_reduced)
-                        viviatools.log(f"Debug: Saved processed image {attachment.filename} to extras/ocr", logging.DEBUG)
+                        viviatools.log(f"Saved processed image {attachment.filename} to extras/ocr for debugging", logging.DEBUG)
                     
                     # Perform OCR
                     text = pytesseract.image_to_string(noise_reduced)

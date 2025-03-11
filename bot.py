@@ -47,7 +47,7 @@ from discord.ext.commands.errors import CommandError
 
 # ViviaTools
 import extras.viviatools as viviatools
-from extras.viviatools import config, perServerFile, serverConfig, personalityMessage
+from extras.viviatools import config, serverConfig, personalityMessage
 
 # Command line args
 argparser = argparse.ArgumentParser()
@@ -71,6 +71,7 @@ else:
 
 # LLaMa
 # TODO: this is slow, run it in a separate thread
+# TODO: see viviallama:27
 import extras.viviallama as Llama
 
 # Variables
@@ -322,8 +323,7 @@ async def on_message(message: discord.Message):
     
     # Guilds
     if serverConfig(message.guild.id)['aiEnabled']:
-        # we need to check both for direct mentions of Vivia and for mentions of the Vivia role to prevent confusion
-        if (message.mentions and (message.mentions[0] == bot.user or message.role_mentions[0] == discord.utils.get(message.guild.roles, name="Vivia"))):
+        if (message.mentions and message.mentions[0] == bot.user):
             await message.channel.typing()
             thread = threading.Thread(target=Llama.createResponse, args=((message.content.removeprefix(f"<@{str(message.author.id)}>"),
                                                     message.author.display_name,
@@ -384,8 +384,7 @@ async def reload_all_extensions():
 
     viviatools.log(f"Loaded {len(viviatools.loaded_extensions)} extensions - failed loading {len(viviatools.failed_extensions)}.")
 
-# Core commands
-# These commands are always available
+# Core commands - always available
 
 @bot.hybrid_command()
 @viviatools.ownerOnly
@@ -412,13 +411,10 @@ async def sync(ctx, guild: int=0):
 @viviatools.ownerOnly
 async def fixconfig(ctx: commands.Context):
     """
-    Regenerates server files for servers where they are missing.
-
-    ## Notes:
-        - Only the bot owner can use this command.
+    Owner-only command that regenerates server files for servers where they are missing.
     """
 
-    viviatools.log(f"Regenerating missing data files for all servers...", logging.DEBUG)
+    viviatools.log(f"Regenerating missing data files for all servers...", logging.INFO)
     threads = []
     for guild in bot.guilds:
         t = threading.Thread(target=regen_server_files, args=(guild,))
@@ -435,13 +431,13 @@ def regen_server_files(guild):
     # Regenerate server data path if it doesn't exist
     if not os.path.exists(os.path.join('data', 'servers', str(guild.id))):
         os.mkdir(os.path.join('data', 'servers', str(guild.id)))
-        viviatools.log(f'Data path for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
+        viviatools.log(f'Data path for {guild.name} ({guild.id}) was regenerated.', logging.INFO)
 
         # Regenerate configuration if guild config is missing
         try:
             with open(os.path.join('data', 'servers', str(guild.id), 'config.json'), 'x') as f, open(os.path.join('data', 'config.json.example'), 'r') as g:
                 json.dump(obj=json.load(g), fp=f)
-            viviatools.log(f'Config file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
+            viviatools.log(f'Config file for {guild.name} ({guild.id}) was regenerated.', logging.INFO)
         except FileExistsError:
             pass # Most likely there was nothing wrong with it
 
@@ -449,7 +445,7 @@ def regen_server_files(guild):
         try:
             with open(os.path.join('data', 'servers', str(guild.id), 'quotes.json'), 'x') as f:
                 json.dump({'quotes': []}, f)
-            viviatools.log(f'Custom quote file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
+            viviatools.log(f'Custom quote file for {guild.name} ({guild.id}) was regenerated.', logging.INFO)
         except FileExistsError:
             pass # Most likely there was nothing wrong with it
 
@@ -457,7 +453,7 @@ def regen_server_files(guild):
         try:
             with open(os.path.join('data', 'servers', str(guild.id), 'warns.json'), 'x') as f:
                 json.dump({'warns': []}, f)
-            viviatools.log(f'Warn file for {guild.name} ({guild.id}) was regenerated.', logging.DEBUG)
+            viviatools.log(f'Warn file for {guild.name} ({guild.id}) was regenerated.', logging.INFO)
         except FileExistsError:
             pass # Most likely there was nothing wrong with it
 
@@ -468,15 +464,13 @@ def regen_server_files(guild):
 @viviatools.ownerOnly
 async def statuschange(ctx: commands.Context):
     """
-    Manually randomizes the current status of the bot.
-
-    ## Notes:
-        - Only the bot owner can use this command.
+    Owner-only command that manually randomizes the current status of the bot.
     """
 
     await statusChanges()
     await ctx.send('Status randomized!')
 
+# TODO: see viviallama:27
 @bot.hybrid_command(
     name="clearhistory",
     description="Clears your recent chat history with me."
@@ -538,13 +532,12 @@ async def setting(ctx: commands.Context, option: str, value: bool):
 @viviatools.ownerOnly
 async def reboot(ctx: commands.Context, pull_git: bool = False):
     """
-    Performs a full reboot of Vivia.
+    Owner-only command that performs a full reboot of Vivia.
 
     ## Args:
         pull_git (bool): Whether to pull the git repository before rebooting to automatically update Vivia.
                          Defaults to False. May increase reboot time by a few seconds. Also updates dependencies.
     ## Notes:
-        - Only the bot owner can use this command.
         - Because this command replaces the running Vivia script with another one, any changes made to Vivia will take effect after this command is run.
         - `pull_git` requires `git` to be installed on your system, but you probably already have it if you're running Vivia anyway, don't you?
         - `pull_git` will also run `pip install -r requirements.txt` in the root to install any new dependencies.

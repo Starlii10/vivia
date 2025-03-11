@@ -112,6 +112,7 @@ else:
 def log(message: str, severity: int=logging.INFO):
     """
     Logs a message to the console.
+    Essentially just a wrapper for logging.log
     """
 
     logging.log(severity, message)
@@ -152,7 +153,7 @@ async def load_extension(file: str, directory: str="commands"):
         await bot.load_extension(f"{directory}.{file[:-3]}")
         loaded_extensions.append(f"{directory}.{file[:-3]}")
     except errors.ExtensionAlreadyLoaded:
-        log(f"Extension {directory}.{file[:-3]} was already loaded.")
+        log(f"Extension {directory}.{file[:-3]} was already loaded.", logging.WARN)
     except Exception as e:
         log(f"Failed to load extension {file[:-3]} - functionality may be limited.", logging.ERROR)
         log("".join(traceback.format_exception(e)), logging.ERROR)
@@ -296,10 +297,10 @@ def add_custom_quote(quote: str, serverID: int):
         - quote (str): The quote to add.
         - serverID (int): The ID of the server to add the quote to.
     """
-    with open(os.path.join("data", "servers", str(serverID), "quotes.json"), "r") as f:
+    with perServerFile(serverID, "quotes.json", template="{'quotes': []}") as f:
         quotes = json.load(f)
     quotes["quotes"].append(quote)
-    with open(os.path.join("data", "servers", str(serverID), "quotes.json"), "w") as f:
+    with perServerFile(serverID, "quotes.json") as f:
         json.dump(quotes, f)
     if config["Advanced"]["Debug"] == "True":
         log(f"Added custom quote for {serverID}: {quote}", logging.DEBUG)
@@ -352,7 +353,6 @@ def perServerFile(serverID: int, filename: str, template: str | None = None):
         - This only opens the file. You'll need to manage reading and writing to it yourself.
     """
     os.makedirs(os.path.join("data", "servers", str(serverID)), exist_ok=True)
-    os.makedirs(f"data/servers/{serverID}", exist_ok=True)
     if not os.path.exists(os.path.join("data", "servers", str(serverID), filename)):
         with open(os.path.join("data", "servers", str(serverID), filename), "w") as f:
             if template is None:
@@ -435,6 +435,8 @@ def adminOnly(func: Callable) -> Callable:
 def blockInDMs(func: Callable) -> Callable:
     """
     Decorator that blocks commands from being executed in DMs.
+
+    The difference between this decorator and the one provided by DPY is that this one outputs the `errors.nodm` message instead of outright blocking the command.
     """
     @wraps(func)
     async def wrapper(ctx: commands.Context, *args, **kwargs):
