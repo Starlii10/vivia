@@ -11,14 +11,17 @@
     Have a great time using Vivia!
 """
 
+from discord.ext import commands
+from discord import app_commands
+from extras.viviatools import personality_message, admin_only
+
 if __name__ == "__main__":
     raise Exception("Vivia extensions should not be run as a script.")
 
-from discord.ext import commands
-from discord import app_commands
-from extras.viviatools import personalityMessage, adminOnly
-
 async def setup(bot: commands.Bot): # for extension loading
+    """
+        The main setup function for an extension.
+    """
     bot.add_command(purge)
 
 @commands.hybrid_command(
@@ -29,7 +32,7 @@ async def setup(bot: commands.Bot): # for extension loading
     start="Message ID or link to start of range",
     end="Message ID or link to end of range"
 )
-@adminOnly
+@admin_only
 async def purge(ctx: commands.Context, start: int = None, end: int = None):
     """
         Purges (deletes) messages between start and end.
@@ -45,28 +48,29 @@ async def purge(ctx: commands.Context, start: int = None, end: int = None):
             - This command may take a while and may cause Vivia to be rate limited. If you see 429s in the log, blame this command.
     """
 
-    await ctx.send(personalityMessage("purge.purging") + "\n-# This may take a while. Vivia will most likely get rate limited...")
+    await ctx.send(personality_message("purge.purging") + "\n-# This may take a while. Vivia will most likely get rate limited...")
 
-    if start == None and end == None:
+    if start is None and end is None:
         await ctx.channel.purge()
     else:
         # IDs to objects
-        if start != None:
+        if start is not None:
             start = await ctx.channel.fetch_message(start)
-        if end != None:
+        if end is not None:
             end = await ctx.channel.fetch_message(end)
 
         # Convert to timestamps
-        if start != None:
+        if start is not None:
             start = start.created_at
-        if end != None:
+        if end is not None:
             end = end.created_at
-            
+
         # Purge
+        # NOTE: bulk will not work on messages older than 14 days, in which case it will be ignored
+        #       (which means Vivia will use single message deletes, basically guaranteeing rate limits)
         await ctx.channel.purge(
             after=start,
             before=end,
-            bulk=True # NOTE: bulk will not work on messages older than 14 days, in which case it will be ignored
-                      #       (which means Vivia will use single message deletes, basically guaranteeing rate limits)
+            bulk=True
         )
-    await ctx.send(personalityMessage("purge.purge"))
+    await ctx.send(personality_message("purge.purge"))

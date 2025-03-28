@@ -11,13 +11,16 @@
     Have a great time using Vivia!
 """
 
+from discord.ext import commands
+from extras.viviatools import personality_message, bot
+
 if __name__ == "__main__":
     raise Exception("Vivia extensions should not be run as a script.")
 
-from discord.ext import commands
-from extras.viviatools import personalityMessage, bot
-
 async def setup(bot: commands.Bot):
+    """
+        The main setup function for an extension.
+    """
     bot.add_command(ping)
 
 @commands.hybrid_command(
@@ -25,4 +28,8 @@ async def setup(bot: commands.Bot):
     description="Shows the bot's latency.",
 )
 async def ping(ctx: commands.Context):
-    await ctx.send(personalityMessage("base.ping").replace("{ping}", str(bot.latency * 1000) + "ms"))
+    """
+        Shows the bot's latency.
+    """
+    await ctx.send(personality_message("base.ping")
+                   .replace("{ping}", str(bot.latency * 1000) + "ms"))

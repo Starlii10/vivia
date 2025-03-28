@@ -1,40 +1,47 @@
 #!/usr/bin/env python
 """
-    This is the channelmaker command, part of the ViviaBase extension package.
+This is the channelmaker command, part of the ViviaBase extension package.
 
-    Vivia is licensed under the MIT License. For more information, see the LICENSE file.
-    TL:DR: you can use Vivia's code as long as you keep the original license intact.
-    Vivia is made open source in the hopes that you'll find her code useful.
+Vivia is licensed under the MIT License. For more information, see the LICENSE file.
+TL:DR: you can use Vivia's code as long as you keep the original license intact.
+Vivia is made open source in the hopes that you'll find her code useful.
 
-    If you'd like to contribute, please check out the GitHub repository at https://github.com/starlii10/vivia.
+If you'd like to contribute, please check out the GitHub repository at https://github.com/starlii10/vivia.
 
-    Have a great time using Vivia!
+Have a great time using Vivia!
 """
-
-if __name__ == "__main__":
-    raise Exception("Vivia extensions should not be run as a script.")
 
 import json
 import logging
 from discord.ext import commands
 from discord import app_commands
 from extras import viviatools
-from extras.viviatools import has_bot_permissions, log, personalityMessage, serverConfig
+from extras.viviatools import log, personality_message, server_config
 
-async def setup(bot: commands.Bot): # for extension loading
+if __name__ == "__main__":
+    raise Exception("Vivia extensions should not be run as a script.")
+
+
+async def setup(bot: commands.Bot):  # for extension loading
+    """
+    The main setup function for an extension.
+    """
     bot.add_command(channelmaker)
 
+
 @commands.hybrid_command(
-    name = "channelmaker",
+    name="channelmaker",
 )
-@app_commands.choices(type=[
-    app_commands.Choice(name="text",value="text"),
-    app_commands.Choice(name="voice",value="voice"),
-    app_commands.Choice(name="forum",value="forum"),
-])
-@viviatools.blockInDMs
-@viviatools.adminOnly
-async def channelmaker(ctx: commands.Context, channel_config: str, type: str="text"):
+@app_commands.choices(
+    type=[
+        app_commands.Choice(name="text", value="text"),
+        app_commands.Choice(name="voice", value="voice"),
+        app_commands.Choice(name="forum", value="forum"),
+    ]
+)
+@viviatools.block_in_dms
+@viviatools.admin_only
+async def channelmaker(ctx: commands.Context, channel_config: str, type: str = "text"):
     """
     Makes a bunch of channels from JSON.
 
@@ -50,27 +57,51 @@ async def channelmaker(ctx: commands.Context, channel_config: str, type: str="te
     await ctx.send("Making channels! (This may take a moment.)")
     try:
         try:
-            channels = json.loads(channel_config) # Channels is a list of categories, each category is a list of channels
+            channels = json.loads(
+                channel_config
+            )  # Channels is a list of categories, each category is a list of channels
         except Exception:
-            await ctx.send(f"I couldn't parse that JSON.\n\nIf you need help with using this command, run /help channelmaker.")
+            await ctx.send(
+                "I couldn't parse that JSON.\n\nIf you need help with using this command, run /help channelmaker."
+            )
             return
-        for category in channels['categories']:
+        for category in channels["categories"]:
             if not category in ctx.guild.categories:
                 # Create the category
-                target = await ctx.guild.create_category(category, reason=f"Created by /channelmaker - run by {ctx.author}")
+                target = await ctx.guild.create_category(
+                    category, reason=f"Created by /channelmaker - run by {ctx.author}"
+                )
             else:
                 target = ctx.guild.categories.get(category)
-            for channel in channels['categories'][category]:
+            for channel in channels["categories"][category]:
                 # Create the channel
                 match type:
                     case "text":
-                        await ctx.guild.create_text_channel(channel, category=target, reason=f"Created by /channelmaker - run by {ctx.author}")
+                        await ctx.guild.create_text_channel(
+                            channel,
+                            category=target,
+                            reason=f"Created by /channelmaker - run by {ctx.author}",
+                        )
                     case "voice":
-                        await ctx.guild.create_voice_channel(channel, category=target, reason=f"Created by /channelmaker - run by {ctx.author}")
+                        await ctx.guild.create_voice_channel(
+                            channel,
+                            category=target,
+                            reason=f"Created by /channelmaker - run by {ctx.author}",
+                        )
                     case "forum":
-                        await ctx.guild.create_forum(channel, category=target, reason=f"Created by /channelmaker - run by {ctx.author}")
+                        await ctx.guild.create_forum(
+                            channel,
+                            category=target,
+                            reason=f"Created by /channelmaker - run by {ctx.author}",
+                        )
     except Exception as e:
-        await ctx.send(personalityMessage("errors.error"))
-        if serverConfig(ctx.guild.id)['verboseErrors']:
-            await ctx.send(str(e) + "\n-# To disable these messages, run /config verboseErrors false")
-        await log(f"Error while making channels in server {str(ctx.guild.name)} ({str(ctx.guild.id)}): {type(e)}: {str(e)}", severity=logging.ERROR)
+        await ctx.send(personality_message("errors.error"))
+        if server_config(ctx.guild.id)["verboseErrors"]:
+            await ctx.send(
+                str(e)
+                + "\n-# To disable these messages, run /config verboseErrors false"
+            )
+        await log(
+            f"Error while making channels in server {str(ctx.guild.name)} ({str(ctx.guild.id)}): {type(e)}: {str(e)}",
+            severity=logging.ERROR,
+        )
