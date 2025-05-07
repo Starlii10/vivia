@@ -129,7 +129,7 @@ async def setup_hook():
     """
 
     # skip if Vivia is already running
-    if viviatools.running:
+    if viviatools.RUNNING:
         viviatools.log(
             "Vivia is already running. Skipping early initialization process",
             logging.DEBUG,
@@ -297,7 +297,7 @@ async def on_ready():
     """
 
     # skip if Vivia is already running
-    if viviatools.running:
+    if viviatools.RUNNING:
         viviatools.log("Vivia is already running. Skipping initialization process.")
         await status_changes()  # get rid of temporary "Connecting to websocket" status
         return
@@ -315,7 +315,7 @@ async def on_ready():
     except RuntimeError:
         pass  # already started
     viviatools.log("Vivia is all ready!")
-    viviatools.running = True
+    viviatools.RUNNING = True
 
 
 @tasks.loop(hours=1)
@@ -846,7 +846,7 @@ while True:
         # Unhandled exception
         viviatools.log("Vivia has crashed... oh no...", logging.FATAL)
         viviatools.log(
-            "".join(traceback.format_exception(sys.exc_info())), severity=logging.FATAL
+            "".join(traceback.format_exception(e)), severity=logging.FATAL
         )
         viviatools.log(
             "Don't worry, she will automatically restart in 5 seconds.", logging.FATAL
@@ -857,7 +857,7 @@ while True:
         )
         asyncio.run(
             viviatools.set_custom_presence(
-                "!! Vivia has crashed - rebooting! !!", "dnd", bot
+                "!! Vivia has crashed - rebooting! !!", bot, "dnd"
             )
         )
         time.sleep(5)
