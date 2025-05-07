@@ -1,0 +1,7 @@
+{
+    "default": "Invalid color: {color}",
+    "messages": [
+        "{color} isn't valid...",
+        "You can't use {color} as a color."
+    ]
+}

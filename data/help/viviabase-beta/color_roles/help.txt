@@ -1,0 +1,17 @@
+# Color Roles
+
+This extension lets Vivia handle creation of custom color roles for you.
+
+## Commands
+
+* `v!create_color_role` - Assigns a color role to the user. Creates it if needed.
+    - Usage: `v!create_color_role <color>`
+    - Example: `v!create_color_role #82fc41`, `v!create_color_role purple`
+* `v!unassign_color_role` - Removes your color role.
+    - Usage: `v!unassign_color_role`
+
+## Auto-Deletion
+
+If a color role is not used by any members, it will be automatically deleted.
+
+-# Sometimes you just want it to be simple.

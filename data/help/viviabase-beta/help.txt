@@ -6,5 +6,6 @@ By default they are disabled, though they can be enabled with the config option 
 ## Extensions
 
 - `viviabase-beta.leveling` - A leveling and XP system for your server.
+- `viviabase-beta.color_roles` - Simple management of color roles with a few commands.
 
 -# Use at your own risk!
