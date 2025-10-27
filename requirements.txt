@@ -1,5 +1,5 @@
 discord.py==2.6.4
-python-dotenv==1.1.1
+python-dotenv==1.2.1
 opencv-python
 pillow
 colorlog
